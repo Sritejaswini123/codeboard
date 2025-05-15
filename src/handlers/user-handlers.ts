@@ -81,7 +81,7 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
 //get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page=Number(c.req.query('page_no'));
+    const page=Number(c.req.query('page'));
      const page_size=Number(c.req.query('page_size'));
     const user = await getAllUsers(page,page_size);
     return sendResponse(c, OK, USERS_FETCHED, user);

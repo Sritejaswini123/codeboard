@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 
 import db from "../database/db";
 import { NewProject, projects } from "../database/schemas/projects";
+import { getRecordById } from "./base-db-services";
 
 
 
@@ -19,3 +20,9 @@ export const isProjectExist=async(title:string)=>{
       .where(eq(projects.title,title))
   return existingProject;
 }
+
+
+//get project by id
+  export const getProjectById =(projectId: number) => {
+    return  getRecordById(projects, projectId);
+  };

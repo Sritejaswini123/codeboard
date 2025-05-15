@@ -2,10 +2,11 @@ import { asc, eq, getTableName, sql } from "drizzle-orm";
 import db from "../database/db";
 import { type NewUser, type User, type UsersTable } from "../database/schemas/users";
 import { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
+import { Commit, CommitsTable, NewCommit } from "../database/schemas/commits";
 
-type DBTable = UsersTable | ProjectsTable
-type NewDBRecord  = NewUser | NewProject
-type DBRecordRow = User | Project
+type DBTable = UsersTable | ProjectsTable | CommitsTable
+type NewDBRecord  = NewUser | NewProject | NewCommit
+type DBRecordRow = User | Project | Commit
 
 export const createRecord = async<T extends DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
     const result = await db
@@ -24,15 +25,16 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
     return result[0];
 };
 
-//get all users 
-export const getAllRecords = async <DBRecordRow>(curent_page: number,page_size:number,table: DBTable) => {
+//get all 
+export const getAllRecords = async <DBRecordRow>(page: number,page_size:number,table: DBTable,whereClause?: any) => {
   // const page_size = 10;
   const result = await db
     .select()
     .from(table)
+    .where(whereClause)
     .orderBy(asc(table.id))
     .limit(page_size)
-    .offset((curent_page - 1) * page_size);
+    .offset((page - 1) * page_size);
 
   const [{ total_records }] = await db
     .select({ total_records: sql<number>`count(*)` })
@@ -42,11 +44,11 @@ export const getAllRecords = async <DBRecordRow>(curent_page: number,page_size:n
 
   return {
     total_records:Number(total_records),
-    curent_page, 
+    page, 
     page_size,
     totalPages,
-    next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
-    prev_page: curent_page <= 1 ? null : curent_page - 1,
+    next_page: page >= totalPages || totalPages === 0 ? null :page + 1,
+    prev_page: page <= 1 ? null : page - 1,
     data: result
   };
 };
