@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1746620284755,
-      "tag": "0000_pink_lionheart",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1747018813672,
-      "tag": "0001_late_warbound",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1747293383842,
-      "tag": "0002_lucky_micromacro",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1747293871301,
-      "tag": "0003_luxuriant_talon",
+      "when": 1747303350227,
+      "tag": "0000_vengeful_synch",
       "breakpoints": true
     }
   ]

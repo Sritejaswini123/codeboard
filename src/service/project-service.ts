@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-
 import db from "../database/db";
 import { NewProject, projects } from "../database/schemas/projects";
 

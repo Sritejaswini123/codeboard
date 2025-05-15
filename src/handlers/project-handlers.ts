@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
-import { PROJECT_EXIST, USER_CREATED } from "../constants/app-messages";
+import { PROJECT_CREATED, PROJECT_EXIST } from "../constants/app-messages";
 import { CREATED, NOT_FOUND, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
 import { NewProject, Project, projects } from "../database/schemas/projects";
 import NotFoundException from "../exceptions/not-found-exception";
 import factory from "../factory";
 import { createRecord } from "../service/base-db-services";
-import { createProject, isProjectExist } from "../service/project-service";
+import { isProjectExist } from "../service/project-service";
 import { sendResponse } from "../utils/send-response";
 import { vCreateProject } from "../validations/project-validations";
 
@@ -13,18 +13,21 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();  
     const validProjectReq = vCreateProject.parse(reqBody);
+    console.log("---->",validProjectReq);
+    
     const projectData: NewProject = {
       ...validProjectReq 
     }  
-    const existingUser=await isProjectExist(validProjectReq.title);
 
-   if(!existingUser){
+    const existingProject=await isProjectExist(validProjectReq.title);
+
+   if(!existingProject){
     throw new NotFoundException(PROJECT_EXIST)
     }
 
-    const Projcet = await createRecord<Project>(projects, projectData);
+    const project = await createRecord<Project>(projects, projectData);
 
-    return sendResponse(c, CREATED, USER_CREATED, Projcet);
+    return sendResponse(c, CREATED, PROJECT_CREATED,project);
   } catch (error) {
 
     if (error instanceof ZodError) {
@@ -32,8 +35,24 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
       return c.json({ message: errorMessage }, NOT_FOUND);
     }
     
+    console.log("hello--->",error);
+    
     return c.json({ error: error }, UNPROCESSABLE_ENTITY);
 
   }
 }
 );
+
+
+
+
+
+export const updateProjectHandlers=factory.createHandlers(async(c)=>{
+try {
+    const reqBody=await c.req.json();
+    const validatedUpdateData=vCreateProject.parse(reqBody);
+
+} catch (error) {
+    
+}
+})

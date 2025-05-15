@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { PROJECT_EXIST, USER_CREATED } from "../constants/app-messages";
+import { PROJECT_CREATED, PROJECT_EXIST } from "../constants/app-messages";
 import { CREATED, NOT_FOUND, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
 import { projects } from "../database/schemas/projects";
 import NotFoundException from "../exceptions/not-found-exception";
@@ -12,21 +12,31 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
     try {
         const reqBody = await c.req.json();
         const validProjectReq = vCreateProject.parse(reqBody);
+        console.log("---->", validProjectReq);
         const projectData = {
             ...validProjectReq
         };
-        const existingUser = await isProjectExist(validProjectReq.title);
-        if (!existingUser) {
+        const existingProject = await isProjectExist(validProjectReq.title);
+        if (!existingProject) {
             throw new NotFoundException(PROJECT_EXIST);
         }
-        const Projcet = await createRecord(projects, projectData);
-        return sendResponse(c, CREATED, USER_CREATED, Projcet);
+        const project = await createRecord(projects, projectData);
+        return sendResponse(c, CREATED, PROJECT_CREATED, project);
     }
     catch (error) {
         if (error instanceof ZodError) {
             const errorMessage = error.errors?.[0]?.message || 'Validation error';
             return c.json({ message: errorMessage }, NOT_FOUND);
         }
+        console.log("hello--->", error);
         return c.json({ error: error }, UNPROCESSABLE_ENTITY);
+    }
+});
+export const updateProjectHandlers = factory.createHandlers(async (c) => {
+    try {
+        const reqBody = await c.req.json();
+        const validatedUpdateData = vCreateProject.parse(reqBody);
+    }
+    catch (error) {
     }
 });

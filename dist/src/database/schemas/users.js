@@ -6,7 +6,7 @@ export const users = pgTable("users", {
     last_name: text(),
     email: text().unique().notNull(),
     phone: text(),
-    active: boolean().default(true),
+    is_active: boolean().notNull().default(true),
     dob: date({ mode: "date" }).notNull(),
     doj: date({ mode: "date" }).notNull(),
     designation: text().notNull(),

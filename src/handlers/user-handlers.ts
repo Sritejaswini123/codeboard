@@ -15,16 +15,16 @@ import { vCreateUser } from "../validations/user-validations";
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();  
-    console.log("one---->",reqBody);
+
     
     const validUserReq = vCreateUser.parse(reqBody);
-    console.log("two---->",reqBody);
+ 
     const userData: NewUser = {
       ...validUserReq,
       dob: new Date(validUserReq.dob),
       doj: new Date(validUserReq.doj),
     }
-     console.log("three---->",userData);    
+       
     const existingUser=await isUserExist(validUserReq.email);
 
    if(!existingUser){
