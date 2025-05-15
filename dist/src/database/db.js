@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
+import fs from "node:fs";
 import pg from "pg";
 import env from "../env.js";
-import fs from "node:fs";
 const { Pool } = pg;
 const pool = new Pool({
     host: env.DB_HOST,

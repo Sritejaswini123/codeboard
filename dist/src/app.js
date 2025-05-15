@@ -1,3 +1,4 @@
+import { cors } from "hono/cors";
 import { SERVICE_UP } from "./constants/app-messages.js";
 import env from "./env.js";
 import factory from "./factory.js";
@@ -8,12 +9,17 @@ import { piLogger } from "./utils/pino-logger.js";
 import { sendResponse } from "./utils/send-response.js";
 const app = factory.createApp().basePath(env.API_VERSION);
 app.use(piLogger());
+app.use("*", cors());
+app.get("/test/:name", (c) => {
+    const name = c.req.param("name");
+    return c.text(`CORS is working!-->Hello ${name}!`);
+});
 app.get("/", (c) => {
     return sendResponse(c, 200, SERVICE_UP);
 });
-//user routes..........
+// user routes..........
 console.log("inside app");
-app.route('/', userRoutes);
+app.route("/", userRoutes);
 app.get("/error", (c) => {
     c.status(422);
     c.var.logger.debug("Test error only visible in development");

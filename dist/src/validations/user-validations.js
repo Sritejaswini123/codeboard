@@ -6,6 +6,7 @@ export const vCreateUser = z.object({
     phone: z.string().min(10, { message: "Phone number must be at least 10 characters long" }).max(15).optional(),
     dob: z.string().min(1, { message: "Date of birth is required" }),
     doj: z.string().min(1, { message: "Date of joining is required" }),
+    status: z.string().min(1, { message: "Status is required" }).optional(),
     designation: z.string().min(3, { message: "Designation must be at least 3 characters long" }),
 }).superRefine((data, ctx) => {
     const dobDate = new Date(data.dob);
@@ -24,13 +25,4 @@ export const vCreateUser = z.object({
             message: "Invalid date of joining",
         });
     }
-});
-export const vUpdateUser = z.object({
-    first_name: z.string().min(3, { message: "First name" }),
-    email: z.string().email({ message: "Invalid email address" }),
-    dob: z.string().transform(val => new Date(val)),
-    doj: z.string().transform(val => new Date(val)),
-    last_name: z.string().min(3, { message: "Last name must be at least 3 characters long" }).optional(),
-    phone: z.string().min(10, { message: "Phone number must be at least 10 characters long" }).max(15).optional(),
-    designation: z.string().min(3, { message: "Designation must be at least 3 characters long" }).optional(),
 });

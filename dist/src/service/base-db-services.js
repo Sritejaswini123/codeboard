@@ -1,8 +1,6 @@
-import { eq, asc } from "drizzle-orm";
-import db from "../database/db.js";
-import { users } from "../database/schemas/users.js";
-import { count } from "drizzle-orm";
-export const createUser = async (table, record) => {
+import { asc, eq, getTableName, sql } from "drizzle-orm";
+import db from "../database/db";
+export const createRecord = async (table, record) => {
     const result = await db
         .insert(table)
         .values(record)
@@ -10,25 +8,53 @@ export const createUser = async (table, record) => {
     return result[0];
 };
 export const getRecordById = async (table, id) => {
-    const result = await db.select().from(table).where(eq(table.id, id));
+    const result = await db
+        .select()
+        .from(table)
+        .where(eq(table.id, id));
     return result[0];
 };
 //get all users 
-export const getAllRecords = async (page, table) => {
-    const pageSize = 10;
+export const getAllRecords = async (curent_page, page_size, table) => {
+    // const page_size = 10;
     const result = await db
         .select()
         .from(table)
         .orderBy(asc(table.id))
-        .limit(pageSize)
-        .offset((page - 1) * pageSize);
-    return result;
+        .limit(page_size)
+        .offset((curent_page - 1) * page_size);
+    const [{ total_records }] = await db
+        .select({ total_records: sql `count(*)` })
+        .from(table);
+    const totalPages = Math.ceil(total_records / page_size);
+    return {
+        total_records: Number(total_records),
+        curent_page,
+        page_size,
+        totalPages,
+        next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
+        prev_page: curent_page <= 1 ? null : curent_page - 1,
+        data: result
+    };
 };
 //delete 
 export const deleteRecordById = async (table, id) => {
+    const columnInfo = sql.raw(`${getTableName(table)}.id`);
     const result = await db
         .delete(table)
-        .where(eq(table.id, id))
+        .where(eq(columnInfo, id))
         .returning();
     return result[0];
+};
+export const updateRecordById = async (table, record, id) => {
+    const columnInfo = sql.raw(`${getTableName(table)}.id`);
+    const updatedRecord = await db
+        .update(table)
+        .set({
+        ...record,
+        updated_at: new Date()
+    })
+        .where(eq(columnInfo, id))
+        .returning();
+    return updatedRecord;
 };
