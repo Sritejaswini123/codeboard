@@ -1,12 +1,13 @@
 import { asc, eq, getTableName, sql } from "drizzle-orm";
 import db from "../database/db";
 import { type NewUser, type User, type UsersTable } from "../database/schemas/users";
+import { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
 
-type DBTable = UsersTable 
-type NewDBRecord  = NewUser
-type DBRecordRow = User
+type DBTable = UsersTable | ProjectsTable
+type NewDBRecord  = NewUser | NewProject
+type DBRecordRow = User | Project
 
-export const createUser = async<T extends DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
+export const createRecord = async<T extends DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
     const result = await db
     .insert(table)
     .values(record)

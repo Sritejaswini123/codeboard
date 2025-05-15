@@ -4,7 +4,7 @@ import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSAB
 import { users, type NewUser, type User } from "../database/schemas/users";
 import NotFoundException from "../exceptions/not-found-exception";
 import factory from "../factory";
-import { createUser, getRecordById, updateRecordById } from "../service/base-db-services";
+import { createRecord,  getRecordById, updateRecordById } from "../service/base-db-services";
 import { deleteUserById, getAllUsers, isUserExist } from "../service/user-service";
 import { sendResponse } from "../utils/send-response";
 import { vCreateUser } from "../validations/user-validations";
@@ -36,7 +36,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     //   return c.json({USER_EXIST}, CONFLICT);
     // }
 
-    const user = await createUser<User>(users, userData);
+    const user = await createRecord<User>(users, userData);
 
     return sendResponse(c, CREATED, USER_CREATED, user);
   } catch (error) {

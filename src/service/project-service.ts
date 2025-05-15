@@ -7,7 +7,7 @@ import { NewProject, projects } from "../database/schemas/projects";
 
 
 //save user 
-export const createUser=async (userData: NewProject)=>{
+export const createProject=async (userData: NewProject)=>{
     const  user =await db.insert(projects).values(userData).returning();
     return user[0];
 }

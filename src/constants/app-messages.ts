@@ -14,6 +14,8 @@ export const USERS_FETCHED = "Users fetched successfully";
 
 export const USER_EXIST = "User already exists";
 
+export const PROJECT_EXIST = "Projcet already exists";
+
 export const USER_FETCHED = "User fetched successfully";
 
 export const USER_ID_REQUIRED = "User ID is required";
