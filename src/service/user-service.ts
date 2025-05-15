@@ -1,30 +1,50 @@
-// user service
-import type { NewUser } from "../database/schemas/users.js";
+import { eq } from "drizzle-orm";
+import db from "../database/db";
+import { User, users, type NewUser } from "../database/schemas/users";
+import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./base-db-services";
 
-import db from "../database/db.js";
-import { users } from "../database/schemas/users.js";
-import { deleteRecordById, getAllRecords, getRecordById } from "./base-db-services.js";
 
-// save user
-export async function createUser(userData: NewUser) {
-  const user = await db.insert(users).values(userData).returning();
-  return user[0];
+
+
+//save user 
+export const createUser=async (userData: NewUser)=>{
+    const  user =await db.insert(users).values(userData).returning();
+    return user[0];
+  }
+
+
+//get user by id
+  export const getUserById =(userId: number) => {
+    return  getRecordById(users, userId);
+  };
+
+
+  //checks users existing or not
+export const isUserExist=async(email:string)=>{
+   const existingUser=await db
+      .select()
+      .from(users)
+      .where(eq(users.email,email))
+      .limit(1);
+  return existingUser;
 }
 
-// get user by id
-export function getUserById(userId: number) {
-  return getRecordById(users, userId);
-}
-// get all users
-export async function getAllUsers(page_no: number) {
-  return await getAllRecords(page_no, users);
+//get all users 
+export const getAllUsers = async (page_no: number, page_size: number) => {
+  return await getAllRecords(page_no,page_size,users);
 }
 
-// delete user by id
-export async function deleteUserById(userId: number) {
+//delete user by id
+export const deleteUserById = async (userId: number) => {
   return await deleteRecordById(users, userId);
-}
+};
+  
 
-// export const updateUser=async(userData: UsersTable,userId: number)=>{
-//   return await updateRecord<User>(userData,userId);
-// }
+
+//update user by id
+export const updateUserById=async(userData:NewUser,userId:number)=>{
+  return await updateRecordById(users,userData,userId);
+}
+  
+
+

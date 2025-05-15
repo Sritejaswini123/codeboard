@@ -21,3 +21,5 @@ export const USER_ID_REQUIRED = "User ID is required";
 export const USER_NOT_FOUND = "User not found ";
 
 export const USER_DELETEED = "User deleted successfully";
+
+export const USER_UPDATED="User updated successfully";
