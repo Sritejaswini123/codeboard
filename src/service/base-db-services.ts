@@ -2,12 +2,14 @@
 import { asc, eq, getTableName, sql } from "drizzle-orm";
 
 import type { NewUser, User, UsersTable } from "../database/schemas/users.js";
+import type { NewProject, Project, ProjectsTable } from "../database/schemas/projects.js";
+
 
 import db from "../database/db.js";
 
-type DBTable = UsersTable;
-type NewDBRecord = NewUser;
-type DBRecordRow = User;
+type DBTable = UsersTable | ProjectsTable;
+type NewDBRecord = NewUser|NewProject;
+type DBRecordRow = User|Project;
 
 export async function createUser<DBRecordRow>(table: DBTable, record: NewDBRecord) {
   const result = await db .insert(table) .values(record).returning();
@@ -18,16 +20,16 @@ export async function getRecordById<DBRecordRow>(table: DBTable, id: number) {
   const result = await db.select().from(table).where(eq(table.id, id));
   return result[0];
 }
-// get all users
-export async function getAllRecords<DBRecordRow>(curent_page: number, table: DBTable) {
-  const page_size = 10;
+// get all record
+export async function getAllRecords<DBRecordRow>(page: number,page_size:number, table: DBTable) {
+  
 
   const result = await db
     .select()
     .from(table)
     .orderBy(asc(table.id))
     .limit(page_size)
-    .offset((curent_page - 1) * page_size);
+    .offset((page - 1) * page_size);
 
   const [{ total_records }] = await db
     .select({ total_records: sql<string>`count(*)` }) // use string here explicitly
@@ -38,11 +40,11 @@ export async function getAllRecords<DBRecordRow>(curent_page: number, table: DBT
 
   return {
     total_records: totalRecordsNumber,
-    curent_page,
+    page,
     page_size,
     totalPages,
-    next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
-    prev_page: curent_page <= 1 ? null : curent_page - 1,
+    next_page: page >= totalPages || totalPages === 0 ? null : page + 1,
+    prev_page: page <= 1 ? null : page - 1,
     data: result,
   };
 }

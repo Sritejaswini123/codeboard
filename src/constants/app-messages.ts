@@ -21,3 +21,15 @@ export const USER_ID_REQUIRED = "User ID is required";
 export const USER_NOT_FOUND = "User not found ";
 
 export const USER_DELETEED = "User deleted successfully";
+
+export const PROJECT_CREATED = "Project created successfully";
+
+export const PROJECT_FETCHED = "Project fetched successfully";
+
+export const PROJECT_EXIST = "Project already exists";
+
+export const PROJECT_ID_REQUIRED = "Project ID is required";
+
+export const PROJECT_NOT_FOUND = "Project not found ";
+
+

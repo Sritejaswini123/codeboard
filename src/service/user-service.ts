@@ -16,8 +16,8 @@ export function getUserById(userId: number) {
   return getRecordById(users, userId);
 }
 // get all users
-export async function getAllUsers(page_no: number) {
-  return await getAllRecords(page_no, users);
+export async function getAllUsers(page: number,page_size:number) {
+  return await getAllRecords(page,page_size, users);
 }
 
 // delete user by id
