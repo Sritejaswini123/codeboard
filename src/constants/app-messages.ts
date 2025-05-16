@@ -32,4 +32,7 @@ export const PROJECT_ID_REQUIRED = "Project ID is required";
 
 export const PROJECT_NOT_FOUND = "Project not found ";
 
+export const PROJECTS_FETCHED = "Projects fetched successfully";
+
+
 

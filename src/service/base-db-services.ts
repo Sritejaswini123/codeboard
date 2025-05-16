@@ -21,12 +21,13 @@ export async function getRecordById<DBRecordRow>(table: DBTable, id: number) {
   return result[0];
 }
 // get all record
-export async function getAllRecords<DBRecordRow>(page: number,page_size:number, table: DBTable) {
+export async function getAllRecords<DBRecordRow>(page: number, page_size: number, table: DBTable,whereClause?:any) {
   
 
   const result = await db
     .select()
     .from(table)
+    .where(whereClause)
     .orderBy(asc(table.id))
     .limit(page_size)
     .offset((page - 1) * page_size);

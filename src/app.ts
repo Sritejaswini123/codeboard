@@ -4,6 +4,8 @@ import { SERVICE_UP } from "./constants/app-messages.js";
 import env from "./env.js";
 import factory from "./factory.js";
 import userRoutes from "./routes/userRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+
 import notFound from "./utils/not-found.js";
 import onError from "./utils/on-error.js";
 import { piLogger } from "./utils/pino-logger.js";
@@ -23,6 +25,7 @@ app.get("/", (c) => {
 // user routes..........
 console.log("inside app");
 app.route("/", userRoutes);
+app.route("/",projectRoutes);
 
 app.get("/error", (c) => {
   c.status(422);
