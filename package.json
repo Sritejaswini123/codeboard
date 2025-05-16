@@ -16,6 +16,7 @@
     "@baselime/pino-transport": "^0.1.5",
     "@dotenvx/dotenvx": "^1.43.0",
     "@hono/node-server": "^1.14.1",
+    "@ngneat/falso": "^7.3.0",
     "drizzle-orm": "^0.43.1",
     "drizzle-seed": "^0.3.1",
     "hono": "^4.7.8",

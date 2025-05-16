@@ -8,6 +8,8 @@ import { createRecord,  getRecordById, updateRecordById } from "../service/base-
 import { deleteUserById, getAllUsers, isUserExist } from "../service/user-service";
 import { sendResponse } from "../utils/send-response";
 import { vCreateUser } from "../validations/user-validations";
+import { generateFakeUsers } from "../../seeder/userSeeder";
+import { createRecordMany } from "../../seeder/seederDb";
 
 
 
@@ -82,8 +84,9 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page=Number(c.req.query('page_no'));
-     const page_size=Number(c.req.query('page_size'));
-    const user = await getAllUsers(page,page_size);
+    const page_size=Number(c.req.query('page_size'));
+    const filterId=Number(c.req.query('filter_id'))
+    const user = await getAllUsers(page,page_size,filterId);
     return sendResponse(c, OK, USERS_FETCHED, user);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
@@ -139,5 +142,10 @@ export const updateUserByIdHandlers=factory.createHandlers(async(c)=>{
     return c.json({ error: error }, UNPROCESSABLE_ENTITY);
   }
 })
+
+
+
+
+
 
 

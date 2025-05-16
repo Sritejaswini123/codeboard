@@ -30,7 +30,7 @@ export const isUserExist=async(email:string)=>{
 }
 
 //get all users 
-export const getAllUsers = async (page_no: number, page_size: number) => {
+export const getAllUsers = async (page_no: number, page_size: number, filterId: number) => {
   return await getAllRecords(page_no,page_size,users);
 }
 
