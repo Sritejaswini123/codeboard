@@ -1,8 +1,14 @@
-import { PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, USER_ID_REQUIRED, PROJECTS_FETCHED } from "../constants/app-messages";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK } from "../constants/http-status-codes";
+import { ZodError } from "zod";
+import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_CREATED } from "../constants/app-messages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import db from "../database/db";
+import { NewProject, Project, projects } from "../database/schemas/projects";
+import NotFoundException from "../exceptions/not-found-exception";
 import factory from "../factory";
+import { getAllProjects, getProjectById, isProjectExist } from "../service/project-services";
 import { sendResponse } from "../utils/send-response";
-import { getAllProjects, getProjectById } from "../service/project-services";
+import { vCreateProject } from "../validations/project-validations";
+import { createRecord } from "../service/base-db-services";
 //get by id
 export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
@@ -32,4 +38,33 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
   }
 });
-//create project
+//createproject
+
+export const createProjectHandlers = factory.createHandlers(async (c) => {
+  try {
+    const reqBody = await c.req.json();  
+    const validProjectReq = vCreateProject.parse(reqBody);
+    const projectData: NewProject = {
+      ...validProjectReq 
+    }  
+    const existingUser=await isProjectExist(validProjectReq.title);
+
+   if(!existingUser){
+    throw new NotFoundException(PROJECT_EXIST)
+    }
+
+    const Projcet = await createRecord<Project>(projects, projectData);
+
+    return sendResponse(c, CREATED, PROJECT_CREATED, Projcet);
+  } catch (error) {
+
+    if (error instanceof ZodError) {
+      const errorMessage = error.errors?.[0]?.message || 'Validation error';
+      return c.json({ message: errorMessage }, NOT_FOUND);
+    }
+    
+    return c.json({ error: error }, UNPROCESSABLE_ENTITY);
+
+  }
+}
+);

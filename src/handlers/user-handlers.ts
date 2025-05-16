@@ -5,10 +5,10 @@ import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_F
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes.js";
 import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
-import { createUser } from "../service/base-db-services.js";
-import { deleteUserById, getAllUsers, getUserById } from "../service/user-service.js";
+import { createUser, deleteUserById, getAllUsers, getUserById } from "../service/user-service.js";
 import { sendResponse } from "../utils/send-response.js";
 import { vCreateUser } from "../validations/user-validations.js";
+import { createRecord } from "../service/base-db-services.js";
 
 type updateRecords = NewUser;
 
@@ -21,7 +21,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       dob: new Date(validUserReq.dob),
       doj: new Date(validUserReq.doj),
     };
-    const user = await createUser<User>(users, userData);
+    const user = await createRecord<User>(users, userData);
     return sendResponse(c, CREATED, USER_CREATED, user);
   }
   catch (error) {
@@ -51,18 +51,26 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-// get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page = Number(c.req.query("page"));
-    const page_size=Number(c.req.query("page_size"));
-    const user = await getAllUsers(page,page_size);
-    return sendResponse(c, OK, USERS_FETCHED, user);
-  }
-  catch (error) {
+    const page = Number(c.req.query("page")) || 1;
+    const page_size = Number(c.req.query("page_size")) || 10;
+
+    const user_id = c.req.query("user_id");
+    
+
+    const users = await getAllUsers(page, page_size, );
+    console.log("Users fetched: ", users);
+
+
+    return sendResponse(c, OK, USERS_FETCHED, users);
+  } catch (error) {
+    console.error("Error in getAllUsersHandlers:", error);
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
+
 });
+
 // delete user by id
 export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
   try {

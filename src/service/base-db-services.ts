@@ -11,7 +11,7 @@ type DBTable = UsersTable | ProjectsTable;
 type NewDBRecord = NewUser|NewProject;
 type DBRecordRow = User|Project;
 
-export async function createUser<DBRecordRow>(table: DBTable, record: NewDBRecord) {
+export const createRecord=async<T extends DBRecordRow>(table: DBTable, record: NewDBRecord) =>{
   const result = await db .insert(table) .values(record).returning();
   return result[0];
 }
@@ -21,20 +21,20 @@ export async function getRecordById<DBRecordRow>(table: DBTable, id: number) {
   return result[0];
 }
 // get all record
-export async function getAllRecords<DBRecordRow>(page: number, page_size: number, table: DBTable,whereClause?:any) {
+export async function getAllRecords<DBRecordRow>(page: number, page_size: number, table: DBTable) {
   
 
   const result = await db
     .select()
     .from(table)
-    .where(whereClause)
     .orderBy(asc(table.id))
     .limit(page_size)
     .offset((page - 1) * page_size);
 
   const [{ total_records }] = await db
     .select({ total_records: sql<string>`count(*)` }) // use string here explicitly
-    .from(table);
+    .from(table)
+
 
   const totalRecordsNumber = Number(total_records); // convert to number
   const totalPages = Math.ceil(totalRecordsNumber / page_size);
