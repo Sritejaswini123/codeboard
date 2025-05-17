@@ -47,7 +47,7 @@ export const getAllRecords = async <DBRecordRow>(page: number,page_size:number,t
     page, 
     page_size,
     totalPages,
-    next_page: page >= totalPages || totalPages === 0 ? null :page + 1,
+    next_page: page >= totalPages  ? null :page + 1,
     prev_page: page <= 1 ? null : page - 1,
     data: result
   };

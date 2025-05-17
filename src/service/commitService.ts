@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 
 import db from "../database/db";
 import { NewCommit, commits } from "../database/schemas/commits";
-import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./base-db-services";
+import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
 
 
 
@@ -16,11 +16,13 @@ export const createcommit=async (commitData: NewCommit)=>{
 
 //get all
   export const getAllCommits = async (
-  page_no: number,
+  page: number,
   page_size: number,
   project_id?: number,
   user_id?: number
 ) => {
+
+
   const conditions = [];
 
   if (project_id) {
@@ -33,11 +35,11 @@ export const createcommit=async (commitData: NewCommit)=>{
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  return await getAllRecords(page_no, page_size, commits, whereClause);
+  return await getAllRecords(page, page_size, commits, whereClause);
 };
 
 
-//  //get commit by id
-//    export const getCommitById =(commitId: number) => {
-//      return  getRecordById(commits, commitId);
-//    };
+//get commit by id
+export const getCommitById =(commitId: number) => {
+  return  getRecordById(commits, commitId);
+};

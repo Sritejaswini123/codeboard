@@ -1,6 +1,6 @@
 
-import {  pgTable, serial, text, timestamp, index,integer } from "drizzle-orm/pg-core";
-import { timestamps } from "./helper-columns";
+import {  pgTable, serial, text, index,integer } from "drizzle-orm/pg-core";
+import { timestamps } from "./helperColumns";
 import { users } from "./users";
 
 export const projects = pgTable("projects", {

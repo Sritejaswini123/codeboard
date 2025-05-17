@@ -1,6 +1,6 @@
 import { date, index, pgTable, serial, text ,boolean} from "drizzle-orm/pg-core";
 
-import { timestamps } from "./helper-columns";
+import { timestamps } from "./helperColumns";
 
 export const users = pgTable("users", {
   id: serial().primaryKey(),
@@ -8,7 +8,7 @@ export const users = pgTable("users", {
   last_name: text(),
   email: text().unique().notNull(),
   phone: text(),
-  active: boolean().default(true),
+  is_active: boolean().notNull().default(true),
   dob: date({ mode: "date" }).notNull(),
   doj: date({ mode: "date" }).notNull(),
   designation: text().notNull(),

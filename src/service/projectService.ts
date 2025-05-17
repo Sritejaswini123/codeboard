@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
-
 import db from "../database/db";
 import { NewProject, projects } from "../database/schemas/projects";
-import { getRecordById } from "./base-db-services";
+import { getAllRecords, getRecordById } from "./baseDbServices";
 
 
 
@@ -26,3 +25,9 @@ export const isProjectExist=async(title:string)=>{
   export const getProjectById =(projectId: number) => {
     return  getRecordById(projects, projectId);
   };
+
+
+//get all users 
+export const getAllProjects = async (page: number, page_size: number) => {
+     return await getAllRecords(page, page_size,projects);
+    };

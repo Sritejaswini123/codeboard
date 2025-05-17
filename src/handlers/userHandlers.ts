@@ -1,13 +1,13 @@
 import { ZodError } from "zod";
-import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/app-messages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/appMessages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { users, type NewUser, type User } from "../database/schemas/users";
-import NotFoundException from "../exceptions/not-found-exception";
+import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord,  getRecordById, updateRecordById } from "../service/base-db-services";
-import { deleteUserById, getAllUsers, isUserExist } from "../service/user-service";
+import { createRecord,  getRecordById, updateRecordById } from "../service/baseDbServices";
+import { deleteUserById, getAllUsers, isUserExist } from "../service/userService";
 import { sendResponse } from "../utils/send-response";
-import { vCreateUser } from "../validations/user-validations";
+import { vCreateUser } from "../validations/userValidations";
 
 
 
@@ -15,26 +15,22 @@ import { vCreateUser } from "../validations/user-validations";
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();  
-    console.log("one---->",reqBody);
+
     
     const validUserReq = vCreateUser.parse(reqBody);
-    console.log("two---->",reqBody);
+ 
     const userData: NewUser = {
       ...validUserReq,
       dob: new Date(validUserReq.dob),
       doj: new Date(validUserReq.doj),
     }
-     console.log("three---->",userData);    
+       
     const existingUser=await isUserExist(validUserReq.email);
 
    if(!existingUser){
     throw new NotFoundException(USER_EXIST)
     }
    
-    // if user exist 
-    // if (existingUser.length > 0) {
-    //   return c.json({USER_EXIST}, CONFLICT);
-    // }
 
     const user = await createRecord<User>(users, userData);
 
@@ -82,13 +78,19 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page=Number(c.req.query('page'));
-     const page_size=Number(c.req.query('page_size'));
-    const user = await getAllUsers(page,page_size);
-    return sendResponse(c, OK, USERS_FETCHED, user);
+    const page_size=Number(c.req.query('page_size'));
+   
+
+    const users = await getAllUsers(page, page_size);
+
+  
+    return sendResponse(c, OK, USERS_FETCHED, users);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
-});
+});   
+
+
 
 //delete user by id
 export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {

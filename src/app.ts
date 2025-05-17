@@ -1,6 +1,6 @@
 import { cors } from "hono/cors";
 
-import { SERVICE_UP } from "./constants/app-messages.js";
+import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
 import userRoutes from "./routes/userRoutes.js";

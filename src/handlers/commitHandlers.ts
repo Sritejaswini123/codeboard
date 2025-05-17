@@ -1,13 +1,13 @@
 import { ZodError } from "zod";
-import { COMMIT_EXIST, COMMIT_CREATED, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_FETCHED } from "../constants/app-messages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import { COMMIT_EXIST, COMMIT_CREATED, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_FETCHED } from "../constants/appMessages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { NewCommit, Commit, commits } from "../database/schemas/commits";
-import NotFoundException from "../exceptions/not-found-exception";
+import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord, getRecordById } from "../service/base-db-services";
-import { createcommit, getAllCommits, } from "../service/commit-service";
+import { createRecord, getRecordById } from "../service/baseDbServices";
+import { createcommit, getAllCommits, } from "../service/commitService";
 import { sendResponse } from "../utils/send-response";
-import { vCreateCommit } from "../validations/commit-validations";
+import { vCreateCommit } from "../validations/commitValidations";
 
 //Create Commit
 export const createCommitHandlers = factory.createHandlers(async (c) => {

@@ -1,16 +1,16 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import db from "../database/db";
 import { User, users, type NewUser } from "../database/schemas/users";
-import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./base-db-services";
+import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
 
 
 
 
-//save user 
-export const createUser=async (userData: NewUser)=>{
-    const  user =await db.insert(users).values(userData).returning();
-    return user[0];
-  }
+// //save user 
+// export const createUser=async (userData: NewUser)=>{
+//     const  user =await db.insert(users).values(userData).returning();
+//     return user[0];
+//   }
 
 
 //get user by id
@@ -26,13 +26,14 @@ export const isUserExist=async(email:string)=>{
       .from(users)
       .where(eq(users.email,email))
       .limit(1);
-  return existingUser;
+  return existingUser.length > 0;
 }
 
 //get all users 
 export const getAllUsers = async (page: number, page_size: number) => {
-  return await getAllRecords(page, page_size,users);
-}
+     return await getAllRecords(page, page_size,users);
+    };
+
 
 //delete user by id
 export const deleteUserById = async (userId: number) => {

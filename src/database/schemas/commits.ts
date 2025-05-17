@@ -1,5 +1,5 @@
 import { date, index, integer, pgTable, serial, text, time, varchar } from "drizzle-orm/pg-core";
-import { timestamps } from "./helper-columns";
+import { timestamps } from "./helperColumns";
 import { projects } from "./projects";
 import { users } from "./users";
 export const commits = pgTable("commits", {
