@@ -1,12 +1,12 @@
 // user service
-import type { NewUser } from "../database/schemas/users.js";
+import type { NewUser, UsersTable } from "../database/schemas/users.js";
 
 import db from "../database/db.js";
 import { users } from "../database/schemas/users.js";
-import { deleteRecordById, getAllRecords, getRecordById } from "./base-db-services.js";
+import { deleteRecordById, getAllRecords, getRecordById } from "./baseDbServices.js";
 
 // save user
-export const  createUser=async(userData: NewUser) =>{
+export const createUser = async (userData: NewUser) => {
   const user = await db.insert(users).values(userData).returning();
   return user[0];
 }
@@ -16,8 +16,8 @@ export function getUserById(userId: number) {
   return getRecordById(users, userId);
 }
 // get all users
-export async function getAllUsers(page: number, page_size: number) {
-  return await getAllRecords(page,page_size,users);
+export async function getAllUsers(page: number, page_size: number, users: UsersTable, filter: any) {
+  return await getAllRecords(page, page_size, users, filter);
 }
 
 // delete user by id

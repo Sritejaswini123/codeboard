@@ -1,6 +1,6 @@
 import { boolean, date, index, pgTable, serial, text } from "drizzle-orm/pg-core";
 
-import { timestamps } from "./helper-columns";
+import { timestamps } from "./helperColumns";
 
 export const users = pgTable("users", {
   id: serial().primaryKey(),

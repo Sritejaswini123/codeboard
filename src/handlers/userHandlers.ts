@@ -1,14 +1,15 @@
 // userHandlers
 import { ZodError } from "zod";
 import type { NewUser, User } from "../database/schemas/users.js";
-import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED } from "../constants/app-messages.js";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes.js";
+import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED } from "../constants/appMessages.js";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
-import { createUser, deleteUserById, getAllUsers, getUserById } from "../service/user-service.js";
-import { sendResponse } from "../utils/send-response.js";
-import { vCreateUser } from "../validations/user-validations.js";
-import { createRecord } from "../service/base-db-services.js";
+import { createUser, deleteUserById, getAllUsers, getUserById } from "../service/userService.js";
+import { sendResponse } from "../utils/sendResponse.js";
+import { vCreateUser } from "../validations/userValidations.js";
+import { createRecord } from "../service/baseDbServices.js";
+import { eq } from "drizzle-orm";
 
 type updateRecords = NewUser;
 
@@ -55,20 +56,15 @@ export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page")) || 1;
     const page_size = Number(c.req.query("page_size")) || 10;
-
-    const user_id = c.req.query("user_id");
-    
-
-    const users = await getAllUsers(page, page_size, );
-    console.log("Users fetched: ", users);
-
-
-    return sendResponse(c, OK, USERS_FETCHED, users);
+    const userId = c.req.query("user_id");
+    const filter = userId ? eq(users.id, parseInt(userId)) : undefined;
+    const userData = await getAllUsers(page, page_size, users, filter);
+    console.log("Users fetched: ", userData);
+    return sendResponse(c, OK, USERS_FETCHED, userData);
   } catch (error) {
     console.error("Error in getAllUsersHandlers:", error);
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
-
 });
 
 // delete user by id
