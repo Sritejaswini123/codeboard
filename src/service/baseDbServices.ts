@@ -26,12 +26,12 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
 };
 
 //get all 
-export const getAllRecords = async <DBRecordRow>(page: number,page_size:number,table: DBTable,whereClause?: any) => {
+export const getAllRecords = async <DBRecordRow>(page: number,page_size:number,table: DBTable,filter: any) => {
   // const page_size = 10;
   const result = await db
     .select()
     .from(table)
-    .where(whereClause)
+    .where(filter)
     .orderBy(asc(table.id))
     .limit(page_size)
     .offset((page - 1) * page_size);

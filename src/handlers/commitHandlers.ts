@@ -5,7 +5,7 @@ import { NewCommit, Commit, commits } from "../database/schemas/commits";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getRecordById } from "../service/baseDbServices";
-import { createcommit, getAllCommits, } from "../service/commitService";
+import { getAllCommits, } from "../service/commitService";
 import { sendResponse } from "../utils/send-response";
 import { vCreateCommit } from "../validations/commitValidations";
 
@@ -17,7 +17,6 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
 
     const commitData: NewCommit = {
       ...validCommitReq ,
-      date: new Date(validCommitReq.date),
     }  
 //  const existingUser=await iscommitExist(validCommitReq.commit_name);
 

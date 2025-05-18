@@ -30,8 +30,8 @@ export const isUserExist=async(email:string)=>{
 }
 
 //get all users 
-export const getAllUsers = async (page: number, page_size: number) => {
-     return await getAllRecords(page, page_size,users);
+export const getAllUsers = async (page: number, page_size: number,filter: any) => {
+     return await getAllRecords(page, page_size,users,filter);
     };
 
 

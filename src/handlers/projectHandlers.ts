@@ -61,18 +61,18 @@ export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
 });
 
 
-//get all projects
-export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
-  try {
-    const page=Number(c.req.query('page'));
-    const page_size=Number(c.req.query('page_size'));
+// //get all projects
+// export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
+//   try {
+//     const page=Number(c.req.query('page'));
+//     const page_size=Number(c.req.query('page_size'));
    
 
-    const users = await getAllProjects(page, page_size);
+//     const users = await getAllProjects(page, page_size);
 
   
-    return sendResponse(c, OK, PROJECT_FETCHED, users);
-  } catch (error) {
-    return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
-  }
-});   
+//     return sendResponse(c, OK, PROJECT_FETCHED, users);
+//   } catch (error) {
+//     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+//   }
+// });   
