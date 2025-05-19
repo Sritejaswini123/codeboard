@@ -3,9 +3,5 @@ import { createCommitHandlers, getAllCommitsHandlers } from "../handlers/commitH
 
 const commitRoutes = factory.createApp();
 commitRoutes.post("/commits", ...createCommitHandlers);
-//commitRoutes.get("/users/:user_id", ...getUserByIdHandlers);
-commitRoutes.get("/users", ...getAllCommitsHandlers);
-// projectRoutes.patch('/users/:user_id',...updateUserByIdHandlers);
-// projectRoutes.delete("/users/:user_id", ...deleteUserByIdHandlers);
-
+commitRoutes.get("/commits", ...getAllCommitsHandlers);
 export default commitRoutes;

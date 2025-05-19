@@ -8,6 +8,7 @@ import { createRecord,  getRecordById, updateRecordById } from "../service/baseD
 import { deleteUserById, getAllUsers, isUserExist } from "../service/userService";
 import { sendResponse } from "../utils/send-response";
 import { vCreateUser } from "../validations/userValidations";
+import { eq } from "drizzle-orm";
 
 
 
@@ -72,24 +73,21 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-
-
-//get all users
+//getall
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page=Number(c.req.query('page'));
-    const page_size=Number(c.req.query('page_size'));
-   
-
-    const users = await getAllUsers(page, page_size);
-
-  
-    return sendResponse(c, OK, USERS_FETCHED, users);
+    const page = Number(c.req.query("page")) || 1;
+    const page_size = Number(c.req.query("page_size")) || 10;
+    const userId = c.req.query("user_id");
+    const filter = userId ? eq(users.id, parseInt(userId)) : undefined;
+    console.log("filters fetched: ", filter);
+    const userData = await getAllUsers(page, page_size,users, filter);
+    return sendResponse(c, OK, USERS_FETCHED, userData);
   } catch (error) {
+    console.error("Error in getAllUsersHandlers:", error);
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
-});   
-
+});
 
 
 //delete user by id

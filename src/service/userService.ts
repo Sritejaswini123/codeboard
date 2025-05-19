@@ -1,6 +1,6 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import db from "../database/db";
-import { User, users, type NewUser } from "../database/schemas/users";
+import {  users, UsersTable, type NewUser } from "../database/schemas/users";
 import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
 
 
@@ -30,7 +30,7 @@ export const isUserExist=async(email:string)=>{
 }
 
 //get all users 
-export const getAllUsers = async (page: number, page_size: number,filter: any) => {
+export const getAllUsers = async (page: number, page_size: number,users:UsersTable, filter: any) => {
      return await getAllRecords(page, page_size,users,filter);
     };
 
