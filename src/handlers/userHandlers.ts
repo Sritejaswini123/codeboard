@@ -5,7 +5,7 @@ import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_F
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
-import { createUser, deleteUserById, getAllUsers, getUserById } from "../service/userService.js";
+import { deleteUserById, getAllUsers, getUserById } from "../service/userService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { vCreateUser } from "../validations/userValidations.js";
 import { createRecord } from "../service/baseDbServices.js";
@@ -51,13 +51,14 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });
-
+//getall
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page")) || 1;
     const page_size = Number(c.req.query("page_size")) || 10;
     const userId = c.req.query("user_id");
     const filter = userId ? eq(users.id, parseInt(userId)) : undefined;
+    console.log("filters fetched: ", filter);
     const userData = await getAllUsers(page, page_size, users, filter);
     console.log("Users fetched: ", userData);
     return sendResponse(c, OK, USERS_FETCHED, userData);

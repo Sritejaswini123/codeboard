@@ -1,7 +1,10 @@
 import { ZodError } from "zod";
 import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+
+import { eq } from "drizzle-orm";
 import { NewProject, Project, projects } from "../database/schemas/projects";
+import { user_projects } from "../database/schemas/userProjects";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
@@ -25,16 +28,17 @@ export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
   }
 });
-//getall 
+
+// get all projects handler
 export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
     const page_size = Number(c.req.query("page_size"));
-    const userId = c.req.query("user_id");
-    const projects = await getAllProjects(page, page_size, userId);
-    return sendResponse(c, OK, PROJECTS_FETCHED, projects);
-  }
-  catch (error) {
+    const user_id = Number(c.req.query("user_id"));
+    const project_id = Number(c.req.query("project_id"));
+    const projectData = await getAllProjects(page, page_size,user_id,project_id);
+    return sendResponse(c, OK, PROJECTS_FETCHED, projectData);
+  } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
   }
 });
@@ -47,9 +51,9 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
     const projectData: NewProject = {
       ...validProjectReq
     }
-    const existingUser = await isProjectExist(validProjectReq.title);
+    const existingProject = await isProjectExist(validProjectReq.title);
 
-    if (!existingUser) {
+    if (!existingProject) {
       throw new NotFoundException(PROJECT_EXIST)
     }
 

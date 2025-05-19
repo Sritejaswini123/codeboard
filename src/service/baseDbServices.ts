@@ -8,11 +8,11 @@ import type { NewProject, Project, ProjectsTable } from "../database/schemas/pro
 import db from "../database/db.js";
 
 type DBTable = UsersTable | ProjectsTable;
-type NewDBRecord = NewUser|NewProject;
-type DBRecordRow = User|Project;
+type NewDBRecord = NewUser | NewProject;
+type DBRecordRow = User | Project;
 
-export const createRecord=async<T extends DBRecordRow>(table: DBTable, record: NewDBRecord) =>{
-  const result = await db .insert(table) .values(record).returning();
+export const createRecord = async<T extends DBRecordRow>(table: DBTable, record: NewDBRecord) => {
+  const result = await db.insert(table).values(record).returning();
   return result[0];
 }
 // getRecordById
@@ -21,8 +21,8 @@ export async function getRecordById<DBRecordRow>(table: DBTable, id: number) {
   return result[0];
 }
 // get all record
-export async function getAllRecords<DBRecordRow>(page: number, page_size: number, table: DBTable,filter:any) {
-  
+export async function getAllRecords<DBRecordRow>(page: number, page_size: number, table: DBTable, filter: any) {
+
 
   const result = await db
     .select()
@@ -38,7 +38,7 @@ export async function getAllRecords<DBRecordRow>(page: number, page_size: number
     .where(filter)
 
 
-  const totalRecordsNumber = Number(total_records); // convert to number
+  const totalRecordsNumber = Number(total_records);
   const totalPages = Math.ceil(totalRecordsNumber / page_size);
 
   return {
