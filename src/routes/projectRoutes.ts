@@ -1,9 +1,8 @@
 import factory from "../factory.js";
-import { createProjectHandlers } from "../handlers/project-handlers.js";
-import { createUserHandlers, deleteUserByIdHandlers, getAllUsersHandlers, getUserByIdHandlers, updateUserByIdHandlers } from "../handlers/user-handlers.js";
+import { createUserHandlers, deleteUserByIdHandlers, getAllUsersHandlers, getUserByIdHandlers, updateUserByIdHandlers } from "../handlers/userHandlers.js";
 
 const projectRoutes = factory.createApp();
-projectRoutes.post("/projects", ...createProjectHandlers);
+// projectRoutes.post("/projects", ...createProjectHandlers);
 // projectRoutes.get("/users/:user_id", ...getUserByIdHandlers);
 // projectRoutes.get("/users", ...getAllUsersHandlers);
 // projectRoutes.patch('/users/:user_id',...updateUserByIdHandlers);

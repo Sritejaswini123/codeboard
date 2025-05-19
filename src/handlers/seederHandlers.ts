@@ -5,7 +5,7 @@ import { users } from "../database/schemas/users";
 import factory from "../factory";
 import { sendResponse } from "../utils/send-response";
 
-// src/handlers/userhandlers.ts
+
 export const seedUsersHandler = factory.createHandlers(async (c) => {
   try {
     const count = Number(c.req.query('count')) || 100;

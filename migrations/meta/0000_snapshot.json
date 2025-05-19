@@ -1,5 +1,5 @@
 {
-  "id": "045ee8ed-cc1d-4691-a287-f8db226a4d9a",
+  "id": "4e542b09-4e39-44e4-bc10-d134acf7b42a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,26 +14,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "date": {
-          "name": "date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "time": {
-          "name": "time",
-          "type": "time",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "project_id": {
-          "name": "project_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
+        "user_project_id": {
+          "name": "user_project_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -78,11 +60,11 @@
         }
       },
       "indexes": {
-        "commits_date_idx": {
-          "name": "commits_date_idx",
+        "commits_user_project_id_idx": {
+          "name": "commits_user_project_id_idx",
           "columns": [
             {
-              "expression": "date",
+              "expression": "user_project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -95,25 +77,12 @@
         }
       },
       "foreignKeys": {
-        "commits_project_id_projects_id_fk": {
-          "name": "commits_project_id_projects_id_fk",
+        "commits_user_project_id_user_projects_id_fk": {
+          "name": "commits_user_project_id_user_projects_id_fk",
           "tableFrom": "commits",
-          "tableTo": "projects",
+          "tableTo": "user_projects",
           "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "commits_user_id_users_id_fk": {
-          "name": "commits_user_id_users_id_fk",
-          "tableFrom": "commits",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
+            "user_project_id"
           ],
           "columnsTo": [
             "id"
@@ -122,6 +91,73 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.projectsSchema": {
+      "name": "projectsSchema",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "title_index": {
+          "name": "title_index",
+          "columns": [
+            {
+              "expression": "title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -150,8 +186,91 @@
           "primaryKey": false,
           "notNull": true
         },
-        "assigned_to": {
-          "name": "assigned_to",
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "projects_title_idx": {
+          "name": "projects_title_idx",
+          "columns": [
+            {
+              "expression": "title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "projects_id_idx": {
+          "name": "projects_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user_projects": {
+      "name": "user_projects",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -178,11 +297,11 @@
         }
       },
       "indexes": {
-        "title_idx": {
-          "name": "title_idx",
+        "user_projects_user_id_idx": {
+          "name": "user_projects_user_id_idx",
           "columns": [
             {
-              "expression": "title",
+              "expression": "user_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -193,11 +312,11 @@
           "method": "btree",
           "with": {}
         },
-        "assigned_to_idx": {
-          "name": "assigned_to_idx",
+        "user_projects_project_id_idx": {
+          "name": "user_projects_project_id_idx",
           "columns": [
             {
-              "expression": "assigned_to",
+              "expression": "project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -210,12 +329,25 @@
         }
       },
       "foreignKeys": {
-        "projects_assigned_to_users_id_fk": {
-          "name": "projects_assigned_to_users_id_fk",
-          "tableFrom": "projects",
+        "user_projects_user_id_users_id_fk": {
+          "name": "user_projects_user_id_users_id_fk",
+          "tableFrom": "user_projects",
           "tableTo": "users",
           "columnsFrom": [
-            "assigned_to"
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "user_projects_project_id_projects_id_fk": {
+          "name": "user_projects_project_id_projects_id_fk",
+          "tableFrom": "user_projects",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
           ],
           "columnsTo": [
             "id"

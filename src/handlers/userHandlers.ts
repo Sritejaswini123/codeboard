@@ -4,16 +4,12 @@ import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSAB
 import { users, type NewUser, type User } from "../database/schemas/users";
 import NotFoundException from "../exceptions/not-found-exception";
 import factory from "../factory";
-import { createRecord,  getRecordById, updateRecordById } from "../service/base-db-services";
-import { deleteUserById, getAllUsers, isUserExist } from "../service/user-service";
+import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { deleteUserById, isUserExist} from "../service/userServices";
 import { sendResponse } from "../utils/send-response";
-import { vCreateUser } from "../validations/user-validations";
-import { generateFakeUsers } from "../../seeder/userSeeder";
-import { createRecordMany } from "../../seeder/seederDb";
+import { vCreateUser } from "../validations/userValidations";
 
-
-
-
+//save record
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();  
@@ -54,8 +50,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 }
 );
 
-
-
+//get by id
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param('user_id'));
@@ -78,15 +73,16 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-
-
-//get all users
+//get all users with pagination=page+page_size+userId
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page=Number(c.req.query('page_no'));
-    const page_size=Number(c.req.query('page_size'));
-    const filterId=Number(c.req.query('filter_id'))
-    const user = await getAllUsers(page,page_size,filterId);
+    const page=Number(c.req.query('page_no')) || 1 ;
+    const page_size=Number(c.req.query('page_size')) || 10;
+    const userIdReq= c.req.query('user_id')||undefined;
+
+    const userId = userIdReq ? Number(userIdReq) : undefined;
+    
+    const user = await getAllRecords(page,page_size,userId,users);
     return sendResponse(c, OK, USERS_FETCHED, user);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
@@ -111,7 +107,7 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
 
 });
 
-
+// update record
 export const updateUserByIdHandlers=factory.createHandlers(async(c)=>{
   try { 
     const userId=Number(c.req.param('user_id'));
