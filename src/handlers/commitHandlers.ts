@@ -34,24 +34,24 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-//getCommitById
-export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
-  try {
-    const commitId = Number(c.req.param('commit_id'));
+// //getCommitById
+// export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
+//   try {
+//     const commitId = Number(c.req.param('commit_id'));
 
-    if (!commitId) {
-      return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
-    }
-    const commit= await getRecordById(commits,commitId);
+//     if (!commitId) {
+//       return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+//     }
+//     const commit= await getRecordById(commits,commitId);
     
-      if (!commit) {
-        throw new NotFoundException(COMMIT_NOT_FOUND);
-      }
-    return sendResponse(c, OK, COMMITS_FETCHED, commit);
-  } catch (error) {
-    return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
-  }
-});
+//       if (!commit) {
+//         throw new NotFoundException(COMMIT_NOT_FOUND);
+//       }
+//     return sendResponse(c, OK, COMMITS_FETCHED, commit);
+//   } catch (error) {
+//     return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
+//   }
+// });
 
 //getAll Commits 
 export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
@@ -65,7 +65,7 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
     
     return sendResponse(c, OK, COMMITS_FETCHED, commit);
   } catch (error: any) {
-    if (error.message === "User not found" || error.message === "Project not found") {
+    if (error.message === "User not found" || error.message === "Project not found" || error.message === "User is not assigned to the specified project") {
       return sendResponse(c, NOT_FOUND, error.message);
     }
 

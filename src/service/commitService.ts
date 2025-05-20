@@ -42,6 +42,22 @@ import { user_projects } from "../database/schemas/userProjects";
       throw new Error("Project not found");
     }
   }
+  // Check if user is assigned to the project
+if (user_id && project_id) {
+  const relation = await db
+    .select()
+    .from(user_projects)
+    .where(
+      and(
+        eq(user_projects.user_id, user_id),
+        eq(user_projects.project_id, project_id)
+      )
+    );
+    
+  if (relation.length === 0) {
+    throw new Error("User is not assigned to the specified project");
+  }
+}
 
  // Filters
    const conditions: any[] = [];
