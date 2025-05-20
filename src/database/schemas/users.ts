@@ -1,5 +1,6 @@
 // users
 import { boolean, date, index, pgTable, serial, text } from "drizzle-orm/pg-core";
+
 import { timestamps } from "./helperColumns";
 
 export const users = pgTable("users", {

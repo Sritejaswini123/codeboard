@@ -1,14 +1,16 @@
 // Seeders
 import { randBoolean, randEmail, randFirstName, randGitCommitMessage, randJobTitle, randLastName, randNumber, randParagraph, randPastDate, randPhoneNumber, randUrl,
 } from "@ngneat/falso";
+
 import type { NewCommit } from "../src/database/schemas/commits";
 import type { NewProject } from "../src/database/schemas/projects";
 import type { NewUserProject } from "../src/database/schemas/userProjects";
 import type { NewUser } from "../src/database/schemas/users";
+
 import db from "../src/database/db";
+import { projects } from "../src/database/schemas/projects";
 import { user_projects } from "../src/database/schemas/userProjects";
 import { users } from "../src/database/schemas/users";
-import { projects } from "../src/database/schemas/projects";
 // userSeeder
 
 export function generateFakeUsers(count = 100): NewUser[] {

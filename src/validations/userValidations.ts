@@ -1,4 +1,5 @@
 import z from "zod";
+
 export const vCreateUser = z.object({
   first_name: z.string().min(3, { message: "First name must be at least 3 characters long" }),
   last_name: z.string().min(3, { message: "Last name must be at least 3 characters long" }).optional(),

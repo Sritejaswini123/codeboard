@@ -1,5 +1,6 @@
 // user_projects
 import { index, integer, pgTable, serial } from "drizzle-orm/pg-core";
+
 import { timestamps } from "./helperColumns";
 import { projects } from "./projects";
 import { users } from "./users";

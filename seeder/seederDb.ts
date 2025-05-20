@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import type { Commit, CommitsTable } from "../src/database/schemas/commits";
 import type { Project, ProjectsTable } from "../src/database/schemas/projects";
 import type { UsersTable } from "../src/database/schemas/users";
+
 import db from "../src/database/db";
 import { commits } from "../src/database/schemas/commits";
 import { projects } from "../src/database/schemas/projects";

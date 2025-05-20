@@ -1,7 +1,10 @@
 import { cors } from "hono/cors";
+
 import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
+import commitRoutes from "./routes/commitRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 import seedRoute from "./routes/seederRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notFound from "./utils/notFound.js";
@@ -23,6 +26,8 @@ app.get("/", (c) => {
 // user routes..........
 console.log("inside app");
 app.route("/", userRoutes);
+app.route("/", projectRoutes);
+app.route("/", commitRoutes);
 app.route("/seed", seedRoute);
 
 app.get("/error", (c) => {

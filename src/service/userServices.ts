@@ -6,7 +6,7 @@ import { users } from "../database/schemas/users.js";
 import { deleteRecordById, getAllRecords, getRecordById } from "./baseDbServices.js";
 
 // save user
-export const createUser = async (userData: NewUser) => {
+export async function createUser(userData: NewUser) {
   const user = await db.insert(users).values(userData).returning();
   return user[0];
 }

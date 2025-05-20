@@ -1,0 +1,19 @@
+meta {
+  name: commits
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://192.168.1.44:3000/v1.0/commits?page=1 &page_size=10&user_id=1&project_id=1&page=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1 
+  page_size: 10
+  user_id: 1
+  project_id: 1
+  page: 1
+}
