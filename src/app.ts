@@ -10,23 +10,24 @@ import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import commitRoutes from "./routes/commitRoutes.js";
+import seedRoute from "./routes/seederRoutes.js";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 
 app.use(piLogger());
 app.use("*", cors());
-app.get("/test/:name", (c) => {
-  const name = c.req.param("name");
-  return c.text(`CORS is working!-->Hello ${name}!`);
-});
+
 app.get("/", (c) => {
   return sendResponse(c, 200, SERVICE_UP);
 });
+
+
 // user routes..........
 console.log("inside app");
 app.route("/", userRoutes);
 app.route("/", projectRoutes);
 app.route("/", commitRoutes);
+app.route("/", seedRoute);
 
 app.get("/error", (c) => {
   c.status(422);

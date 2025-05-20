@@ -5,7 +5,7 @@ import { timestamps } from "./helperColumns";
 import { users } from "./users";
 
 export const user_projects = pgTable("user_projects", {
-  id : serial(),
+  id : serial().primaryKey(),
   user_id: integer().notNull().references(() => users.id), 
   project_id: integer() .notNull().references(() => projects.id),
    ...timestamps,
