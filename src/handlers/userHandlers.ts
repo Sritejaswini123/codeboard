@@ -5,9 +5,10 @@ import { users, type NewUser, type User } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
-import { deleteUserById, isUserExist} from "../service/userServices";
+import { deleteUserById, getAllUsers, isUserExist} from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
+import { eq } from "drizzle-orm";
 
 //save record
 export const createUserHandlers = factory.createHandlers(async (c) => {
@@ -28,11 +29,6 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
    if(!existingUser){
     throw new NotFoundException(USER_EXIST)
     }
-   
-    // if user exist 
-    // if (existingUser.length > 0) {
-    //   return c.json({USER_EXIST}, CONFLICT);
-    // }
 
     const user = await createRecord<User>(users, userData);
 
@@ -59,32 +55,28 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
     const user= await getRecordById(users,userId);
-    
-     //if user exist 
-    // if (!user) {
-    //   return sendResponse(c, NOT_FOUND,USER_NOT_FOUND+`with user_id ${userId}`);
-    // }
-      if (!user) {
+
+    if (!user) {
         throw new NotFoundException(USER_NOT_FOUND);
-      }
+    }
     return sendResponse(c, OK, USER_FETCHED, user);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });
 
-//get all users with pagination=page+page_size+userId
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page=Number(c.req.query('page_no')) || 1 ;
-    const page_size=Number(c.req.query('page_size')) || 10;
-    const userIdReq= c.req.query('user_id')||undefined;
-
-    const userId = userIdReq ? Number(userIdReq) : undefined;
-    
-    const user = await getAllRecords(page,page_size,userId,users);
-    return sendResponse(c, OK, USERS_FETCHED, user);
+    const page = Number(c.req.query("page")) || 1;
+    const page_size = Number(c.req.query("page_size")) || 10;
+    const userId = c.req.query("user_id");
+    const filter = userId ? eq(users.id, parseInt(userId)) : undefined;
+    console.log("filters fetched: ", filter);
+    const userData = await getAllUsers(page, page_size, users, filter);
+    console.log("Users fetched: ", userData);
+    return sendResponse(c, OK, USERS_FETCHED, userData);
   } catch (error) {
+    console.error("Error in getAllUsersHandlers:", error);
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });

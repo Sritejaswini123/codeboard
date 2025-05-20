@@ -25,33 +25,29 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
     return result[0];
 };
 
-// get all users 
-export const getAllRecords = async <DBRecordRow>(curent_page: number,page_size:number,userId:number|undefined,table: DBTable) => {
-  // const page_size = 10;
+export const getAllRecords = async <DBRecordRow>(page: number, page_size: number, table: DBTable, filter: any) => {
   const result = await db
     .select()
     .from(table)
-    .$dynamic()
-    .where(userId !== undefined ? eq(table.id, userId) : undefined)
+    .where(filter)
     .orderBy(asc(table.id))
     .limit(page_size)
-    .offset((curent_page - 1) * page_size);
+    .offset((page - 1) * page_size);
 
-   const [{ total_records }] = await db
+  const [{ total_records }] = await db
     .select({ total_records: sql<number>`count(*)` })
     .from(table)
-    .$dynamic()
-    .where(userId !== undefined ? eq(table.id, userId) : undefined); 
+    .where(filter);
 
   const totalPages = Math.ceil(total_records / page_size);
 
   return {
-    total_records:Number(total_records),
-    curent_page, 
+    total_records: Number(total_records),
+    page,
     page_size,
     totalPages,
-    next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
-    prev_page: curent_page <= 1 ? null : curent_page - 1,
+    next_page: page >= totalPages || totalPages === 0 ? null : page + 1,
+    prev_page: page <= 1 ? null : page - 1,
     data: result
   };
 };

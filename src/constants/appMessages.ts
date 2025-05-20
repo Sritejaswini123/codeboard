@@ -4,6 +4,12 @@ export const USER_CREATED = "User created successfully";
 
 export const COMMIT_CREATED = "Commit created successfully";
 
+export const COMMITS_FETCHED = "Commit fetched successfully";
+
+export const COMMIT_NOT_FOUND = "Commits not found";
+
+export const  COMMIT_ID_REQUIRED = "Commit ID is required";
+
 export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 
 export const EMPTY_DB_DATA = "Empty data to save in database";
@@ -18,7 +24,9 @@ export const USER_EXIST = "User already exists";
 
 export const COMMIT_EXIST = "Commit already exists";
 
-export const PROJECT_EXIST = "Projcet already exists";
+export const PROJECT_EXIST = "Project already exists";
+
+export const PROJECTS_FETCHED = "Projects fetched successfully";
 
 export const PROJECT_NOT_EXIST = "Projcet not exists";
 
@@ -39,3 +47,5 @@ export const PROJECT_DELETED = "Project deleted successfully";
 export const USER_UPDATED="User updated successfully";
 
 export const PROJECT_CREATED = "Project created successfully";
+
+export const COMMIT_UPDATED="Commit updated successfully";

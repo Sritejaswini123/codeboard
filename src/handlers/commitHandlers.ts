@@ -1,12 +1,12 @@
 
 import { ZodError } from "zod";
-import { COMMIT_CREATED, COMMIT_EXIST } from "../constants/appMessages";
-import { CREATED, NOT_FOUND, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { COMMIT_CREATED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED} from "../constants/appMessages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { Commit, commits, NewCommit } from "../database/schemas/commits";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord } from "../service/baseDbServices";
-import { checkCommitExist } from "../service/commitService";
+import { createRecord, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { checkCommitExist, getAllCommits } from "../service/commitService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
 
@@ -20,14 +20,11 @@ export const createCommitHandlers=factory.createHandlers(async(c)=>{
             ...validatedCommitData
         }
         const commitExist=checkCommitExist(validatedCommitData.user_project_id);
-
         if(!commitExist){
             throw new NotFoundException(COMMIT_EXIST)
         }
         const commit=await createRecord<Commit>(commits,commitData)
-
         return sendResponse(c,CREATED,COMMIT_CREATED,commit)
-
     }catch (error) {
         if (error instanceof ZodError) {
               const errorMessage = error.errors?.[0]?.message || 'Validation error';
@@ -38,11 +35,63 @@ export const createCommitHandlers=factory.createHandlers(async(c)=>{
     }
 })
 
+//getAll Commits 
+export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
+  try {
+    const page=Number(c.req.query('page'));
+    const page_size=Number(c.req.query('page_size'));
+    const project_id = c.req.query("project_id") ? Number(c.req.query("project_id")) : undefined;
+    const user_id = c.req.query("user_id") ? Number(c.req.query("user_id")) : undefined;
 
-export const getCommitByIdHandlers=factory.createHandlers(async(c)=>{
+    const commit = await getAllCommits(page, page_size, project_id, user_id);
+    
+    return sendResponse(c, CREATED, COMMITS_FETCHED, commit);
+  } catch (error: any) {
+    if (error.message === "User not found" || error.message === "Project not found" || error.message === "User is not assigned to the specified project") {
+      return sendResponse(c, NOT_FOUND, error.message);
+    }
+
+    return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
+  }
+});
+
+//getCommitById
+export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
+  try {
+    const commitId = Number(c.req.param('commit_id'));
+
+    if (!commitId) {
+      return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+    }
+    const commit= await getRecordById(commits,commitId);
+    
+      if (!commit) {
+        throw new NotFoundException(COMMIT_NOT_FOUND);
+      }
+    return sendResponse(c,OK, COMMITS_FETCHED, commit);
+  } catch (error) {
+    return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
+  }
+});
+
+export const updateCommitByIdHandlers=factory.createHandlers(async(c)=>{
     try {
-        
+        const commitId=Number(c.req.param('id'));
+        const reqBody=c.req.json();
+        const validatedCommit=vCreateCommit.parse(reqBody);
+        const updatedProject:NewCommit={
+            ...validatedCommit
+        }
+        const updatedCommitResult=await updateRecordById(commits,updatedProject,commitId);
+        return sendResponse(c,CREATED,COMMIT_UPDATED,updatedCommitResult)
     } catch (error) {
-        
+          if (error instanceof ZodError) {
+              const errorMessage = error.errors?.[0]?.message || 'Validation error';
+              return c.json({ message: errorMessage }, NOT_FOUND);
+            }
+        return c.json({ error: error }, UNPROCESSABLE_ENTITY);
     }
 })
+
+
+
