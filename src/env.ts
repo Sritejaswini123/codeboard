@@ -13,8 +13,6 @@ const VEnvSchema = z.object({
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
   DB_NAME: z.string(),
-  HOST_NAME: z.string(),
-
 });
 
 export type Env = z.infer<typeof VEnvSchema>;

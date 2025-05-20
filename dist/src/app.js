@@ -1,3 +1,4 @@
+import { cors } from "hono/cors";
 import { SERVICE_UP } from "./constants/app-messages.js";
 import env from "./env.js";
 import factory from "./factory.js";
@@ -6,14 +7,25 @@ import notFound from "./utils/not-found.js";
 import onError from "./utils/on-error.js";
 import { piLogger } from "./utils/pino-logger.js";
 import { sendResponse } from "./utils/send-response.js";
+import projectRoutes from "./routes/projectRoutes.js";
+<<<<<<< HEAD
+=======
+import seedRoute from "./routes/seederRoutes.js";
+>>>>>>> origin/code/refactor
 const app = factory.createApp().basePath(env.API_VERSION);
 app.use(piLogger());
+app.use("*", cors());
 app.get("/", (c) => {
     return sendResponse(c, 200, SERVICE_UP);
 });
-//user routes..........
+// user routes..........
 console.log("inside app");
-app.route('/', userRoutes);
+app.route("/", userRoutes);
+app.route("/", projectRoutes);
+<<<<<<< HEAD
+=======
+app.route("/", seedRoute);
+>>>>>>> origin/code/refactor
 app.get("/error", (c) => {
     c.status(422);
     c.var.logger.debug("Test error only visible in development");

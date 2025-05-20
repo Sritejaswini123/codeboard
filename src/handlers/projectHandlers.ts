@@ -1,17 +1,15 @@
 import { ZodError } from "zod";
-import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
+import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 
 import { eq } from "drizzle-orm";
 import { NewProject, Project, projects } from "../database/schemas/projects";
-import { user_projects } from "../database/schemas/userProjects";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
 import { getAllProjects, getProjectById, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
-import { users } from "../database/schemas/users";
 //get by id
 export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
@@ -23,7 +21,7 @@ export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
     if (!project) {
       return sendResponse(c, NOT_FOUND, `${PROJECT_NOT_FOUND}with project_id ${projectId}`);
     }
-    return sendResponse(c, OK, PROJECT_FETCHED, project);
+    return sendResponse(c, OK, PROJECTS_FETCHED, project);
   }
   catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);

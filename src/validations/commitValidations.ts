@@ -1,13 +1,8 @@
 import { z } from "zod";
 
 export const vCreateCommit = z.object({
-  date: z.string().date(), 
   
-  time: z.string().time(),
-  
-  project_id: z.number().min(1,{message: "Project ID must be a positive integer",}),
-
-  user_id: z.number().min(1,{message: "User ID must be a positive integer",}),
+  user_project_id: z.number().min(1,{message: "Project ID must be a positive integer",}),
 
   lines_of_code: z.number().min(0, {message: "Lines of code cannot be negative",}),
 
@@ -15,4 +10,4 @@ export const vCreateCommit = z.object({
 
   commit_name: z.string().min(1, {message: "Commit name cannot be empty",}),
 });
-export type ValidatedCreateCommitt = z.infer<typeof vCreateCommit>;
+export type ValidatedCreateCommit = z.infer<typeof vCreateCommit>;

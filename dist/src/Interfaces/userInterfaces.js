@@ -6,5 +6,5 @@ export const validatedUserData = {
     doj: string,
     last_name: string,
     phone: string,
-    designation: string
+    designation: string,
 };
