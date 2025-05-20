@@ -37,3 +37,12 @@ export const createCommitHandlers=factory.createHandlers(async(c)=>{
         
     }
 })
+
+
+export const getCommitByIdHandlers=factory.createHandlers(async(c)=>{
+    try {
+        
+    } catch (error) {
+        
+    }
+})
