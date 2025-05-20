@@ -1,63 +1,12 @@
 import {
   randFirstName,
-  randLastName,
-  randEmail,
-  randPhoneNumber,
-  randBoolean,
   randJobTitle,
+  randLastName,
   randPastDate,
   randRecentDate,
-  randUuid,
-  randGender
+  randUuid
 } from '@ngneat/falso';
 import { NewUser } from '../src/database/schemas/users';
-import { NewUserProject } from '../src/database/schemas/userProjects';
-
-
-// export const generateFakeUsers = (count = 100): NewUser[] => {
-//   return Array.from({ length: count }).map((_, i) => {
-//     const dob = randPastDate({ years: 30 });
-//     const doj = randFutureDate({ years: 10 });
-
-//     return {
-//       first_name: randFirstName(),
-//       last_name: randLastName(),
-//       email: `${i + 1}_${randEmail()}`, 
-//       phone: randPhoneNumber(),
-//       is_active: randBoolean(),
-//       dob: dob,
-//       doj: doj,
-//       designation: randJobTitle(),
-//       created_at: new Date(),
-//       updated_at: new Date(),
-//     };
-//   });
-// };
-
-// export const generateFakeUsers = (count = 100): NewUser[] => {
-//   return Array.from({ length: count }).map((_, i) => {
-//     const firstName = randFirstName();
-//     const lastName = randLastName();
-//     const dob = randPastDate({ years: 30 });
-//     const doj = randRecentDate();
-
-//     return {
-//       first_name: firstName,
-//       last_name: lastName,
-//       email: `${firstName.toLowerCase()}${i + 1}@gmail.com`,
-//       phone: `+91${randPhoneNumber().replace(/\D/g, '').slice(-10)}`, // 👉 ensures only last 10 digits
-//       is_active:true,
-//       dob: dob,
-//       doj: doj,
-//       designation: randJobTitle(),
-//       created_at: new Date(),
-//       updated_at: new Date(),
-//     };
-//   });
-// };
-
-
-
 
 export const generateFakeUsers = (count = 100): NewUser[] => {
   return Array.from({ length: count }).map((_, i) => {
@@ -89,18 +38,6 @@ export const generateFakeUsers = (count = 100): NewUser[] => {
 
 
 
-
-export const generateUserProjectsForOneProject = (
-  users: { id: number }[],
-  projectId: number
-): NewUserProject[] => {
-  return users.map((user) => ({
-    user_id: user.id,
-    project_id: projectId,
-    created_at: new Date(),
-    updated_at: new Date(),
-  }));
-};
 
 
 

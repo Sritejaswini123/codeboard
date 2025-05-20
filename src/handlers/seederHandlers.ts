@@ -1,11 +1,11 @@
 import { createRecordMany } from "../../seeder/seederDb";
 import { generateFakeUsers, generateUserProjectsForOneProject } from "../../seeder/userSeeder";
-import { CREATED, INTERNAL_SERVER_ERROR } from "../constants/http-status-codes";
+import { CREATED, INTERNAL_SERVER_ERROR } from "../constants/httpStatusCodes";
 import db from "../database/db";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
 import factory from "../factory";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 
 
 export const seedUsersHandler = factory.createHandlers(async (c) => {

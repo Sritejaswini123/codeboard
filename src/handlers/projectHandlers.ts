@@ -1,11 +1,11 @@
-import { PROJECT_DELETED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND } from "../constants/app-messages";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, OK } from "../constants/http-status-codes";
+import { PROJECT_DELETED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND } from "../constants/appMessages";
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, OK } from "../constants/httpStatusCodes";
 import { projects } from "../database/schemas/projects";
-import NotFoundException from "../exceptions/not-found-exception";
+import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { deleteRecordById } from "../service/baseDbServices";
 import { deletedProjectById } from "../service/projectServices";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 
 // export const createProjectHandlers = factory.createHandlers(async (c) => {
 //   try {

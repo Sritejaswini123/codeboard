@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
-import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/app-messages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/appMessages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { users, type NewUser, type User } from "../database/schemas/users";
-import NotFoundException from "../exceptions/not-found-exception";
+import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
 import { deleteUserById, isUserExist} from "../service/userServices";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 
 //save record
