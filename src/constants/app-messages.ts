@@ -24,6 +24,6 @@ export const USER_NOT_FOUND = "User not found ";
 
 export const USER_DELETEED = "User deleted successfully";
 
-export const USER_UPDATED="User updated successfully";
+export const USER_UPDATED = "User updated successfully";
 
 export const PROJECT_CREATED = "Project created successfully";

@@ -1,6 +1,6 @@
-import { date, index, pgTable, serial, text ,boolean} from "drizzle-orm/pg-core";
-
-import { timestamps } from "./helper-columns";
+// users
+import { boolean, date, index, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { timestamps } from "./helperColumns";
 
 export const users = pgTable("users", {
   id: serial().primaryKey(),
@@ -17,6 +17,7 @@ export const users = pgTable("users", {
   index("users_email_idx").on(t.email),
   index("users_first_name_idx").on(t.first_name),
 ]);
-export type UsersTable = typeof users;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type UsersTable = typeof users;

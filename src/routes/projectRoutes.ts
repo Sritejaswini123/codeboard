@@ -1,6 +1,5 @@
 import factory from "../factory.js";
-import { createProjectHandlers } from "../handlers/project-handlers.js";
-import { createUserHandlers, deleteUserByIdHandlers, getAllUsersHandlers, getUserByIdHandlers, updateUserByIdHandlers } from "../handlers/user-handlers.js";
+import { createProjectHandlers } from "../handlers/projectHandlers.js";
 
 const projectRoutes = factory.createApp();
 projectRoutes.post("/projects", ...createProjectHandlers);

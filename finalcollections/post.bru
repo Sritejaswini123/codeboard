@@ -1,0 +1,23 @@
+meta {
+  name: post
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://192.168.1.37:3000/v1.0/users
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "first_name": "raj",
+    "last_name": "kumar",
+    "email": "rajkumar@gmail.com",
+    "phone": "+9167788756",
+    "dob": "1984-03-05",
+    "doj": "2024-05-06",
+    "designation": "salesforce"
+  }
+}
