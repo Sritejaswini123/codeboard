@@ -1,12 +1,12 @@
 import { createRecordMany, deleteCommitById, deleteProjectById } from "../../seeder/seederDb";
 import { generateFakeCommits, generateFakeProjects, generateFakeUserProjects, generateFakeUsers } from "../../seeder/seeders";
-import { BAD_REQUEST, CREATED, OK } from "../constants/http-status-codes";
+import { BAD_REQUEST, CREATED, OK } from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
 import factory from "../factory";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 // user seeder handlers.ts
 export const seedUsersHandler = factory.createHandlers(async (c) => {
   try {
@@ -50,7 +50,6 @@ export const seedUserProjectsHandler = factory.createHandlers(async (c) => {
     if (!Array.isArray(inserted)) {
       throw new TypeError("UserProjects insertion failed");
     }
-
     return sendResponse(c, CREATED, `${inserted.length} user_project records created`, inserted);
   }
   catch (error) {
