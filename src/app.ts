@@ -4,10 +4,10 @@ import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
 import userRoutes from "./routes/userRoutes.js";
-import notFound from "./utils/not-found.js";
-import onError from "./utils/on-error.js";
-import { piLogger } from "./utils/pino-logger.js";
-import { sendResponse } from "./utils/send-response.js";
+import notFound from "./utils/notFound.js";
+import onError from "./utils/onError.js";
+import { piLogger } from "./utils/pinoLogger.js";
+import { sendResponse } from "./utils/sendResponse.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import commitRoutes from "./routes/commitRoutes.js";
 

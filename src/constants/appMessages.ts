@@ -16,7 +16,7 @@ export const USER_EXIST = "User already exists";
 
 export const PROJECT_EXIST = "Projcet already exists";
 
-export const PROJECT_FETCHED = "project fetched successfully";
+export const PROJECTS_FETCHED = "projects fetched successfully";
 
 export const USER_FETCHED = "User fetched successfully";
 
@@ -43,3 +43,4 @@ export const COMMIT_NOT_FOUND = "Commit not found ";
 export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
 export const COMMITS_FETCHED = "Commits fetched successfully";
+

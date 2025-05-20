@@ -6,7 +6,7 @@ import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getRecordById } from "../service/baseDbServices";
 import { getAllCommits, } from "../service/commitService";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
 
 //Create Commit
