@@ -5,7 +5,7 @@ import { NewProject, Project, projects } from "../database/schemas/projects";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getRecordById } from "../service/baseDbServices";
-import { getAllProjects, isProjectExist } from "../service/projectService";
+import { isProjectExist } from "../service/projectService";
 import { sendResponse } from "../utils/send-response";
 import { vCreateProject } from "../validations/projectValidations";
 

@@ -13,6 +13,7 @@ import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from
 //   }
 
 
+
 //get user by id
   export const getUserById =(userId: number) => {
     return  getRecordById(users, userId);

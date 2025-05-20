@@ -27,7 +27,7 @@ export const isProjectExist=async(title:string)=>{
   };
 
 
-//get all projects
-export const getAllProjects = async (page: number, page_size: number,filters:any) => {
-     return await getAllRecords(page, page_size,projects,filters);
-    };
+// //get all projects
+// export const getAllProjects = async (page: number, page_size: number,filters:any) => {
+//      return await getAllRecords(page, page_size,projects,filters);
+//     };

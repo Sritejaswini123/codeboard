@@ -12,12 +12,11 @@ import { eq } from "drizzle-orm";
 
 
 
-
+//create user
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();  
 
-    
     const validUserReq = vCreateUser.parse(reqBody);
  
     const userData: NewUser = {
@@ -50,7 +49,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 );
 
 
-
+//get userById
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param('user_id'));
@@ -59,11 +58,7 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
     const user= await getRecordById(users,userId);
-    
-     //if user exist 
-    // if (!user) {
-    //   return sendResponse(c, NOT_FOUND,USER_NOT_FOUND+`with user_id ${userId}`);
-    // }
+  
       if (!user) {
         throw new NotFoundException(USER_NOT_FOUND);
       }
@@ -82,9 +77,11 @@ export const getAllUsersHandlers = factory.createHandlers(async (c) => {
     const filter = userId ? eq(users.id, parseInt(userId)) : undefined;
     console.log("filters fetched: ", filter);
     const userData = await getAllUsers(page, page_size,users, filter);
+   
     return sendResponse(c, OK, USERS_FETCHED, userData);
   } catch (error) {
     console.error("Error in getAllUsersHandlers:", error);
+    
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });
@@ -108,7 +105,7 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
 
 });
 
-
+//update user 
 export const updateUserByIdHandlers=factory.createHandlers(async(c)=>{
   try { 
     const userId=Number(c.req.param('user_id'));

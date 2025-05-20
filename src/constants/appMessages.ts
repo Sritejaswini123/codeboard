@@ -42,4 +42,4 @@ export const COMMIT_NOT_FOUND = "Commit not found ";
 
 export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
-export const COMMIT_FETCHED = "Commit fetched successfully";
+export const COMMITS_FETCHED = "Commits fetched successfully";
