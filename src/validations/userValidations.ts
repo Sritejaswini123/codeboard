@@ -28,5 +28,5 @@ export const vCreateUser = z.object({
   }
 });
 
-
+export type ValidatedCreateUser = z.infer<typeof vCreateUser>;
 
