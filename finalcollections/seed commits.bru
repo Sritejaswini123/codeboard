@@ -1,0 +1,15 @@
+meta {
+  name: seed commits 
+  type: http
+  seq: 7
+}
+
+post {
+  url:  http://192.168.190.43:3000/v1.0/seed/seed-commits?count=20
+  body: none
+  auth: inherit
+}
+
+params:query {
+  count: 20
+}
