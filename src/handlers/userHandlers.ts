@@ -7,7 +7,7 @@ import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
 import { deleteUserById, getAllUsers, getUserById } from "../service/userService.js";
 import { sendResponse } from "../utils/sendResponse.js";
-import { vCreateUser } from "../validations/userValidations.js";
+import { vCreateUser, vUpdateUser } from "../validations/userValidations.js";
 import { createRecord } from "../service/baseDbServices.js";
 import { eq } from "drizzle-orm";
 

@@ -1,5 +1,5 @@
 // user service
-import type { NewUser, UsersTable } from "../database/schemas/users.js";
+import type { NewUser, User, UsersTable } from "../database/schemas/users.js";
 
 import db from "../database/db.js";
 import { users } from "../database/schemas/users.js";

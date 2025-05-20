@@ -15,6 +15,4 @@ export const vCreateCommit = z.object({
 
   commit_name: z.string().min(1, {message: "Commit name cannot be empty",}),
 });
-export const vUpdatecommit=vCreateCommit;
-export type ValidatedCreateProject = z.infer<typeof vCreateCommit>;
-export type vUpdatedProject = z.infer<typeof vUpdatecommit>;
+export type ValidatedCreateCommitt = z.infer<typeof vCreateCommit>;

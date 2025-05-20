@@ -11,6 +11,7 @@ import { createRecord } from "../service/baseDbServices";
 import { getAllProjects, getProjectById, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
+import { users } from "../database/schemas/users";
 //get by id
 export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
@@ -34,14 +35,16 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
     const page_size = Number(c.req.query("page_size"));
-    const user_id = Number(c.req.query("user_id"));
-    const project_id = Number(c.req.query("project_id"));
-    const projectData = await getAllProjects(page, page_size,user_id,project_id);
-    return sendResponse(c, OK, PROJECTS_FETCHED, projectData);
+    const projectId=c.req.query("project_id");
+    const filter = projectId ? eq(projects.id, parseInt(projectId)) : undefined;
+    const projectData = await getAllProjects(page, page_size, projects, filter);
+        console.log("Projects fetched: ", projectData);
+    return sendResponse(c, OK, PROJECTS_FETCHED,projectData);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
   }
 });
+
 //createproject
 
 export const createProjectHandlers = factory.createHandlers(async (c) => {
