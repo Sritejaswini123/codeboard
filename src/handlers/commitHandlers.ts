@@ -1,0 +1,39 @@
+
+import { ZodError } from "zod";
+import { COMMIT_CREATED, COMMIT_EXIST, USER_EXIST } from "../constants/app-messages";
+import { Commit, commits, NewCommit } from "../database/schemas/commits";
+import NotFoundException from "../exceptions/not-found-exception";
+import factory from "../factory";
+import { createRecord } from "../service/baseDbServices";
+import { checkCommitExist } from "../service/commitService";
+import { vCreateCommit } from "../validations/commitValidations";
+import { CREATED, NOT_FOUND, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import { sendResponse } from "../utils/send-response";
+
+
+
+export const createCommitHandlers=factory.createHandlers(async(c)=>{
+    try {
+        const reqBody=await c.req.json();
+        const validatedCommitData=vCreateCommit.parse(reqBody);
+        const commitData:NewCommit={
+            ...validatedCommitData
+        }
+        const commitExist=checkCommitExist(validatedCommitData.user_project_id);
+
+        if(!commitExist){
+            throw new NotFoundException(COMMIT_EXIST)
+        }
+        const commit=await createRecord<Commit>(commits,commitData)
+
+        return sendResponse(c,CREATED,COMMIT_CREATED,commit)
+
+    }catch (error) {
+        if (error instanceof ZodError) {
+              const errorMessage = error.errors?.[0]?.message || 'Validation error';
+              return c.json({ message: errorMessage }, NOT_FOUND);
+            }
+        return c.json({ error: error }, UNPROCESSABLE_ENTITY);
+        
+    }
+})

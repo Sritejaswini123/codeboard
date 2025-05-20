@@ -8,7 +8,7 @@ serve({
     fetch: app.fetch,
     port,
 });
-console.log(`🚀 Server running at http://localhost:${port}/${env.API_VERSION}/`);
+console.log(`🚀 Server running at http://localhost:${port}/${apiVersion}/`);
 // serve({
 //   fetch: app.fetch,
 //   port,

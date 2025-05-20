@@ -9,7 +9,7 @@ CREATE TABLE "commits" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "projectsSchema" (
+CREATE TABLE "" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"description" text NOT NULL,
@@ -57,7 +57,7 @@ ALTER TABLE "commits" ADD CONSTRAINT "commits_user_project_id_user_projects_id_f
 ALTER TABLE "user_projects" ADD CONSTRAINT "user_projects_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_projects" ADD CONSTRAINT "user_projects_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "commits_user_project_id_idx" ON "commits" USING btree ("user_project_id");--> statement-breakpoint
-CREATE INDEX "title_index" ON "projectsSchema" USING btree ("title");--> statement-breakpoint
+CREATE INDEX "title_index" ON "" USING btree ("title");--> statement-breakpoint
 CREATE INDEX "projects_title_idx" ON "projects" USING btree ("title");--> statement-breakpoint
 CREATE INDEX "projects_id_idx" ON "projects" USING btree ("id");--> statement-breakpoint
 CREATE INDEX "user_projects_user_id_idx" ON "user_projects" USING btree ("user_id");--> statement-breakpoint

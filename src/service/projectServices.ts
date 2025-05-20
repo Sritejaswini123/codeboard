@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import db from "../database/db";
-import { NewProject} from "../database/schemas/projects";
+import { NewProject, projects} from "../database/schemas/projects";
 
 
 
@@ -21,3 +21,13 @@ import { NewProject} from "../database/schemas/projects";
 //       .where(eq(projects.title,title))
 //   return existingProject;
 // }
+
+
+//check if project is existing with id
+export const deletedProjectById=async(projectId:number)=>{
+    const result=await db
+        .select()
+        .from(projects)
+        .where(eq(projects.id,projectId));
+    return result[0];
+}

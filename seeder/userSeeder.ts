@@ -11,6 +11,7 @@ import {
   randGender
 } from '@ngneat/falso';
 import { NewUser } from '../src/database/schemas/users';
+import { NewUserProject } from '../src/database/schemas/userProjects';
 
 
 // export const generateFakeUsers = (count = 100): NewUser[] => {
@@ -82,3 +83,28 @@ export const generateFakeUsers = (count = 100): NewUser[] => {
     };
   });
 };
+
+
+
+
+
+
+
+export const generateUserProjectsForOneProject = (
+  users: { id: number }[],
+  projectId: number
+): NewUserProject[] => {
+  return users.map((user) => ({
+    user_id: user.id,
+    project_id: projectId,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }));
+};
+
+
+
+
+
+
+

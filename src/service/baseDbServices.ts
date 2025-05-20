@@ -2,11 +2,12 @@ import { asc, eq, getTableName, sql } from "drizzle-orm";
 import db from "../database/db";
 import { type NewUser, type User, type UsersTable } from "../database/schemas/users";
 import { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
+import { CommitsTable, NewCommit } from "../database/schemas/commits";
 
 
-type DBTable = UsersTable | ProjectsTable
-type NewDBRecord  = NewUser | NewProject
-type DBRecordRow = User | Project
+type DBTable = UsersTable | ProjectsTable | CommitsTable
+type NewDBRecord  = NewUser | NewProject | NewCommit
+type DBRecordRow = User | Project | CommitsTable
 
 export const createRecord = async<DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
     const result = await db
@@ -101,7 +102,7 @@ export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) 
     .delete(table)
     .where(eq(columnInfo, id))
     .returning();
-    return result[0];
+    return result[0]; 
   };
 
 export const updateRecordById=async <DBRecordRow>(table:DBTable,record :  NewDBRecord,id:number) => {
