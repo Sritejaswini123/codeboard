@@ -1,18 +1,12 @@
-import { count, eq ,asc, and} from "drizzle-orm";
+import { and, asc, count, eq } from "drizzle-orm";
+
 import db from "../database/db";
-import { NewProject, projects} from "../database/schemas/projects";
-import { users } from "../database/schemas/users";
+import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
+import { users } from "../database/schemas/users";
 
-
-
-//all projects
-export const getAllProjects = async (
-  page: number,
-  page_size: number,
-  user_id:number,
-  project_id:number
-) => {
+// all projects
+export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
   const offset = (page - 1) * page_size;
 
   const conditions = [];
@@ -20,11 +14,10 @@ export const getAllProjects = async (
   if (user_id) {
     conditions.push(eq(users.id, user_id));
   }
-if (project_id){
-  conditions.push(eq(projects.id,project_id));
-}
+  if (project_id) {
+    conditions.push(eq(projects.id, project_id));
+  }
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
 
   const projectData = await db
     .select({
@@ -57,24 +50,22 @@ if (project_id){
     prev_page: page > 1 ? page - 1 : null,
     data: projectData,
   };
-};
-
-
-//check project exist or not
-export const isProjectExist = async (title: string) => {
-    const existingProject = await db
-        .select()
-        .from(projects)
-        .where(eq(projects.title, title))
-    return existingProject;
 }
 
+// check project exist or not
+export async function isProjectExist(title: string) {
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.title, title));
+  return existingProject;
+}
 
-//check if project is existing with id
-export const deletedProjectById=async(projectId:number)=>{
-    const result=await db
-        .select()
-        .from(projects)
-        .where(eq(projects.id,projectId));
-    return result[0];
+// check if project is existing with id
+export async function deletedProjectById(projectId: number) {
+  const result = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectId));
+  return result[0];
 }

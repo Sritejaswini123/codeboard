@@ -8,7 +8,7 @@ export const COMMITS_FETCHED = "Commit fetched successfully";
 
 export const COMMIT_NOT_FOUND = "Commits not found";
 
-export const  COMMIT_ID_REQUIRED = "Commit ID is required";
+export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
 export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 
@@ -44,8 +44,10 @@ export const USER_DELETEED = "User deleted successfully";
 
 export const PROJECT_DELETED = "Project deleted successfully";
 
-export const USER_UPDATED="User updated successfully";
+export const USER_UPDATED = "User updated successfully";
 
 export const PROJECT_CREATED = "Project created successfully";
 
-export const COMMIT_UPDATED="Commit updated successfully";
+export const COMMIT_UPDATED = "Commit updated successfully";
+
+export const COMMIT_DELETED = "Commit deleted successfully";

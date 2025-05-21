@@ -9,15 +9,6 @@ CREATE TABLE "commits" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"title" text NOT NULL,
-	"description" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE "projects" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,

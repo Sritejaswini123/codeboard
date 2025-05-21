@@ -1,4 +1,5 @@
-import { date, index, integer, pgTable, serial, text, time, varchar } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+
 import { timestamps } from "./helperColumns";
 import { user_projects } from "./userProjects";
 
@@ -10,7 +11,7 @@ export const commits = pgTable("commits", {
   commit_name: text().notNull(),
   ...timestamps,
 }, t => [
-index("commits_user_project_id_idx").on(t.user_project_id),
+  index("commits_user_project_id_idx").on(t.user_project_id),
 ]);
 
 export type Commit = typeof commits.$inferSelect;
