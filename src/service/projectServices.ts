@@ -1,9 +1,8 @@
+import { eq } from "drizzle-orm";
 import db from "../database/db";
-import { count, eq ,asc, and} from "drizzle-orm";
 import { NewProject, projects, ProjectsTable } from "../database/schemas/projects";
-import {  getAllRecords, getRecordById } from "./baseDbServices";
-import { users } from "../database/schemas/users";
 import { user_projects } from "../database/schemas/userProjects";
+import { getAllRecords, getRecordById } from "./baseDbServices";
 
 // get projects by id
 export function getProjectById(projectId: number) {
@@ -11,7 +10,7 @@ export function getProjectById(projectId: number) {
 }
 // get all projects
 export async function getAllProjects(page: number, page_size: number, projects: ProjectsTable, filter: any) {
-  return await getAllRecords(page, page_size, projects, filter);
+    return await getAllRecords(page, page_size, projects, filter);
 }
 
 // // get all projects
@@ -22,7 +21,7 @@ export async function getAllProjects(page: number, page_size: number, projects: 
 //   project_id?:number
 // ) => {
 //   const offset = (page - 1) * page_size;
-  
+
 
 //   const conditions = [];
 
@@ -79,11 +78,30 @@ export const createProject = async (projectData: NewProject) => {
     const project = await db.insert(projects).values(projectData).returning();
     return project[0];
 }
-
 export const isProjectExist = async (title: string) => {
     const existingProject = await db
         .select()
         .from(projects)
-        .where(eq(projects.title, title))
-    return existingProject;
-}
+        .where(eq(projects.title, title));
+
+    return existingProject.length > 0;
+};
+export const createNewProject = async (
+    projectData: NewProject,
+    userIds: number[]
+) => {
+    // Check if project is already exists or not
+    const exists = await isProjectExist(projectData.title);
+    if (exists) {
+        throw new Error("Project with this title already exists.");
+    }
+    // Create the project
+    const project = await createProject(projectData);
+    // assign selected users to  project wich is we created 
+    const userProjectData = userIds.map((userId) => ({
+        user_id: userId,
+        project_id: project.id,
+    }));
+    await db.insert(user_projects).values(userProjectData);
+    return project;
+};
