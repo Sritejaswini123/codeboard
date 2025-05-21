@@ -1,0 +1,432 @@
+[
+ {
+  "first_name": "Prasada Rao",
+  "last_name":"Amarthaluri",
+  "dob": "1991-02-23",
+  "designation": "UI/UX DEVELOPER",
+  "doj": "2020-09-01",
+  "email": "prasadarao04@gmail.com",
+  "phone": "9494630624",
+  "is_active ": true
+ },
+ {
+  "first_name": "Tharun Kumar",
+  "last_name":"Ampolu",
+  "dob": "2000-08-06",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2023-02-01",
+  "email": "tharunampolu9.8@gmail.com",
+  "phone": "7013142412",
+  "is_active ": true
+ },
+ {
+  "first_name": "Ganesh",
+  "last_name":"bathini",
+  "dob": "2001-08-22",
+  "designation": "MOBILE DEVELOPER",
+  "doj": "2023-08-26",
+  "email": "ganibathini762@gmail.com",
+  "phone": "9652775696",
+  "is_active ": true
+ },
+ {
+  "first_name": "Hemanth",
+  "last_name":"Kolluri",
+  "dob": "1999-11-20",
+  "designation": "FRONTEND DEVELOPER",
+  "doj": "2024-01-24",
+  "email": "kollurihemanth1@gmail.com",
+  "phone": "9618149577",
+  "is_active ": true
+ },
+ {
+  "first_name": "Lakshmi Sowjanya",
+  "last_name":"Talluri",
+  "dob": "2001-07-06",
+  "designation": "UI \/ UX DEVELOPER",
+  "doj": "2023-01-04",
+  "email": "sowjanya.talluri060701@gmail.com",
+  "phone": "7674091114",
+  "is_active ": true
+ },
+ {
+  "first_name": "Manisha ",
+  "last_name":"Dasari",
+  "dob": "2000-09-28",
+  "designation": "FRONTEND DEVELOPER",
+  "doj": "2024-01-10",
+  "email": "dasarimanisha2809@gmail.com",
+  "phone": "9014387450",
+  "is_active ": true
+ },
+ {
+  "first_name": "Prasanth Kumar",
+  "last_name":".Morcha",
+  "dob": "2002-04-07",
+  "designation": "FRONTEND DEVELOPER",
+  "doj": "2022-11-07",
+  "email": "prashanthkumarmorcha@gmail.com",
+  "phone": "9392684741",
+  "is_active ": true
+ },
+ {
+  "first_name": "Raghu Ram ",
+   "last_name":"Sanke",
+  "dob": "1999-02-24",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2022-11-14",
+ "email": "raghusanke49@gmail.com",
+  "phone": "7601086637",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sai Chandra ",
+   "last_name":"Jagu",
+  "dob": "2001-09-11",
+  "designation": "FRONTEND DEVELOPER",
+  "doj": "2022-11-07",
+ "email": "jagusaichandra@gmail.com",
+  "phone": "9553077886",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sai ",
+   "last_name":"Krishna",
+  "dob": "1999-02-26",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2024-06-03",
+ "email": "jkrishna14054@gmail.com",
+  "phone": "9603945574",
+  "is_active ": true
+ },
+ {
+  "first_name": "Jakeer Shareef",
+   "last_name":"Shaik",
+  "dob": "1998-02-15",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2022-07-01",
+ "email": "jakeergouse111@gmail.com",
+  "phone": "6303338193",
+  "is_active ": true
+ },
+ {
+  "first_name": " Ganesh",
+   "last_name":"Sirigidi",
+  "dob": "2002-10-31",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2023-02-01",
+ "email": "ganeshsirigidi222@gmail.com",
+  "phone": "8142211529",
+  "is_active ": true
+ },
+ {
+  "first_name": "Althaf",
+   "last_name":"Syed",
+  "dob": "2000-07-29",
+  "designation": "BACKEND DEVELOPER",
+  "doj": "2024-01-06",
+ "email": "sdalthaf2018@gmail.com",
+  "phone": "8886469069",
+  "is_active ": true
+ },
+ {
+  "first_name": "Priyanka ",
+   "last_name":"Kommani",
+  "dob": "2002-02-01",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2024-11-04",
+ "email": "psripriya20@gmail.com",
+  "phone": "8374412944",
+  "is_active ": true
+ },
+ {
+  "first_name": "Mounika",
+   "last_name":"Seeram",
+  "dob": "2002-12-25",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2024-11-04",
+ "email": "seerammounika2002@gmail.com",
+  "phone": "8121619127",
+  "is_active ": true
+ },
+ {
+  "first_name": "Ram Nikhil Teja ",
+   "last_name":"Budide",
+  "dob": "2001-11-04",
+  "designation": "UI \/ UX DEVELOPER",
+  "doj": "2024-11-04",
+ "email": "ramnikhil312@gmail.com",
+  "phone": "7095657446",
+  "is_active ": true
+ },
+ {
+  "first_name": "Mahesh Kumar ",
+   "last_name":"Nalluri",
+  "dob": "2002-10-10",
+  "designation": "UI \/ UX DEVELOPER",
+  "doj": "2024-11-04",
+ "email": "maheshkumar00n@gmail.com",
+  "phone": "8096785758",
+  "is_active ": true
+ },
+ {
+  "first_name": "Devadas ",
+   "last_name":"Palaparthi",
+  "dob": "2003-06-18",
+  "designation": "MOBILE DEVELOPER(INTERN)",
+  "doj": "2024-11-04",
+ "email": "palaparthidevadas@gmail.com",
+  "phone": "6303470837",
+  "is_active ": true
+ },
+ {
+  "first_name": "Satish",
+   "last_name":"Gudala",
+  "dob": "2003-04-16",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2024-11-04",
+ "email": "satish.g@orotron.com",
+  "is_active ": true
+ },
+ {
+  "first_name": "Kavya",
+   "last_name":"Kadali",
+  "dob": "2003-06-11",
+  "designation": "UI \/ UX DEVELOPER",
+  "doj": "2024-11-18",
+ "email": "kavyakadali2003@gmail.com",
+  "is_active ": true
+ },
+
+ {
+  "first_name": "Munikumar Naik",
+   "last_name":"Mude",
+  "dob": "2004-02-09",
+  "designation": "MOBILE DEVELOPER(INTERN)",
+  "doj": "2025-01-08",
+ "email": "munikumarnaik14@gmail.com",
+  "phone": "6302511964",
+  "is_active ": true
+ },
+ {
+  "first_name": "Anil",
+   "last_name":"Bobba",
+  "dob": "2003-08-17",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-01-06",
+ "email": "anilkumarbobba26@gmail.com",
+  "phone": "9391480947",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sukumar",
+   "last_name":"Talla",
+  "dob": "2003-03-30",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-01-20",
+ "email": "sukumar63044@gmail.com",
+  "phone": "6304408831",
+  "is_active ": true
+ },
+ {
+  "first_name": "Lathasri",
+   "last_name":" Gorli",
+  "dob": "2003-03-26",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-02-03",
+ "email": "lathasrigorli@gmail.com",
+  "phone": "7013170520",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sudhashini",
+   "last_name":"Enugula",
+  "dob": "2003-04-10",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-02-13",
+ "email": "sudhashini426@gmail.com",
+  "phone": "9390593981",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sathya Sai Baba",
+   "last_name":"Jakkampudi",
+  "dob": "2002-04-15",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-03-03",
+ "email": "satyasaibaba.j@orotron.com",
+  "phone": "9381567288",
+  "is_active ": true
+ },
+ {
+  "first_name": "Manikanta Reddy",
+   "last_name":"Pittu",
+  "dob": "2003-05-21",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-03-03",
+ "email": "manikantaredd3@gmail.com",
+  "phone": "7702355371",
+  "is_active ": true
+ },
+ {
+  "first_name": "Hyder",
+   "last_name":"Mirza Rais ",
+    "dob": "2003-05-21",
+  "designation": "MOBILE DEVELOPER(INTERN)",
+  "doj": "2025-03-03",
+ "email": "hyder.m@orotron.com",
+  "phone": "6281275145",
+  "is_active ": true
+ },
+ {
+  "first_name": "Satheesh Kumar",
+   "last_name":"Mangali",
+  "dob": "2003-08-29",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-03-03",
+ "email": "satheesh8349@gmail.com",
+  "phone": "6304615429",
+  "is_active ": true
+ },
+ {
+  "first_name": "Deepthi ",
+   "last_name":"Naidu Chappa",
+  "dob": "2002-05-09",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-11",
+ "email": "deepthinaiduchappa2154@gmail.com",
+  "phone": "8185056563",
+  "is_active ": true
+ },
+ {
+  "first_name": "Naveen",
+   "last_name":"Attikatla",
+  "dob": "2002-10-29",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-14",
+ "email": "naveenattikatla@gmail.com",
+  "phone": "9381672611",
+  "is_active ": true
+ },
+ {
+  "first_name": "Sritejaswini",
+   "last_name":"Gulla",
+  "dob": "2002-10-08",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-14",
+ "email": "sritejaswini1234@gmail.com",
+  "phone": "6305500799",
+  "is_active ": true
+ },
+ {
+  "first_name": "Shiva Prasad",
+   "last_name":"Bangi",
+  "dob": "2003-06-10",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-14",
+ "email": "shivarkv123@gmail.com",
+  "phone": "9347335565",
+  "is_active ": true
+ },
+ {
+  "first_name": "Dileep Kumar",
+   "last_name":"Kadali",
+  "dob": "2001-12-21",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-04-16",
+ "email": "kadalidileepkumar21@gmail.com",
+  "phone": "7780248902",
+  "is_active ": true
+ },
+ {
+  "first_name": "Phaneendra",
+   "last_name":"Varanasi",
+  "dob": "2002-04-03",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-04-16",
+ "email": "phanindra8383@gmail.com",
+  "phone": "7981859681",
+  "is_active ": true
+ },
+ {
+  "first_name": "Ravali.",
+   "last_name":"Paruchuri",
+  "dob": "2002-09-26",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-24",
+ "email": "ravalichowdary2107@gmail.com",
+  "phone": "9390859707",
+  "is_active ": true
+ },
+ {
+  "first_name": "Prasanna",
+   "last_name":"Paruchuri",
+  "dob": "2002-09-26",
+  "designation": "BACKEND DEVELOPER(INTERN)",
+  "doj": "2025-04-24",
+ "email": "prasannaparuchuri2002@gmail.com",
+  "phone": "9652536676",
+  "is_active ": true
+ },
+ {
+  "first_name": "Venkatarao",
+   "last_name":"Devara",
+  "dob": "2002-04-06",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-05-05",
+ "email": "venkatrao00998@gmail.com",
+  "phone": "6303354645",
+  "is_active ": true
+ },
+  {
+  "first_name": "tejaswini",
+   "last_name":"Dsri",
+  "dob": "2002-04-06",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-05-05",
+ "email": "tejaswini@gmail.com",
+  "phone": "6303354645",
+  "is_active ": true
+ },
+ {
+    "first_name": "Harish",
+    "last_name": "Shukla",
+    "dob": "2001-04-15",
+    "designation": "SALES MANAGER",
+    "doj": "2022-01-10",
+    "email": "harish.shukla@gmail.com",
+    "phone": "8881234567",
+    "is_active": true
+  },
+  {
+    "first_name": "Rashmi",
+    "last_name": "Soni",
+    "dob": "1996-06-05",
+    "designation": "SUPPLY CHAIN MANAGER",
+    "doj": "2020-03-11",
+    "email": "rashmi.soni@gmail.com",
+    "phone": "9812345678",
+    "is_active": true
+  },
+   {
+    "first_name": "Komal",
+    "last_name": "Thakur",
+    "dob": "2001-03-03",
+    "designation": "MARKETING SPECIALIST",
+    "doj": "2022-05-12",
+    "email": "komal.thakur@gmail.com",
+    "phone": "9234567890",
+    "is_active": true
+  }
+]
+
+
+
+
+
+
+
+
+
+
+

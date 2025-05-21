@@ -11,7 +11,7 @@ import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
-
+import seed from "./routes/realSeedRoute.js";
 const app = factory.createApp().basePath(env.API_VERSION);
 
 app.use(piLogger());
@@ -29,6 +29,7 @@ app.route("/", userRoutes);
 app.route("/", projectRoutes);
 app.route("/", commitRoutes);
 app.route("/seed", seedRoute);
+app.route("/realSeed", seed);
 
 app.get("/error", (c) => {
   c.status(422);
