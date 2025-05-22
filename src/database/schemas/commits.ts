@@ -9,6 +9,7 @@ export const commits = pgTable("commits", {
   lines_of_code: integer().notNull(),
   commit_link: text().notNull(),
   commit_name: text().notNull(),
+  project_link: text().notNull(),
   ...timestamps,
 }, t => [
   index("commits_user_project_id_idx").on(t.user_project_id),

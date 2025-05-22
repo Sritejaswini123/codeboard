@@ -1,7 +1,6 @@
 import factory from "../factory.js";
-import { seedUsersHandler } from "../handlers/seederHandlers.js";
-import { seedUsersRealDataHandler } from "../jsonData/usersJsonData.js";
+import { seedRealUserHandler, seedUsersHandler } from "../handlers/seederHandlers.js";
 const seedRoute = factory.createApp();
 seedRoute.post("/seed-users", ...seedUsersHandler);
-seedRoute.post("/seed-users-json-data", ...seedUsersRealDataHandler);
+seedRoute.post("/seed-users-json-data", ...seedRealUserHandler);
 export default seedRoute;

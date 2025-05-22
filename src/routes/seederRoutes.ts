@@ -1,9 +1,13 @@
 import factory from "../factory.js";
-import { seedRealUserHandler, seedUsersHandler } from "../handlers/seederHandlers.js";
+import { seedCommitHandler, seedRealUserBulkDataHandler, seedUserProjectsHandler, seedUsersHandler } from "../handlers/seederHandlers.js";
 
 const seedRoute = factory.createApp();
 
 seedRoute.post("/seed-users", ...seedUsersHandler);
-seedRoute.post("/seed-users-json-data", ...seedRealUserHandler);
+seedRoute.post("/seed-users", ...seedRealUserBulkDataHandler);
+seedRoute.post("/seed-users-projects", ...seedUserProjectsHandler);
+seedRoute.post("/seed-commits", ...seedCommitHandler);
+
+
 
 export default seedRoute;

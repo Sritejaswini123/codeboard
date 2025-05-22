@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, like, or, sql } from "drizzle-orm";
 
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
@@ -97,3 +97,79 @@ export async function checkCommitExist(id: number) {
     .where(eq(commits.id, id));
   return result[0];
 }
+
+
+
+
+// export async function getSimplePaginatedJoin(
+//   curent_page: number,
+//   page_size: number,
+//   id?: number,
+//   userName?: string,
+//   projectName?: string
+// ){
+//   const offset = (curent_page - 1) * page_size;
+
+//   const conditions: any[] = [];
+
+//   if (id !== undefined) {
+//     conditions.push(eq(commits.id, id));
+//   }
+
+//   if (userName) {
+//     conditions.push(
+//       or(
+//         like(users.first_name, `%${userName}%`),
+//         like(users.email, `%${userName}%`)
+//       )
+//     );
+//   }
+
+//   if (projectName) {
+//     conditions.push(like(projects.title, `%${projectName}%`));
+//   }
+
+//   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+//   const data = await db
+//     .select({
+//       id: commits.id,
+//       user_id: users.id,
+//       user_first_name: users.first_name,
+//       project_id: projects.id,
+//       project_name: projects.title,
+//       created_at: commits.created_at,
+//       updated_at: commits.updated_at,
+//       line_of_codes: commits.lines_of_code,
+//       commit_link: commits.commit_link,
+//       commit_message: commits.commit_name,
+//     })
+//     .from(commits)
+//     .innerJoin(user_projects, eq(commits.user_project_id, user_projects.id))
+//     .innerJoin(users, eq(user_projects.user_id, users.id))
+//     .innerJoin(projects, eq(user_projects.project_id, projects.id))
+//     .where(whereClause)
+//     .orderBy(asc(commits.id))
+//     .limit(page_size)
+//     .offset(offset);
+
+//   const [{ total_records }] = await db
+//     .select({ total_records: sql<number>`count(*)` })
+//     .from(commits)
+//     .innerJoin(user_projects, eq(commits.user_project_id, user_projects.id))
+//     .innerJoin(users, eq(user_projects.user_id, users.id))
+//     .innerJoin(projects, eq(user_projects.project_id, projects.id))
+//     .where(whereClause);
+
+//   const totalPages = Math.ceil(total_records / page_size);
+
+//   return {
+//     total_records: Number(total_records),
+//     curent_page,
+//     page_size,
+//     totalPages,
+//     next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
+//     prev_page: curent_page <= 1 ? null : curent_page - 1,
+//     data,
+//   };
+// }

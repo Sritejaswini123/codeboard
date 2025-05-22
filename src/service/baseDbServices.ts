@@ -1,8 +1,8 @@
-import { asc, eq, getTableName, sql } from "drizzle-orm";
+import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
 
 import type { CommitsTable, NewCommit } from "../database/schemas/commits";
 import type { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
-import type { NewUser, User, UsersTable } from "../database/schemas/users";
+import { users, type NewUser, type User, type UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 
@@ -110,4 +110,67 @@ export async function updateRecordById<DBRecordRow>(table: DBTable, record: NewD
     .where(eq(columnInfo, id))
     .returning();
   return updatedRecord;
+}
+
+
+
+
+
+
+export async function getPaginatedRecords(
+  table: DBTable,
+  curent_page: number,
+  page_size: number,
+  username?: string,
+  id?: number
+) {
+  let filterCondition = undefined;
+
+  if (table === users) {
+    if (username && id !== undefined) {
+      filterCondition = and(
+        or(
+          like(users.first_name, `%${username}%`),
+          like(users.email, `%${username}%`)
+        ),
+        eq(users.id, id)
+      );
+    } else if (username) {
+      filterCondition = or(
+        like(users.first_name, `%${username}%`),
+        like(users.email, `%${username}%`)
+      );
+    } else if (id !== undefined) {
+      filterCondition = eq(users.id, id);
+    }
+  } else {
+    if (id !== undefined) {
+      filterCondition = eq(table.id, id);
+    }
+  }
+
+  const result = await db
+    .select()
+    .from(table)
+    .where(filterCondition)
+    .orderBy(asc(table.id))
+    .limit(page_size)
+    .offset((curent_page - 1) * page_size);
+
+  const [{ total_records }] = await db
+    .select({ total_records: sql<number>`count(*)` })
+    .from(table)
+    .where(filterCondition);
+
+  const totalPages = Math.ceil(total_records / page_size);
+
+  return {
+    total_records: Number(total_records),
+    curent_page,
+    page_size,
+    totalPages,
+    next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
+    prev_page: curent_page <= 1 ? null : curent_page - 1,
+    data: result,
+  };
 }

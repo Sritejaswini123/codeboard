@@ -1,3 +1,4 @@
+
 [
  {
   "first_name": "Prasada Rao",
@@ -253,7 +254,7 @@
   "dob": "2002-04-15",
   "designation": "BACKEND DEVELOPER(INTERN)",
   "doj": "2025-03-03",
- "email": "\nsatyasaibaba.j@orotron.com",
+ "email": "satyasaibaba.j@orotron.com",
   "phone": "9381567288",
   "is_active ": true
  },
@@ -273,6 +274,7 @@
   "designation": "MOBILE DEVELOPER(INTERN)",
   "doj": "2025-03-03",
  "email": "hyder.m@orotron.com",
+ "dob": "2000-03-03",
   "phone": "6281275145",
   "is_active ": true
  },
