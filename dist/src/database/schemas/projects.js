@@ -1,13 +1,13 @@
-import { pgTable, serial, text, index, integer } from "drizzle-orm/pg-core";
-import { timestamps } from "./helper-columns";
-import { users } from "./users";
+// projects
+import { boolean, index, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { timestamps } from "./helperColumns";
 export const projects = pgTable("projects", {
     id: serial().primaryKey(),
     title: text().notNull(),
     description: text().notNull(),
-    assigned_to: integer().notNull().references(() => users.id),
+    is_active: boolean().notNull().default(true),
     ...timestamps,
-}, (t) => [
-    index("title_idx").on(t.title),
-    index("assigned_to_idx").on(t.assigned_to),
+}, t => [
+    index("projects_title_idx").on(t.title),
+    index("projects_id_idx").on(t.id),
 ]);

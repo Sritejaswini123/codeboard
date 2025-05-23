@@ -1,0 +1,16 @@
+meta {
+  name: realprojectscheck
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://192.168.1.43:3000/v1.0/projects?page=1&page_size=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  page_size: 10
+}
