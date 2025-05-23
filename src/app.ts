@@ -11,6 +11,7 @@ import { sendResponse } from "./utils/sendResponse.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import commitRoutes from "./routes/commitRoutes.js";
 import seedRoute from "./routes/seederRoutes.js";
+import userProjectRoutes from "./routes/userProjectRoutes.js";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 
@@ -28,7 +29,7 @@ app.route("/", userRoutes);
 app.route("/", projectRoutes);
 app.route("/", commitRoutes);
 app.route("/", seedRoute);
-
+app.route("/",userProjectRoutes)
 app.get("/error", (c) => {
   c.status(422);
   c.var.logger.debug("Test error only visible in development");

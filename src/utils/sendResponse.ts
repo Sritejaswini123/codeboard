@@ -3,7 +3,7 @@ import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 import type { IRespWithData } from "../types/appTypes.js";
 
-export function sendResponse(c: Context, status: ContentfulStatusCode, message: string, data?: unknown) {
+export function   sendResponse(c: Context, status: ContentfulStatusCode, message: string, data?: unknown) {
   const respData: IRespWithData = {
     status,
     success: true,

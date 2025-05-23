@@ -1,17 +1,18 @@
 // userHandlers
-import { ZodError } from "zod";
+import z, { ZodError } from "zod";
 import type { NewUser, User } from "../database/schemas/users.js";
 import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED } from "../constants/appMessages.js";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
-import { deleteUserById, getAllUsers, getUserWithProjects } from "../service/userService.js";
+import { deleteUserById, getAllUsers, getUserById } from "../service/userService.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { vCreateUser, vUpdateUser } from "../validations/userValidations.js";
 import { createRecord, updateRecordById } from "../service/baseDbServices.js";
 import { eq } from "drizzle-orm";
 
 
+//create user
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
@@ -23,70 +24,41 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     };
     const user = await createRecord<User>(users, userData);
     return sendResponse(c, CREATED, USER_CREATED, user);
-  }
-  catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors?.[0]?.message || "Validation error";
-      return c.json({ message: errorMessage }, NOT_FOUND);
-    }
-    return c.json({ error }, UNPROCESSABLE_ENTITY);
-  }
-},
+  } catch (error) {
+        if (error instanceof z.ZodError) {
+  const formattedErrors = Object.fromEntries(
+  error.errors.map(({ path, message }) => [path[0], message])
 );
-// //getusebyid with projects
-// export const getUserHandler = factory.createHandlers(async (c) => {
-//   const idParam = c.req.param("id");
-//   const userId = Number(idParam);
-// // const includeProjects = c.req.query("project") === "true";
+      return sendResponse(c,UNPROCESSABLE_ENTITY,"validation errors",formattedErrors)
 
-//   if (isNaN(userId)) {
-//     return sendResponse(c, 400, "Invalid user ID");
-//   }
-
-//   const result = await getUserWithProjects(userId);
-
-//   if (!result) {
-//     return sendResponse(c, 404, "User not found");
-//   }
-
-//   return sendResponse(c, 200, "User fetched successfully", result);
-// });
-
+    }
+    return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
+  }
+});
+// get user by id
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
-    const userIdParam = c.req.param("user_id");
-
-    if (!userIdParam) {
+    const userId = Number(c.req.param("user_id"));
+    if (!userId) {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
-
-    const userId = parseInt(userIdParam);
-
-    if (isNaN(userId)) {
-      return sendResponse(c, BAD_REQUEST, "Invalid user ID");
-    }
-
-    const page = Number(c.req.query("page"));
-    const page_size = Number(c.req.query("page_size"));
-    const includeProjects = c.req.query("projects") === "true";
-
-    const user = await getUserWithProjects(userId, page, page_size, includeProjects);
-
+    const user = await getUserById(userId);
     if (!user) {
-      return sendResponse(c, NOT_FOUND, `${USER_NOT_FOUND} with user_id ${userId}`);
+      return sendResponse(c, NOT_FOUND, `${USER_NOT_FOUND}with user_id ${userId}`);
     }
 
     return sendResponse(c, OK, USER_FETCHED, user);
-  } catch (error) {
-    console.error("Error in getUserByIdHandlers:", error);
+  }
+  catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });
 
+
 //getall
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page = Number(c.req.query("page")) || 1;
+    const page = Number(c.req.query("page")) ;
     const page_size = Number(c.req.query("page_size"));
     const userId = c.req.query("user_id");
     const filter = userId ? eq(users.id, parseInt(userId)) : undefined;

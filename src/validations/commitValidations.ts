@@ -6,8 +6,8 @@ export const vCreateCommit = z.object({
 
   lines_of_code: z.number().min(0, {message: "Lines of code cannot be negative",}),
 
-  commit_link: z.string().url({message: "Commit link must be a valid URL",}),
+  commit_link: z.string({ required_error: "url is required" }).min(0,{message: "Commit link must be a valid URL",}),
 
-  commit_name: z.string().min(1, {message: "Commit name cannot be empty",}),
+  commit_name: z.string({ required_error: 'Commit_message is required' }).min(1, {message: "Commit name cannot be empty",}),
 });
 export type ValidatedCreateCommit = z.infer<typeof vCreateCommit>;
