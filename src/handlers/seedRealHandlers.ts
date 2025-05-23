@@ -88,7 +88,7 @@ export const seedUserProjectsHandler = [ async (c: Context) => {
 export const seedCommitHandler = [async (c: Context) => {
   try {
     const vCreateCommitArray = z.array(vCreateCommit);
-    const filePath = path.join(process.cwd(), 'src', 'data', 'commits.json');
+    const filePath = path.join(process.cwd(), 'src', 'data', 'commits connection.json');
     const commitJsonData = await fs.readFile(filePath, 'utf-8');
     const parsedCommit: any[] = JSON.parse(commitJsonData);
 
