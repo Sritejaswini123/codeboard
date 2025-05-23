@@ -5,3 +5,5 @@ export const vCreateProject = z.object({
   description: z.string().min(10, { message: "Description is required" }),
   assigned_to: z.number().min(1, { message: "Invalid user_id" }),
 });
+
+export type ValidatedProject = z.infer<typeof vCreateProject>;

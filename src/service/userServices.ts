@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm";
-
 import type { NewUser, UsersTable } from "../database/schemas/users";
-
+import { USER_NOT_FOUND } from "../constants/appMessages";
 import db from "../database/db";
+import { projects } from "../database/schemas/projects";
+import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
 import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
 
@@ -41,3 +42,4 @@ export async function deleteUserById(userId: number) {
 export async function updateUserById(userData: NewUser, userId: number) {
   return await updateRecordById(users, userData, userId);
 }
+

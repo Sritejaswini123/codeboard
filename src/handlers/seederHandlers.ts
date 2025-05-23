@@ -12,7 +12,10 @@ import { sendResponse } from "../utils/sendResponse";
 import { commits, NewCommit } from '../database/schemas/commits';
 import { vCreateCommit } from '../validations/commitValidations';
 import { z } from 'zod';
+import { vCreateProject } from '../validations/projectValidations';
+import { vCreateUser } from '../validations/userValidations';
 
+//seed with falso
 export const seedUsersHandler = factory.createHandlers(async (c) => {
   try {
     const count = Number(c.req.query("count")) || 100;
@@ -29,26 +32,30 @@ export const seedUsersHandler = factory.createHandlers(async (c) => {
   }
 });
 
-
+//users seeding 
 export const seedRealUserBulkDataHandler = [ async (c: Context) => {
   try {
+    const vCreateUserArray = z.array(vCreateUser);
+    
     const filePath = path.join(process.cwd(), "src", "data", "users.json");
     const jsonData = await fs.readFile(filePath, "utf-8");
-    const parsed: any[] = JSON.parse(jsonData);
+    const parsedUsers: any[] = JSON.parse(jsonData);
 
-    const usersToInsert: NewUser[] = parsed.map(entry => ({
-      ...entry,
-      dob: new Date(entry.dob),
-      doj: new Date(entry.doj),
+    const validUsersRaw = vCreateUserArray.parse(parsedUsers);
+
+    const validUsers = validUsersRaw.map(user => ({
+    ...user,
+    dob: new Date(user.dob),
+    doj: new Date(user.doj),
     }));
 
-    if (usersToInsert.length > 0) {
-      await db.insert(users).values(usersToInsert);
+    if (validUsers.length > 0) {
+      await db.insert(users).values(validUsers);
     }
 
     return c.json({
       success: true,
-      inserted: usersToInsert.length,
+      inserted: validUsers.length,
     });
   } catch (error) {
     console.error("Bulk insert seeding error:", error);
@@ -57,8 +64,11 @@ export const seedRealUserBulkDataHandler = [ async (c: Context) => {
 }];
 
 
+
+
 export const seedUserProjectsHandler = [ async (c: Context) => {
   try {
+    const vCreateProjectArray = z.array(vCreateProject);
     const filePath = path.join(process.cwd(), "src", "data", "userProjects.json");
     const jsonData = await fs.readFile(filePath, "utf-8");
     const parsed: any[] = JSON.parse(jsonData);
@@ -81,39 +91,10 @@ export const seedUserProjectsHandler = [ async (c: Context) => {
   }
 }];
 
-
-
-
-
-
-// export const seedCommitHandler=[async(c:Context)=>{
-//   try {
-//     const filePath=path.join(process.cwd(),"src","data","commits.json");
-//     const jsonCommitData=await fs.readFile(filePath,"utf-8");
-//     const parsedCommit:any[]=JSON.parse(jsonCommitData);
-//     const commitData:NewCommit[]=parsedCommit.map(entry=>({
-//       ...entry,
-//     }))
-//     if(commitData.length>0){
-//       await db.insert(commits).values(commitData);
-//     }
-//     return c.json({
-//       success: true,
-//       inserted: commitData.length,
-//     });
-//   } catch (error) {
-//      console.error("User projects bulk insert seeding error:", error);
-//     return c.json({ success: false, message: "Failed to seed user projects" }, 500);
-//   }
-// }]
-
-
-
-
+//seed commit handlers 
 export const seedCommitHandler = [async (c: Context) => {
   try {
     const vCreateCommitArray = z.array(vCreateCommit);
-
     const filePath = path.join(process.cwd(), 'src', 'data', 'commits.json');
     const commitJsonData = await fs.readFile(filePath, 'utf-8');
     const parsedCommit: any[] = JSON.parse(commitJsonData);

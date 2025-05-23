@@ -36,7 +36,7 @@ export const USER_ID_REQUIRED = "User ID is required";
 
 export const PROJECT_ID_REQUIRED = "Project ID is required";
 
-export const USER_NOT_FOUND = "User not found ";
+export const USER_NOT_FOUND = "User not found";
 
 export const PROJECT_NOT_FOUND = "Project not found ";
 

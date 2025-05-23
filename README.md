@@ -17,5 +17,21 @@ export const userRelations = relations(users, ({ many }) => ({
 })); -->
 
 
+// export const createUserProjectHandler=factory.createHandlers(async(c)=>{
+//     try {
+//         const reqBody=await c.req.json();
+//         const validatedUserProject=vCreateuserProject.parse(reqBody);
+//         const userProjectData:NewUserProject={
+//             ...validatedUserProject,
+//         }
+//         const userProjectId=userProjectData.id;
+        
+//         if(userProjectId!=undefined){
+//             const userProjectExistence=userProjectExist(userProjectId);
+//         }
+//     } catch (error) {
+        
+//     }
+// })
 
 
