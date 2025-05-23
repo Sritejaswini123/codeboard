@@ -8,6 +8,7 @@ export const vCreateUser = z.object({
   dob: z.string().min(1, { message: "Date of birth is required" }),
   doj: z.string().min(1, { message: "Date of joining is required" }),
   designation: z.string().min(3, { message: "Designation must be at least 3 characters long" }),
+  is_active: z.boolean().default(true),
 }).superRefine((data, ctx) => {
   const dobDate = new Date(data.dob);
   if (isNaN(dobDate.getTime())) {
@@ -27,6 +28,7 @@ export const vCreateUser = z.object({
     });
   }
 });
-
+export const vUpdateUser=vCreateUser;
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;
 
+export type ValidatedUpdateUser=z.infer<typeof vUpdateUser>;

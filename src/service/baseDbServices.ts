@@ -64,7 +64,7 @@ export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) 
   return result[0];
 };
 
-
+//update
 export const updateRecordById = async <DBRecordRow>(table: DBTable, record: NewDBRecord, id: number) => {
   const columnInfo = sql.raw(`${getTableName(table)}.id`)
   const updatedRecord = await db

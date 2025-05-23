@@ -1,12 +1,13 @@
 import { ZodError } from "zod";
-import { PROJECT_CREATED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
+import { PROJECT_CREATED, PROJECT_DELETEED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { eq } from "drizzle-orm";
 import { NewProject, projects } from "../database/schemas/projects";
 import factory from "../factory";
-import { createNewProject, getAllProjects, getProjectById } from "../service/projectServices";
+import { createNewProject, deleteProjectById, getAllProjects, getProjectById } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
-import { vCreateProject } from "../validations/projectValidations";
+import { vCreateProject, vUpdateProject } from "../validations/projectValidations";
+import { updateRecordById } from "../service/baseDbServices";
 //get by id
 export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
@@ -50,8 +51,7 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
     const projectData: NewProject = {
       ...validProjectReq
     }
-    const userIds: number[] = validProjectReq.userIds;
-    const projcet = await createNewProject(projectData, userIds);
+    const projcet = await createNewProject(projectData);
     return sendResponse(c, CREATED, PROJECT_CREATED, projcet);
   }
   catch (error) {
@@ -65,3 +65,40 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
   }
 }
 );
+//updateproject
+export const updateprojectByIdHandlers = factory.createHandlers(async (c) => {
+  try {
+    const projectId = Number(c.req.param('project_id'));
+    const reqBody = await c.req.json();
+
+    const validatedProjectData = vUpdateProject.parse(reqBody);
+    console.log("hello")
+
+    const projectData : any= {
+      ...validatedProjectData
+    }
+
+    const updatedProject= await updateRecordById(projects,projectData,projectId)
+    console.log("updated data ",updatedProject);
+
+    return sendResponse(c, OK, PROJECT_CREATED, updatedProject);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessage = error.errors?.[0]?.message || 'Validation error';
+      return c.json({ message: errorMessage }, NOT_FOUND);
+    }
+    return c.json({ UNPROCESSABLE_ENTITY });
+  }
+
+})
+// delete project by id
+export const deleteProjectByIdHandlers = factory.createHandlers(async (c) => {
+  try {
+    const projectId = Number(c.req.param("project_id"));
+    const deletedProject = await deleteProjectById(projectId);
+    return sendResponse(c, OK, PROJECT_DELETEED, deletedProject);
+  }
+  catch (error) {
+    return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+  }
+});

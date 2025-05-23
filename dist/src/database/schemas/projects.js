@@ -1,3 +1,4 @@
+//projects
 import { index, pgTable, serial, text, boolean } from "drizzle-orm/pg-core";
 import { timestamps } from "./helperColumns";
 export const projects = pgTable("projects", {

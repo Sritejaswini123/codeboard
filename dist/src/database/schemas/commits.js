@@ -1,4 +1,3 @@
-//commits
 import { index, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 import { timestamps } from "./helperColumns";
 import { user_projects } from "./userProjects";

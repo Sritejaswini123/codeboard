@@ -19,11 +19,6 @@ export const users = pgTable("users", {
   index("users_first_name_idx").on(t.first_name),
 ]);
 
-//users---->projects(one-to-Many)
-// define relations for users
-// export const usersRelations = relations(users, ({ many }) => ({
-//   assignedProjects: many(user_projects),
-// }));
 
 
 export type UsersTable = typeof users;

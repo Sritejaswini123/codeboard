@@ -1,12 +1,13 @@
 import { createRecordMany } from "../../seeder/seederDb";
 import { generateFakeUsers } from "../../seeder/userSeeder";
-import { CREATED } from "../constants/http-status-codes";
+import { CREATED } from "../constants/httpStatusCodes";
 import { users } from "../database/schemas/users";
 import factory from "../factory";
-import { sendResponse } from "../utils/send-response";
+import { sendResponse } from "../utils/sendResponse";
 export const seedUsersHandler = factory.createHandlers(async (c) => {
     try {
         const count = Number(c.req.query('count')) || 100;
+        console.log("hello1-->", count);
         const fakeUsers = generateFakeUsers(count);
         const insertedUsers = await createRecordMany(users, fakeUsers);
         if (!Array.isArray(insertedUsers)) {

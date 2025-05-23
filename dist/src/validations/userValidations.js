@@ -25,3 +25,4 @@ export const vCreateUser = z.object({
         });
     }
 });
+export const vUpdateUser = vCreateUser;
