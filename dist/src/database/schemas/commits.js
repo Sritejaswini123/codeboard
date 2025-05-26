@@ -6,8 +6,8 @@ import { repositories } from "./repositories";
 export const commits = pgTable("commits", {
     id: serial().primaryKey(),
     month: text().notNull(),
-    date: date({ mode: "date" }).notNull(), // Proper full date
-    time: integer().notNull(),
+    date: date({ mode: "date" }).notNull(),
+    time: text().notNull(),
     user_id: integer().notNull().references(() => users.id),
     project_id: integer().notNull().references(() => projects.id),
     repository_id: integer().notNull().references(() => repositories.id),

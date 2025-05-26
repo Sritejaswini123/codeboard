@@ -2,7 +2,7 @@ CREATE TABLE "commits" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"month" text NOT NULL,
 	"date" date NOT NULL,
-	"time" integer NOT NULL,
+	"time" text NOT NULL,
 	"user_id" integer NOT NULL,
 	"project_id" integer NOT NULL,
 	"repository_id" integer NOT NULL,

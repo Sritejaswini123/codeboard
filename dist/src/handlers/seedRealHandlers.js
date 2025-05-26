@@ -3,6 +3,7 @@ import path from "path";
 import db from "../database/db";
 import { users } from "../database/schemas/users";
 import { vCreateUser } from "../validations/userValidations";
+import { vCreateProject } from "../validations/projectValidations";
 import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { vCreateCommit } from "../validations/commitValidations";
@@ -31,34 +32,34 @@ export const seedRealUserHandler = [async (c) => {
             });
         }
         catch (error) {
-            console.error("Bulk insert seeding error:", error);
+            console.error(" insert seeding error:", error);
             return c.json({ success: false, message: "Failed to seed users" }, 500);
         }
     }];
 export const seedRealProjectHandler = [async (c) => {
         try {
+            const vCreateProjectArray = z.array(vCreateProject);
             const filePath = path.join(process.cwd(), "src", "data", "projects.json");
             const jsonData = await fs.readFile(filePath, "utf-8");
-            const parsed = JSON.parse(jsonData);
-            const projectsToInsert = parsed.map(entry => ({
-                ...entry,
-            }));
-            if (projectsToInsert.length > 0) {
-                await db.insert(projects).values(projectsToInsert);
+            const parsedProjects = JSON.parse(jsonData);
+            const validProjects = vCreateProjectArray.parse(parsedProjects);
+            if (validProjects.length > 0) {
+                await db.insert(projects).values(validProjects);
             }
             return c.json({
                 success: true,
-                inserted: projectsToInsert.length,
+                inserted: validProjects.length,
             });
         }
         catch (error) {
             console.error("Bulk insert seeding error:", error);
-            return c.json({ success: false, message: "Failed to seed users" }, 500);
+            return c.json({ success: false, message: "Failed to seed projects" }, 500);
         }
-    }];
+    },
+];
 export const seedUserProjectsHandler = [async (c) => {
         try {
-            const filePath = path.join(process.cwd(), "src", "data", "userProjects.json");
+            const filePath = path.join(process.cwd(), "src", "data", "user_Projects.json");
             const jsonData = await fs.readFile(filePath, "utf-8");
             const parsed = JSON.parse(jsonData);
             const userProjects = parsed.map(entry => ({
@@ -80,15 +81,15 @@ export const seedUserProjectsHandler = [async (c) => {
 export const seedCommitHandler = [async (c) => {
         try {
             const vCreateCommitArray = z.array(vCreateCommit);
-            const filePath = path.join(process.cwd(), 'src', 'data', 'commits.json');
+            const filePath = path.join(process.cwd(), 'src', 'data', 'commits connection.json');
             const commitJsonData = await fs.readFile(filePath, 'utf-8');
             const parsedCommit = JSON.parse(commitJsonData);
             const validatedCommits = vCreateCommitArray.parse(parsedCommit);
             // Convert date and time before inserting
             const transformedCommits = validatedCommits.map(commit => ({
                 ...commit,
-                date: new Date(commit.date), // Convert string to Date
-                time: parseInt(commit.time.replace(":", "").slice(0, 4)), // Convert "14:30" -> 1430
+                date: new Date(commit.date),
+                time: commit.time,
             }));
             if (transformedCommits.length > 0) {
                 await db.insert(commits).values(transformedCommits);

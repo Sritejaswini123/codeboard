@@ -1,5 +1,5 @@
 {
-  "id": "22ab6c66-3162-4e26-bcc6-f47e02ee3080",
+  "id": "7dbe5972-0ee0-4cff-ba1e-27cfb9f33df2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -28,7 +28,7 @@
         },
         "time": {
           "name": "time",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
