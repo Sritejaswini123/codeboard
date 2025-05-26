@@ -1,10 +1,9 @@
 import { ZodError } from "zod";
-import { COMMIT_EXIST, COMMIT_CREATED, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMITS_FETCHED } from "../constants/appMessages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
-import { NewCommit, Commit, commits } from "../database/schemas/commits";
-import NotFoundException from "../exceptions/notFoundException";
+import { COMMIT_CREATED, COMMIT_NOT_FOUND, COMMITS_FETCHED } from "../constants/appMessages";
+import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { Commit, commits, NewCommit } from "../database/schemas/commits";
 import factory from "../factory";
-import { createRecord, getRecordById } from "../service/baseDbServices";
+import { createRecord } from "../service/baseDbServices";
 import { getAllCommits, } from "../service/commitService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";

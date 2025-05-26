@@ -1,8 +1,11 @@
-import { USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND } from "../constants/appMessages";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK } from "../constants/httpStatusCodes";
+import z from "zod";
+import { PROJECT_CREATED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND } from "../constants/appMessages";
+import { BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import factory from "../factory";
-import { getUserWithProjects } from "../service/userProjectsServices";
+import { assignUserToProject,  getUserWithProjects, isUserAlreadyAssigned } from "../service/userProjectsServices";
 import { sendResponse } from "../utils/sendResponse";
+import { vCreateProject } from "../validations/projectValidations";
+import { vCreateUserProject } from "../validations/userProjectValidations";
 
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
@@ -34,3 +37,29 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
 });
+//create user Project
+export const createUserProjectHandler = factory.createHandlers(async (c) => {
+  try {
+    const reqBody = await c.req.json();
+    const validData = vCreateUserProject.parse(reqBody);
+
+    const { user_id, project_id } = validData;
+
+    const alreadyExists = await isUserAlreadyAssigned(user_id, project_id);
+    if (alreadyExists) {
+      return sendResponse(c, CONFLICT, "User is already assigned to this project");
+    }
+
+    const userProject = await assignUserToProject(validData);
+
+    return sendResponse(c, CREATED, "User assigned to project successfully", userProject);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formatted = Object.fromEntries(error.errors.map(e => [e.path[0], e.message]));
+      return sendResponse(c, UNPROCESSABLE_ENTITY, "Validation errors", formatted);
+    }
+
+    return sendResponse(c, INTERNAL_SERVER_ERROR, "Failed to assign user to project");
+  }
+});
+

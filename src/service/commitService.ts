@@ -7,19 +7,6 @@ import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 
 
-
-// //save commit
-// export const createcommit=async (commitData: NewCommit)=>{
-//     const  commit =await db.insert(commits).values(commitData).returning();
-//     return commit[0];
-// }
-
-// //get commit by id
-// export const getCommitById =(commitId: number) => {
-//   return  getRecordById(commits, commitId);
-// };
-
-
 //get all
 export const getAllCommits = async (
   page: number,

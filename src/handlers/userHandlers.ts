@@ -1,7 +1,7 @@
 // userHandlers
 import z, { ZodError } from "zod";
 import type { NewUser, User } from "../database/schemas/users.js";
-import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED } from "../constants/appMessages.js";
+import { USER_CREATED, USER_DELETEED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/appMessages.js";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes.js";
 import { users } from "../database/schemas/users.js";
 import factory from "../factory.js";
@@ -102,7 +102,7 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
     const updatedUser = await updateRecordById(users,userData,userId)
     console.log("updated data ",updatedUser);
 
-    return sendResponse(c, OK, USER_CREATED, updatedUser);
+    return sendResponse(c, OK, USER_UPDATED, updatedUser);
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessage = error.errors?.[0]?.message || 'Validation error';

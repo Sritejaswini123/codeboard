@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import z, { ZodError } from "zod";
 import { PROJECT_CREATED, PROJECT_DELETEED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { eq } from "drizzle-orm";
@@ -48,57 +48,69 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
     const validProjectReq = vCreateProject.parse(reqBody);
-    const projectData: NewProject = {
-      ...validProjectReq
-    }
-    const projcet = await createNewProject(projectData);
-    return sendResponse(c, CREATED, PROJECT_CREATED, projcet);
-  }
-  catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors?.[0]?.message || 'Validation error';
-      return c.json({ message: errorMessage }, NOT_FOUND);
-    }
 
-    return c.json({ error: error }, UNPROCESSABLE_ENTITY);
-
+    const project = await createNewProject( validProjectReq);
+    return sendResponse(c, CREATED, PROJECT_CREATED, project);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formattedErrors = Object.fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      );
+      return sendResponse(c, UNPROCESSABLE_ENTITY, "Validation errors", formattedErrors);
+    }
+    throw error;
   }
-}
-);
-//updateproject
-export const updateprojectByIdHandlers = factory.createHandlers(async (c) => {
+});
+
+// Update project by ID handler
+export const updateProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
-    const projectId = Number(c.req.param('project_id'));
+    const projectId = Number(c.req.param("project_id"));
+
+    if (isNaN(projectId)) {
+      return sendResponse(c, BAD_REQUEST, PROJECT_ID_REQUIRED);
+    }
+
     const reqBody = await c.req.json();
 
     const validatedProjectData = vUpdateProject.parse(reqBody);
-    console.log("hello")
 
-    const projectData : any= {
-      ...validatedProjectData
+    const updatedProject = await updateRecordById(projects, validatedProjectData, projectId);
+
+    if (!updatedProject) {
+      return sendResponse(c, NOT_FOUND, `${PROJECT_NOT_FOUND} with project_id ${projectId}`);
     }
 
-    const updatedProject= await updateRecordById(projects,projectData,projectId)
-    console.log("updated data ",updatedProject);
-
-    return sendResponse(c, OK, PROJECT_CREATED, updatedProject);
+    return sendResponse(c, OK, PROJECTS_FETCHED, updatedProject);
   } catch (error) {
     if (error instanceof ZodError) {
-      const errorMessage = error.errors?.[0]?.message || 'Validation error';
-      return c.json({ message: errorMessage }, NOT_FOUND);
+      const formattedErrors = Object.fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      );
+      return sendResponse(c, UNPROCESSABLE_ENTITY, "Validation errors", formattedErrors);
     }
-    return c.json({ UNPROCESSABLE_ENTITY });
-  }
 
-})
+   throw error
+  }
+});
 // delete project by id
 export const deleteProjectByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const projectId = Number(c.req.param("project_id"));
+
+    if (isNaN(projectId)) {
+      return sendResponse(c, BAD_REQUEST, PROJECT_ID_REQUIRED);
+    }
+
     const deletedProject = await deleteProjectById(projectId);
+
+    if (!deletedProject) {
+      return sendResponse(c, NOT_FOUND, `${PROJECT_NOT_FOUND} with project_id ${projectId}`);
+    }
+
     return sendResponse(c, OK, PROJECT_DELETEED, deletedProject);
-  }
-  catch (error) {
-    return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    return sendResponse(c, INTERNAL_SERVER_ERROR, 'An unexpected error occurred.');
   }
 });

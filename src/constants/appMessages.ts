@@ -26,6 +26,9 @@ export const PROJECT_ID_REQUIRED = "Project ID is required";
 
 export const PROJECT_CREATED = "Project created Sucessfully";
 
+export const PROJECT_UPDATED = "Project updated Sucessfully";
+
+
 export const USER_NOT_FOUND = "User not found ";
 
 export const USER_DELETEED = "User deleted successfully";

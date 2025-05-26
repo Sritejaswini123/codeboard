@@ -1,7 +1,7 @@
-import { count, eq } from "drizzle-orm";
+import { count, eq , and} from "drizzle-orm";
 import db from "../database/db";
-import { projects } from "../database/schemas/projects";
-import { user_projects } from "../database/schemas/userProjects";
+import { NewProject, projects } from "../database/schemas/projects";
+import { NewUserProject, user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
 
 //get usersById with projects
@@ -67,4 +67,18 @@ export const getUserWithProjects = async (
     user,
     projects: projectsResult
   };
+};
+
+export const isUserAlreadyAssigned = async (user_id: number, project_id: number) => {
+  const result = await db
+    .select()
+    .from(user_projects)
+    .where(and(eq(user_projects.user_id, user_id), eq(user_projects.project_id, project_id)));
+
+  return result.length > 0;
+};
+
+export const assignUserToProject = async (data: NewUserProject) => {
+  const inserted = await db.insert(user_projects).values(data).returning();
+  return inserted[0];
 };
