@@ -5,4 +5,5 @@ const projectRoutes = factory.createApp();
 
 projectRoutes.post("/projects", ...createProjectHandlers);
 projectRoutes.get("/projects", ...getAllProjectsHandlers);
+
 export default projectRoutes;

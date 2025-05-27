@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { ZodError } from "zod";
+import { z } from "zod";
 import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/appMessages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
@@ -27,9 +27,9 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
         return sendResponse(c, CREATED, USER_CREATED, user);
     }
     catch (error) {
-        if (error instanceof ZodError) {
-            const errorMessage = error.errors?.[0]?.message || "Validation error";
-            return c.json({ message: errorMessage }, NOT_FOUND);
+        if (error instanceof z.ZodError) {
+            const formattedErrors = error.format();
+            return c.json({ message: 'Validation error', errors: formattedErrors }, UNPROCESSABLE_ENTITY);
         }
         return c.json({ error }, UNPROCESSABLE_ENTITY);
     }
@@ -38,13 +38,11 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
     try {
         const userId = Number(c.req.param("user_id"));
-        if (!userId) {
+        if (!userId)
             return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
-        }
         const user = await getRecordById(users, userId);
-        if (!user) {
+        if (!user)
             throw new NotFoundException(USER_NOT_FOUND);
-        }
         return sendResponse(c, OK, USER_FETCHED, user);
     }
     catch (error) {
@@ -102,9 +100,9 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
         return sendResponse(c, OK, USER_UPDATED, result);
     }
     catch (error) {
-        if (error instanceof ZodError) {
-            const errorMessage = error.errors?.[0]?.message || "Validation error";
-            return c.json({ message: errorMessage }, NOT_FOUND);
+        if (error instanceof z.ZodError) {
+            const formattedErrors = error.format();
+            return c.json({ message: 'Validation error', errors: formattedErrors }, UNPROCESSABLE_ENTITY);
         }
         return c.json({ error }, UNPROCESSABLE_ENTITY);
     }

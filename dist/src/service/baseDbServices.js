@@ -1,4 +1,5 @@
-import { asc, eq, getTableName, sql } from "drizzle-orm";
+import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
+import { users } from "../database/schemas/users";
 import db from "../database/db";
 export async function createRecord(table, record) {
     const result = await db
@@ -37,35 +38,6 @@ export async function getAllRecords(page, page_size, table, filter) {
         data: result,
     };
 }
-// export const getAllRecords = async <DBRecordRow>(
-//   curent_page: number,
-//   page_size: number,
-//   table: DBTable,
-//   filterId?: number
-// ) => {
-//   let baseQuery = db.select().from(table).$dynamic();
-//   let countQuery = db.select({ total_records: sql<number>`count(*)` }).from(table).$dynamic();
-//   if (filterId !== undefined) {
-//     const whereCondition = eq(table.id, filterId);
-//     baseQuery = baseQuery.where(whereCondition);
-//     countQuery = countQuery.where(whereCondition);
-//   }
-//   const result = await baseQuery
-//     .orderBy(asc(table.id))
-//     .limit(page_size)
-//     .offset((curent_page - 1) * page_size);
-//   const [{ total_records }] = await countQuery;
-//   const totalPages = Math.ceil(total_records / page_size);
-//   return {
-//     total_records: Number(total_records),
-//     curent_page,
-//     page_size,
-//     totalPages,
-//     next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
-//     prev_page: curent_page <= 1 ? null : curent_page - 1,
-//     data: result,
-//   };
-// };
 // delete
 export async function deleteRecordById(table, id) {
     const columnInfo = sql.raw(`${getTableName(table)}.id`);
@@ -86,4 +58,44 @@ export async function updateRecordById(table, record, id) {
         .where(eq(columnInfo, id))
         .returning();
     return updatedRecord;
+}
+export async function getPaginatedRecords(table, curent_page, page_size, username, id) {
+    let filterCondition = undefined;
+    if (table === users) {
+        if (username && id !== undefined) {
+            filterCondition = and(or(like(users.first_name, `%${username}%`), like(users.email, `%${username}%`)), eq(users.id, id));
+        }
+        else if (username) {
+            filterCondition = or(like(users.first_name, `%${username}%`), like(users.email, `%${username}%`));
+        }
+        else if (id !== undefined) {
+            filterCondition = eq(users.id, id);
+        }
+    }
+    else {
+        if (id !== undefined) {
+            filterCondition = eq(table.id, id);
+        }
+    }
+    const result = await db
+        .select()
+        .from(table)
+        .where(filterCondition)
+        .orderBy(asc(table.id))
+        .limit(page_size)
+        .offset((curent_page - 1) * page_size);
+    const [{ total_records }] = await db
+        .select({ total_records: sql `count(*)` })
+        .from(table)
+        .where(filterCondition);
+    const totalPages = Math.ceil(total_records / page_size);
+    return {
+        total_records: Number(total_records),
+        curent_page,
+        page_size,
+        totalPages,
+        next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
+        prev_page: curent_page <= 1 ? null : curent_page - 1,
+        data: result,
+    };
 }

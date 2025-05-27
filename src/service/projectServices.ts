@@ -1,9 +1,11 @@
 import { and, asc, count, eq } from "drizzle-orm";
 
 import db from "../database/db";
-import { projects } from "../database/schemas/projects";
+import { NewProject, projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
+import{ValidatedCreateProject} from "../validations/projectValidations"
+
 
 // all projects
 export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
@@ -52,20 +54,62 @@ export async function getAllProjects(page: number, page_size: number, user_id: n
   };
 }
 
-// check project exist or not
-export async function isProjectExist(title: string) {
-  const existingProject = await db
-    .select()
-    .from(projects)
-    .where(eq(projects.title, title));
-  return existingProject;
-}
+// // check project exist or not
+// export async function isProjectExist(title: string) {
+//   const existingProject = await db
+//     .select()
+//     .from(projects)
+//     .where(eq(projects.title, title));
+//   return existingProject;
+// }
 
-// check if project is existing with id
-export async function deletedProjectById(projectId: number) {
-  const result = await db
-    .select()
-    .from(projects)
-    .where(eq(projects.id, projectId));
-  return result[0];
-}
+// // check if project is existing with id
+// export async function deletedProjectById(projectId: number) {
+//   const result = await db
+//     .select()
+//     .from(projects)
+//     .where(eq(projects.id, projectId));
+//   return result[0];
+// }
+
+
+
+
+       
+
+export const createProject = async (projectData: NewProject) => {
+    const project = await db.insert(projects).values(projectData).returning();
+    return project[0];
+};
+export const isProjectExist = async (project_id: number) => {
+    const existingProject = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.id, project_id));
+
+    return existingProject.length > 0;
+};
+
+export const createNewProject = async (validProjectReq: ValidatedCreateProject) => {
+    const { project_id, ...projectData } = validProjectReq;
+    if (validProjectReq.project_id !== undefined) {
+        const exists = await isProjectExist(validProjectReq.project_id);
+    } else {
+        throw new Error("Project ID is undefined.");
+    }
+
+
+    //  if not Create the project
+    const project = await createProject(projectData);
+
+    // assign  users to the new project
+    const userProjectData = validProjectReq.userIDs.map((userId: number) => ({
+
+        user_id: userId,
+        project_id: project.id,
+    }));
+
+    await db.insert(user_projects).values(userProjectData);
+
+    return project;
+};

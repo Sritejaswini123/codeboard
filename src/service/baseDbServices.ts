@@ -2,9 +2,10 @@ import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
 
 import type { CommitsTable, NewCommit } from "../database/schemas/commits";
 import type { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
-import { users, type NewUser, type User, type UsersTable } from "../database/schemas/users";
+import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
+import { users } from "../database/schemas/users";
 
 type DBTable = UsersTable | ProjectsTable | CommitsTable;
 type NewDBRecord = NewUser | NewProject | NewCommit;
@@ -43,51 +44,15 @@ export async function getAllRecords<DBRecordRow>(page: number, page_size: number
   const totalPages = Math.ceil(total_records / page_size);
 
   return {
-    total_records: Number(total_records),
+   total_records: Number(total_records),
     page,
     page_size,
     totalPages,
-    next_page: page >= totalPages || totalPages === 0 ? null : page + 1,
-    prev_page: page <= 1 ? null : page - 1,
+    next_page: page >= totalPages || totalPages===0 ?null:page+1,
+    prev_page: page <= 1 ? null: page - 1,
     data: result,
   };
 }
-
-// export const getAllRecords = async <DBRecordRow>(
-//   curent_page: number,
-//   page_size: number,
-//   table: DBTable,
-//   filterId?: number
-// ) => {
-
-//   let baseQuery = db.select().from(table).$dynamic();
-//   let countQuery = db.select({ total_records: sql<number>`count(*)` }).from(table).$dynamic();
-
-//   if (filterId !== undefined) {
-//     const whereCondition = eq(table.id, filterId);
-//     baseQuery = baseQuery.where(whereCondition);
-//     countQuery = countQuery.where(whereCondition);
-//   }
-
-//   const result = await baseQuery
-//     .orderBy(asc(table.id))
-//     .limit(page_size)
-//     .offset((curent_page - 1) * page_size);
-
-//   const [{ total_records }] = await countQuery;
-
-//   const totalPages = Math.ceil(total_records / page_size);
-
-//   return {
-//     total_records: Number(total_records),
-//     curent_page,
-//     page_size,
-//     totalPages,
-//     next_page: curent_page >= totalPages || totalPages === 0 ? null : curent_page + 1,
-//     prev_page: curent_page <= 1 ? null : curent_page - 1,
-//     data: result,
-//   };
-// };
 
 // delete
 export async function deleteRecordById<DBRecordRow>(table: DBTable, id: number) {
@@ -112,38 +77,36 @@ export async function updateRecordById<DBRecordRow>(table: DBTable, record: NewD
   return updatedRecord;
 }
 
-
-
-
-
-
 export async function getPaginatedRecords(
   table: DBTable,
   curent_page: number,
   page_size: number,
   username?: string,
-  id?: number
+  id?: number,
 ) {
-  let filterCondition = undefined;
+  let filterCondition;
 
   if (table === users) {
     if (username && id !== undefined) {
       filterCondition = and(
         or(
           like(users.first_name, `%${username}%`),
-          like(users.email, `%${username}%`)
+          like(users.email, `%${username}%`),
         ),
-        eq(users.id, id)
+        eq(users.id, id),
       );
-    } else if (username) {
+    }
+    else if (username) {
       filterCondition = or(
         like(users.first_name, `%${username}%`),
-        like(users.email, `%${username}%`)
+        like(users.email, `%${username}%`),
       );
-    } else if (id !== undefined) {
+    }
+    else if (id !== undefined) {
       filterCondition = eq(users.id, id);
     }
-  } else {
+  }
+  else {
     if (id !== undefined) {
       filterCondition = eq(table.id, id);
     }

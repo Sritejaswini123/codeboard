@@ -1,46 +1,68 @@
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 
 import type { NewProject, Project } from "../database/schemas/projects";
 
-import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_NOT_FOUND, PROJECTS_FETCHED } from "../constants/appMessages";
+import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_NOT_FOUND, PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { projects } from "../database/schemas/projects";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
-import { getAllProjects, isProjectExist } from "../service/projectServices";
+import { createNewProject, getAllProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
 
 // createproject
 
+// export const createProjectHandlers = factory.createHandlers(async (c) => {
+//   try {
+//     const reqBody = await c.req.json();
+//     const validProjectReq = vCreateProject.parse(reqBody);
+//     const projectData: NewProject = {
+//       ...validProjectReq,
+//     };
+//     const existingProject = await isProjectExist(validProjectReq.title);
+
+//     if (!existingProject) {
+//       throw new NotFoundException(PROJECT_EXIST);
+//     }
+
+//     const Projcet = await createRecord<Project>(projects, projectData);
+
+//     return sendResponse(c, CREATED, PROJECT_CREATED, Projcet);
+//   }
+//   catch (error) {
+//      if (error instanceof z.ZodError) {
+//           const formattedErrors = Object.fromEntries(
+//             error.errors.map(({path,message})=>[path[0],message])
+//           );
+//           return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+//         }
+//     throw error;
+//   }
+// },
+// );
+
+
+//createproject
+
 export const createProjectHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
     const validProjectReq = vCreateProject.parse(reqBody);
-    const projectData: NewProject = {
-      ...validProjectReq,
-    };
-    const existingProject = await isProjectExist(validProjectReq.title);
 
-    if (!existingProject) {
-      throw new NotFoundException(PROJECT_EXIST);
+    const project = await createNewProject( validProjectReq);
+    return sendResponse(c, CREATED, PROJECT_CREATED, project);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formattedErrors = Object.fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      );
+      return sendResponse(c, UNPROCESSABLE_ENTITY, "Validation errors", formattedErrors);
     }
-
-    const Projcet = await createRecord<Project>(projects, projectData);
-
-    return sendResponse(c, CREATED, PROJECT_CREATED, Projcet);
+    throw error;
   }
-  catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors?.[0]?.message || "Validation error";
-      return c.json({ message: errorMessage }, NOT_FOUND);
-    }
-
-    return c.json({ error }, UNPROCESSABLE_ENTITY);
-  }
-},
-);
+});
 
 // get all projects handler
 export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
@@ -56,3 +78,5 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
   }
 });
+
+

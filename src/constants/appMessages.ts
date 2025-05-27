@@ -10,6 +10,8 @@ export const COMMIT_NOT_FOUND = "Commits not found";
 
 export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
+export const VALIDATION_ERRORS = "Validation Errors";
+
 export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 
 export const EMPTY_DB_DATA = "Empty data to save in database";
@@ -51,3 +53,5 @@ export const PROJECT_CREATED = "Project created successfully";
 export const COMMIT_UPDATED = "Commit updated successfully";
 
 export const COMMIT_DELETED = "Commit deleted successfully";
+
+export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
