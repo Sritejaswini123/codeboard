@@ -16,6 +16,8 @@ export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 
 export const EMPTY_DB_DATA = "Empty data to save in database";
 
+export const FILE_NAME_TYPE_REQUIRED='fileName and fileType are required'
+
 export const DB_ID_INVALID = "Invalid database ID";
 
 export const DB_RECORD_NOT_FOUND = "Database record not found";
