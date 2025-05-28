@@ -19,11 +19,6 @@ export const users = pgTable("users", {
   index("users_phone_idx").on(t.phone),
 ]);
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 455572aa48837731d32bec2487086e75434cd12a
 export type UsersTable = typeof users;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
