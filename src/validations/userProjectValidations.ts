@@ -2,7 +2,7 @@
 import z from "zod";
 
 export const vCreateUserProject = z.object({
-  user_id: z.number({ required_error: "user_id is required" }),
+user_id: z.array(z.number()).min(1, "At least one user must be provided"),
   project_id: z.number({ required_error: "project_id is required" }),
 });
 

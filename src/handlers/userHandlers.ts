@@ -32,7 +32,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       return sendResponse(c,UNPROCESSABLE_ENTITY,"validation errors",formattedErrors)
 
     }
-    return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
+throw error;
   }
 });
 // get user by id
