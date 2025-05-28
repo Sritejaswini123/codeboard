@@ -10,7 +10,6 @@ export const getUploadPresignedUrl =factory.createHandlers(async(c)=>{
     try {
     const { fileName, fileType } = await c.req.json();
     if (!fileName || !fileType)return c.json({ message: FILE_NAME_TYPE_REQUIRED }, NOT_FOUND);
-    
     const { uploadUrl, fileKey } = await userProfileS3Service.generateUploadPresignedUrl(fileName, fileType);
     return c.json({ uploadUrl, fileKey });
   } catch (error) {

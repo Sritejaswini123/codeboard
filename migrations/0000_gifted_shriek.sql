@@ -43,6 +43,7 @@ CREATE TABLE "users" (
 	"deleted_at" timestamp,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
+
 --> statement-breakpoint
 ALTER TABLE "commits" ADD CONSTRAINT "commits_user_project_id_user_projects_id_fk" FOREIGN KEY ("user_project_id") REFERENCES "public"."user_projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_projects" ADD CONSTRAINT "user_projects_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

@@ -2,16 +2,7 @@ import { z, ZodError } from "zod";
 
 import type { Commit, NewCommit } from "../database/schemas/commits";
 
-import {
-  COMMIT_CREATED,
-  COMMIT_DELETED,
-  COMMIT_EXIST,
-  COMMIT_ID_REQUIRED,
-  COMMIT_NOT_FOUND,
-  COMMIT_UPDATED,
-  COMMITS_FETCHED,
-  VALIDATION_ERRORS,
-} from "../constants/appMessages";
+import {COMMIT_CREATED,COMMIT_DELETED,COMMIT_EXIST,COMMIT_ID_REQUIRED,COMMIT_NOT_FOUND, COMMIT_UPDATED,COMMITS_FETCHED,VALIDATION_ERRORS,} from "../constants/appMessages";
 import {
   BAD_REQUEST,
   CREATED,
@@ -72,7 +63,7 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
 export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
-    console.log("hello1----------->", page);
+    
 
     const page_size = Number(c.req.query("page_size"));
     const project_id = c.req.query("project_id")

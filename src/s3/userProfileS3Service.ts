@@ -31,6 +31,7 @@ class UserProfileS3Service {
   }
 
   generateUploadPresignedUrl = async (fileKey: string, fileType: string) => {
+  
     // Prefix for user profile pictures folder
     fileKey = 'user-profile-pics/' + fileKey;
 
