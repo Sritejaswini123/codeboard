@@ -55,3 +55,7 @@ export const COMMIT_UPDATED = "Commit updated successfully";
 export const COMMIT_DELETED = "Commit deleted successfully";
 
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
+
+export const REPOSITORY_EXIST = "Repository already exists";
+
+export const REPOSITORY_ADDED = "Repository added successfully "

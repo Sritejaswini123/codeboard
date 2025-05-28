@@ -1,15 +1,16 @@
 import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
 
-import type { CommitsTable, NewCommit } from "../database/schemas/commits";
+import type { Commit, CommitsTable, NewCommit } from "../database/schemas/commits";
 import type { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
 import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
+import { NewRepository, Repository, RepositoryTable } from "../database/schemas/repositories";
 
-type DBTable = UsersTable | ProjectsTable | CommitsTable;
-type NewDBRecord = NewUser | NewProject | NewCommit;
-type DBRecordRow = User | Project | CommitsTable;
+type DBTable = UsersTable | ProjectsTable | CommitsTable | RepositoryTable;
+type NewDBRecord = NewUser | NewProject | NewCommit | NewRepository;
+type DBRecordRow = User | Project | Commit | Repository;
 
 export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord) {
   const result = await db
@@ -70,7 +71,7 @@ export async function updateRecordById<DBRecordRow>(table: DBTable, record: NewD
     .update(table)
     .set({
       ...record,
-      updated_at: new Date(),
+      // updated_at: new Date(),
     })
     .where(eq(columnInfo, id))
     .returning();

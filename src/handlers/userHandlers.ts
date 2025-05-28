@@ -10,6 +10,7 @@ import { createRecord, getAllRecords, getRecordById, updateRecordById } from "..
 import { deleteUserById, getAllUsers, isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
+import ConflictException from "../exceptions/conflictException";
 
 // save record
 export const createUserHandlers = factory.createHandlers(async (c) => {
@@ -18,12 +19,13 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     const validUserReq = vCreateUser.parse(reqBody);
     const userData: NewUser = {
       ...validUserReq,
-      dob: new Date(validUserReq.dob),
-      doj: new Date(validUserReq.doj),
+      // dob: new Date(validUserReq.dob),
+      // doj: new Date(validUserReq.doj),
     };
     const existingUser = await isUserExist(validUserReq.email);
-    if (!existingUser) {
-      throw new NotFoundException(USER_EXIST);
+    if (existingUser) {
+      // throw new NotFoundException(USER_EXIST);
+      throw new ConflictException(USER_EXIST);
     }
     const user = await createRecord<User>(users, userData);
     return sendResponse(c, CREATED, USER_CREATED, user);
@@ -41,29 +43,29 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 });
 
 // get by id
-export const getUserByIdHandlers = factory.createHandlers(async (c) => {
-  try {
-    const userId = Number(c.req.param("user_id"));
+// export const getUserByIdHandlers = factory.createHandlers(async (c) => {
+//   try {
+//     const userId = Number(c.req.param("user_id"));
 
-    if (!userId)return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+//     if (!userId)return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
 
-    const user = await getRecordById(users, userId);
+//     const user = await getRecordById(users, userId);
 
-    if (!user)throw new NotFoundException(USER_NOT_FOUND);
+//     if (!user)throw new NotFoundException(USER_NOT_FOUND);
 
-    return sendResponse(c, OK, USER_FETCHED, user);
-  }
-  catch (error) {
+//     return sendResponse(c, OK, USER_FETCHED, user);
+//   }
+//   catch (error) {
 
-    throw error;
-  }
-});
+//     throw error;
+//   }
+// });
 
 //get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
-    const page = Number(c.req.query("page")) || 1;
-    const page_size = Number(c.req.query("page_size")) || 10;
+    const page = Number(c.req.query("page"));
+    const page_size = Number(c.req.query("page_size"));
     const userId = c.req.query("user_id");
     const filter = userId ? eq(users.id, Number.parseInt(userId)) : undefined;
     console.log("filters fetched: ", filter);
@@ -96,7 +98,7 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-// update record
+// update user
 export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param("user_id"));

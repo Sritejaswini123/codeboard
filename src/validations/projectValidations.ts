@@ -11,13 +11,13 @@ export const vCreateProject = z.object({
     invalid_type_error: "Description must be a string",
   }).min(10, { message: "Description is required" }),
   
-  userIDs:z.array(z.number()).min(1,{message:"userId is required"}),
+  // userIDs:z.array(z.number()).min(1,{message:"userId is required"}),
   
-  project_id:z.number({required_error: "Project ID is required",
-    invalid_type_error: "Project ID must be a number",}).optional()
+  // project_id:z.number({required_error: "Project ID is required",
+  //   invalid_type_error: "Project ID must be a number",}).optional()
   
   
 });
-export const vUpdateProject =vCreateProject
+// export const vUpdateProject =vCreateProject
 export type ValidatedCreateProject = z.infer<typeof vCreateProject>;
-export type validatedProjectData=z.infer<typeof vUpdateProject>;
+// export type validatedProjectData=z.infer<typeof vUpdateProject>;

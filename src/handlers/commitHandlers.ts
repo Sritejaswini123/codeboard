@@ -1,7 +1,5 @@
 import { z, ZodError } from "zod";
-
 import type { Commit, NewCommit } from "../database/schemas/commits";
-
 import {
   COMMIT_CREATED,
   COMMIT_DELETED,
@@ -75,15 +73,9 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
     console.log("hello1----------->", page);
 
     const page_size = Number(c.req.query("page_size"));
-    const project_id = c.req.query("project_id")
-      ? Number(c.req.query("project_id"))
-      : undefined;
-    const user_id = c.req.query("user_id")
-      ? Number(c.req.query("user_id"))
-      : undefined;
-    const repository_id = c.req.query("repository_id")
-      ? Number(c.req.query("repository_id"))
-      : undefined;
+    const project_id = Number(c.req.query("project_id"));
+    const user_id =Number(c.req.query("user_id"));
+    const repository_id =  Number(c.req.query("repository_id"));
     const commits = await getAllCommits(
       page,
       page_size,

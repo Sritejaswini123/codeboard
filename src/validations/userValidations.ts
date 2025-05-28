@@ -32,12 +32,14 @@ export const vCreateUser = z.object({
     required_error: "Date of birth is required",
     invalid_type_error: "Date of birth must be a string",
   })
-    .min(1, { message: "Date of birth is required" }),
+    .min(1, { message: "Date of birth is required" })
+    .transform((val) => new Date(val)) ,
 
   doj: z.string({
     required_error: "Date of joining is required",
     invalid_type_error: "Date of joining must be a string",
-  }).min(1, { message: "Date of joining is required" }),
+  }).min(1, { message: "Date of joining is required" })
+  .transform((val) => new Date(val)),
 
   designation: z.string({
     required_error: "Designation is required",

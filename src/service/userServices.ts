@@ -7,10 +7,10 @@ import { users } from "../database/schemas/users";
 import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
 
 // save user
-export async function createUser(userData: NewUser) {
-  const user = await db.insert(users).values(userData).returning();
-  return user[0];
-}
+// export async function createUser(userData: NewUser) {
+//   const user = await db.insert(users).values(userData).returning();
+//   return user[0];
+// }
 
 // get user by id
 export function getUserById(userId: number) {
@@ -37,7 +37,8 @@ export async function deleteUserById(userId: number) {
   return await deleteRecordById(users, userId);
 }
 
-// update user by id
-export async function updateUserById(userData: NewUser, userId: number) {
-  return await updateRecordById(users, userData, userId);
-}
+// // update user by id
+// export async function updateUserById(userData: NewUser, userId: number) {
+//   return await updateRecordById(users, userData, userId);
+// }
+

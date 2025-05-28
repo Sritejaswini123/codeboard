@@ -4,10 +4,10 @@ import db from "../database/db";
 import { NewProject, projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
-import{ValidatedCreateProject} from "../validations/projectValidations"
+import { USER_NOT_FOUND } from "../constants/appMessages";
 
 
-// all projects
+// get All projects
 export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
   const offset = (page - 1) * page_size;
 
@@ -54,16 +54,7 @@ export async function getAllProjects(page: number, page_size: number, user_id: n
   };
 }
 
-// // check project exist or not
-// export async function isProjectExist(title: string) {
-//   const existingProject = await db
-//     .select()
-//     .from(projects)
-//     .where(eq(projects.title, title));
-//   return existingProject;
-// }
-
-// // check if project is existing with id
+//delete project
 // export async function deletedProjectById(projectId: number) {
 //   const result = await db
 //     .select()
@@ -71,45 +62,56 @@ export async function getAllProjects(page: number, page_size: number, user_id: n
 //     .where(eq(projects.id, projectId));
 //   return result[0];
 // }
-
-
-
-
-       
-
+ 
+//create project
 export const createProject = async (projectData: NewProject) => {
     const project = await db.insert(projects).values(projectData).returning();
     return project[0];
 };
-export const isProjectExist = async (project_id: number) => {
+//is project exists
+export const isProjectExist = async (project_title: string) => {
     const existingProject = await db
         .select()
         .from(projects)
-        .where(eq(projects.id, project_id));
+        .where(eq(projects.title, project_title));
 
     return existingProject.length > 0;
 };
 
-export const createNewProject = async (validProjectReq: ValidatedCreateProject) => {
-    const { project_id, ...projectData } = validProjectReq;
-    if (validProjectReq.project_id !== undefined) {
-        const exists = await isProjectExist(validProjectReq.project_id);
-    } else {
-        throw new Error("Project ID is undefined.");
-    }
+//user projects data 
+export async function getUserProjects(userId: number, includeProjects: boolean) {
+  const user = await db
+    .select({
+      id: users.id,
+      name: users.first_name,
+      email:users.email
+    })
+    .from(users)
+    .where(eq(users.id, userId));
 
+  if (user.length === 0) {
+    return USER_NOT_FOUND;
+  }
 
-    //  if not Create the project
-    const project = await createProject(projectData);
+  if (!includeProjects) {
+    return { user: user[0] };
+  }
 
-    // assign  users to the new project
-    const userProjectData = validProjectReq.userIDs.map((userId: number) => ({
+  const userProjects = await db
+    .select({
+      id: projects.id,
+      name: projects.title,
+      description: projects.description,
+      is_active: projects.is_active,
+    })
+    .from(user_projects)
+    .innerJoin(projects, eq(user_projects.project_id, projects.id))
+    .where(eq(user_projects.user_id, userId));
 
-        user_id: userId,
-        project_id: project.id,
-    }));
+  return {
+    total_records:(userProjects.length),
+    user: user[0],
+    userProjects: userProjects.length > 0 ? userProjects : [],
+  };
+}
 
-    await db.insert(user_projects).values(userProjectData);
-
-    return project;
-};

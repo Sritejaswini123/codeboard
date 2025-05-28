@@ -6,7 +6,6 @@ import factory from "./factory.js";
 import commitRoutes from "./routes/commitRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import seedRoute from "./routes/seederRoutes.js";
-import userProject from "./routes/userProjectRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
@@ -27,7 +26,6 @@ console.log("inside app");
 app.route("/", userRoutes);
 app.route("/", projectRoutes);
 app.route("/", seedRoute);
-app.route("/", userProject);
 app.route("/", commitRoutes);
 
 projectRoutes;
