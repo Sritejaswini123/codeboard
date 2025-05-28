@@ -1,7 +1,7 @@
-//user_projects 
+// user_projects
 import { index, integer, pgTable, serial } from "drizzle-orm/pg-core";
-import { projects } from "./projects";
 import { timestamps } from "./helperColumns";
+import { projects } from "./projects";
 import { users } from "./users";
 export const user_projects = pgTable("user_projects", {
     id: serial().primaryKey(),
@@ -10,5 +10,5 @@ export const user_projects = pgTable("user_projects", {
     ...timestamps,
 }, t => [
     index("user_projects_user_id_idx").on(t.user_id),
-    index("user_projects_project_id_idx").on(t.project_id)
+    index("user_projects_project_id_idx").on(t.project_id),
 ]);

@@ -1,9 +1,13 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "id": "045ee8ed-cc1d-4691-a287-f8db226a4d9a",
 =======
   "id": "4e542b09-4e39-44e4-bc10-d134acf7b42a",
 >>>>>>> origin/code/refactor
+=======
+  "id": "bccd5a7a-5d39-4c18-b6b0-3b7e4228c724",
+>>>>>>> 455572aa48837731d32bec2487086e75434cd12a
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -155,9 +159,14 @@
       "isRLSEnabled": false
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "public.projectsSchema": {
       "name": "projectsSchema",
+=======
+    "public.": {
+      "name": "",
+>>>>>>> 455572aa48837731d32bec2487086e75434cd12a
       "schema": "",
       "columns": {
         "id": {

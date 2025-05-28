@@ -1,20 +1,11 @@
-import { and, eq, asc, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
-import { users } from "../database/schemas/users";
 import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
-// //save commit
-// export const createcommit=async (commitData: NewCommit)=>{
-//     const  commit =await db.insert(commits).values(commitData).returning();
-//     return commit[0];
-// }
-// //get commit by id
-// export const getCommitById =(commitId: number) => {
-//   return  getRecordById(commits, commitId);
-// };
-//get all
-export const getAllCommits = async (page, page_size, project_id, user_id) => {
+import { users } from "../database/schemas/users";
+// get all
+export async function getAllCommits(page, page_size, project_id, user_id) {
     const offset = (page - 1) * page_size;
     // Check if user exists
     if (user_id) {
@@ -47,7 +38,7 @@ export const getAllCommits = async (page, page_size, project_id, user_id) => {
     if (user_id)
         conditions.push(eq(users.id, user_id));
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-    //query
+    // query
     const data = await db
         .select({
         id: commits.id,
@@ -72,7 +63,7 @@ export const getAllCommits = async (page, page_size, project_id, user_id) => {
     // Count query
     const [{ total }] = await db
         .select({
-        total: sql `count(*)`
+        total: sql `count(*)`,
     })
         .from(commits);
     const totalPages = Math.ceil(total / page_size);
@@ -85,4 +76,11 @@ export const getAllCommits = async (page, page_size, project_id, user_id) => {
         prev_page: page > 1 ? page - 1 : null,
         data,
     };
-};
+}
+export async function checkCommitExist(id) {
+    const result = await db
+        .select()
+        .from(commits)
+        .where(eq(commits.id, id));
+    return result[0];
+}

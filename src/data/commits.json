@@ -1,0 +1,79 @@
+[
+  {
+    "user_project_id": 2,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/8104ca6c0535d6eccb677227e82a6a0c923f3fa5",
+    "commit_name": "Updated update device api",
+    "lines_of_code": 10,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 2,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/2e01e4a17f20d3d3a85a151b3c01c7cdd0bc70db",
+    "commit_name": "Added queries to get location name in all responses",
+    "lines_of_code": 33,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 2,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/6bd1ec213c98e6e79f082dd4ae003ef08e84e5cd",
+    "commit_name": "Updated add device schema",
+    "lines_of_code": 12,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 2,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/138b3b7b95f5a5ff100a5aa6d34a7b59114a79e8",
+    "commit_name": "Updated user controller",
+    "lines_of_code": 18,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 3,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/11bb44a6a1fb2532c9dc514f61e68c2d818de072",
+    "commit_name": "Updated find Devices UserId ForWeb",
+    "lines_of_code": 21,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 3,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/62c4b4955140d8c64eb3642cfbed8e799b109e97",
+    "commit_name": "Updated To Relation Code",
+    "lines_of_code": 8,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 3,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/0a7212c78556034d2aed631f081bb0848fff6fa5",
+    "commit_name": "Update the code of List Devices Mobile",
+    "lines_of_code": 19,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 3,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/7a9ce2b85cc14e1bc7f8c2a2761516d202fa0042",
+    "commit_name": "Updated List Devices",
+    "lines_of_code": 17,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 3,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/d1e020460a7045a515e88b23c3a6ac6ddee032ba",
+    "commit_name": "Update List Users code",
+    "lines_of_code": 22,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 1,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/340966bf9c1d6042934cd2e1d6b144f8e1b45c99",
+    "commit_name": "udpated device contoller | added typescript and updated response",
+    "lines_of_code": 27,
+    "project_link": "api-apfc.peepul.farm"
+  },
+  {
+    "user_project_id": 4,
+    "commit_link": "https://github.com/meghalu-peepulagri/api-apfc.peepul.farm/commit/d914441e6d74e8b0e11f155b31f7ba83111be616",
+    "commit_name": "device module : added basedb service",
+    "lines_of_code": 20,
+    "project_link": "api-apfc.peepul.farm"
+  }
+]

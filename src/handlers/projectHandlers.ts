@@ -1,41 +1,61 @@
-import z, { ZodError } from "zod";
-import { PROJECT_CREATED, PROJECT_DELETEED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND } from "../constants/appMessages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
-import { eq } from "drizzle-orm";
-import { NewProject, Project, projects } from "../database/schemas/projects";
+import { z } from "zod";
+import type { NewProject } from "../database/schemas/projects";
+import { PROJECT_CREATED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, VALIDATION_ERRORS } from "../constants/appMessages";
+import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { projects } from "../database/schemas/projects";
+import { users } from "../database/schemas/users";
+import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { assignUsersToProject, getAllProjects, getProjectById, getUserWithProjects } from "../service/projectServices";
+import { createRecord, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
-import { vCreateProject, vUpdateProject } from "../validations/projectValidations";
-import { createRecord, updateRecordById } from "../service/baseDbServices";
-import { vCreateUserProject } from "../validations/userProjectValidations";
-//get by id
-export const getProjectByIdHandlers = factory.createHandlers(async (c) => {
+import { vCreateProject } from "../validations/projectValidations";
+
+//create new project
+export const createProjectHandlers = factory.createHandlers(async (c) =>{
   try {
-    const projectId = Number(c.req.param("project_id"));
-    if (!projectId) {
-      return sendResponse(c, BAD_REQUEST, PROJECT_ID_REQUIRED);
-    }
-    const project = await getProjectById(projectId);
-    if (!project) {
-      return sendResponse(c, NOT_FOUND, `${PROJECT_NOT_FOUND}with project_id ${projectId}`);
-    }
-    return sendResponse(c, OK, PROJECTS_FETCHED, project);
+    const reqBody=await c.req.json();
+  
+    const validatedProject=vCreateProject.parse(reqBody);
+
+  const projectData:NewProject={
+    ...validatedProject,
   }
-  catch (error) {
-    return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+  const projectId=Number(projectData.id);
+  
+  const checkProjectIdExist=isProjectExist(projectId)
+
+  if(!checkProjectIdExist)throw new NotFoundException(PROJECT_NOT_FOUND);
+    
+  const project=await createRecord(projects,projectData);
+
+    return sendResponse(c, CREATED, PROJECT_CREATED, project);
+  } catch (error) {
+
+     if (error instanceof z.ZodError) {
+      const formattedErrors = Object
+      .fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      )
+      return sendResponse(c,UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+    }
+    throw error;
   }
 });
 
 // get all projects handler
 export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
   try {
-    const page = Number(c.req.query("page"))||1;
+    const page = Number(c.req.query("page")) || 1;
+
     const page_size = Number(c.req.query("page_size"))||5;
-    const projectId = c.req.query("project_id");
-    const filter = projectId ? eq(projects.id, parseInt(projectId)) : undefined;
-    const projectData = await getAllProjects(page, page_size, projects, filter);
-    console.log("Projects fetched: ", projectData);
+
+    const user_id = Number(c.req.query("user_id"));
+
+    const project_id = Number(c.req.query("project_id"));
+
+    const projectData = await getAllProjects(page, page_size, user_id, project_id);
+
     return sendResponse(c, OK, PROJECTS_FETCHED, projectData);
   }
   catch (error) {
@@ -43,113 +63,79 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-//createproject
-
-export const createProjectHandlers = factory.createHandlers(async (c) => {
+//user+Profile
+export const userProjectsProfileHandler = factory.createHandlers(async (c) => {
   try {
-    const reqBody = await c.req.json();
-    const validProjectReq = vCreateProject.parse(reqBody);
-    const projectData: NewProject = {
-      ...validProjectReq
-    };
+    const userId = Number(c.req.param("id"));
 
-    const project = await createRecord<Project>(projects, projectData);
-    return sendResponse(c, CREATED, PROJECT_CREATED, project);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const formattedErrors = Object.fromEntries(
-        error.errors.map(({ path, message }) => [path[0], message])
-      );
-      return sendResponse(c, UNPROCESSABLE_ENTITY, "validation errors", formattedErrors)
+    if (!userId) return c.json({message:USER_ID_REQUIRED})
 
-    }
-    return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
-  }
-});
+    const isUserExist = await getRecordById(users, userId);
 
-// Update project by ID handler
-export const updateProjectByIdHandlers = factory.createHandlers(async (c) => {
-  try {
-    const projectId = Number(c.req.param("project_id"));
-
-    if (isNaN(projectId)) {
-      return sendResponse(c, BAD_REQUEST, PROJECT_ID_REQUIRED);
-    }
-
-    const reqBody = await c.req.json();
-
-    const validatedProjectData = vUpdateProject.parse(reqBody);
-
-    const updatedProject = await updateRecordById(projects, validatedProjectData, projectId);
-
-    if (!updatedProject) {
-      return sendResponse(c, NOT_FOUND, `${PROJECT_NOT_FOUND} with project_id ${projectId}`);
-    }
-
-    return sendResponse(c, OK, PROJECTS_FETCHED, updatedProject);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const formattedErrors = Object.fromEntries(
-        error.errors.map(({ path, message }) => [path[0], message])
-      );
-      return sendResponse(c, UNPROCESSABLE_ENTITY, "Validation errors", formattedErrors);
-    }
-
-    throw error
-  }
-});
-//get user by ID with projects
-export const getUserByIdHandlers = factory.createHandlers(async (c) => {
-  try {
-    const userIdParam = c.req.param("user_id");
-
-    if (!userIdParam) {
-      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
-    }
-
-    const userId = parseInt(userIdParam);
-
-    if (isNaN(userId)) {
-      return sendResponse(c, BAD_REQUEST, "Invalid user ID");
-    }
-
-    //const page = Number(c.req.query("page"));
-    //const page_size = Number(c.req.query("page_size"));
+    if (!isUserExist) return c.json({status: NOT_FOUND,success: false,message:`${USER_NOT_FOUND} with id ${userId}`})
+     
     const includeProjects = c.req.query("projects") === "true";
 
-    const user = await getUserWithProjects(userId, includeProjects);
+    const result = await getUserProjects(userId, includeProjects);
 
-    if (!user) {
-      return sendResponse(c, NOT_FOUND, `${USER_NOT_FOUND} with user_id ${userId}`);
-    }
-
-    return sendResponse(c, OK, USER_FETCHED, user);
+    return sendResponse(c, OK, USER_FETCHED, result);
   } catch (error) {
-    console.error("Error in getUserByIdHandlers:", error);
-    return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
+
+    console.log(error);
+
+    throw error;
   }
 });
-//assign users to projects
 
-
-export const assignUsersHandler = factory.createHandlers(async (c) => {
+export const updateproject=factory.createHandlers(async(c)=>{
   try {
-    const reqBody = await c.req.json();
-    const validData = vCreateUserProject.parse(reqBody);
-
-    const { user_id, project_id } = validData;
+    const projectId=Number(c.req.param('id'))
+    
+    if(!projectId)return c.json(PROJECT_ID_REQUIRED);
+    
+    const reqBody=await c.req.json();
+    
+    const validateUpdatedProject=vCreateProject.parse(reqBody);
+    
+    const checkProjectExist=await isProjectExist(projectId);
+    
+    if(!checkProjectExist)return c.json({status: NOT_FOUND,success: false,message:`${PROJECT_NOT_FOUND} with id ${projectId}`});
+    
+    const projectData:NewProject={
+    ...validateUpdatedProject
+    }
+    const updateProject=await updateRecordById(projects,projectData,projectId);
+    
+    return sendResponse(c, OK, PROJECT_UPDATED, updateProject);
+  } catch (error) {
+     if (error instanceof z.ZodError) {
+      const formattedErrors = Object
+      .fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      )
+      return sendResponse(c,UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+    }
+    throw error;
+  }
+})
 
     const result = await assignUsersToProject(user_id, project_id);
 
-    return sendResponse(c, CREATED, "Users processed", result);
+//get project by id
+export const getProjectByIdHandler=factory.createHandlers(async(c)=>{
+  try {
+    const projectId=Number(c.req.param('id'));
+    
+    if(!projectId) return c.json(PROJECT_ID_REQUIRED);
+    
+    const checkProjectExist=await isProjectExist(projectId);
+    
+    if(!checkProjectExist)return c.json({status: NOT_FOUND,success: false,message:`${PROJECT_NOT_FOUND} with id ${projectId}`})
+    
+    const result=await getRecordById(projects,projectId);
+  return sendResponse(c, OK, PROJECT_FETCHED, result);
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      const formattedErrors = Object.fromEntries(
-        error.errors.map(({ path, message }) => [path[0], message])
-      );
-      return sendResponse(c, UNPROCESSABLE_ENTITY, "validation errors", formattedErrors)
-
-    }
-    return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+    
+    throw error;
   }
-});
+})

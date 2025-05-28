@@ -1,41 +1,59 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, asc, count, eq } from "drizzle-orm";
+
 import db from "../database/db";
-import { NewProject, projects, ProjectsTable } from "../database/schemas/projects";
+import { NewProject, projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
-import { getAllRecords, getRecordById, updateRecordById } from "./baseDbServices";
+import{ValidatedCreateProject} from "../validations/projectValidations"
+import { USER_NOT_FOUND } from "../constants/appMessages";
 
-// get projects by id
-export function getProjectById(projectId: number) {
-    return getRecordById(projects, projectId);
+
+// all projects
+export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
+  const offset = (page - 1) * page_size;
+
+  const conditions = [];
+
+  if (user_id) {
+    conditions.push(eq(users.id, user_id));
+  }
+  if (project_id) {
+    conditions.push(eq(projects.id, project_id));
+  }
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const projectData = await db
+    .select({
+      project_id: projects.id,
+      project_name: projects.title,
+      user_id: users.id,
+      user_name: users.first_name,
+      user_email: users.email,
+    })
+    .from(projects)
+    .innerJoin(user_projects, eq(projects.id, user_projects.project_id))
+    .innerJoin(users, eq(users.id, user_projects.user_id))
+    .where(whereClause)
+    .orderBy(asc(projects.id))
+    .limit(page_size)
+    .offset(offset);
+
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(projects);
+
+  const totalPages = Math.ceil(total / page_size);
+
+  return {
+    total_records: total,
+    page,
+    page_size,
+    totalPages,
+    next_page: page < totalPages ? page + 1 : null,
+    prev_page: page > 1 ? page - 1 : null,
+    data: projectData,
+  };
 }
-// get all projects
-export async function getAllProjects(page: number, page_size: number, projects: ProjectsTable, filter: any) {
-    return await getAllRecords(page, page_size, projects, filter);
-}
-//create Project
-export const createProject = async (projectData: NewProject) => {
-    const project = await db.insert(projects).values(projectData).returning();
-    return project[0];
-};
-// export const isProjectExist = async (project_id: number) => {
-//     const existingProject = await db
-//         .select()
-//         .from(projects)
-//         .where(eq(projects.id, project_id));
-
-//     return existingProject.length > 0;
-// };
-
-// export const createNewProject = async (validProjectReq: ValidatedCreateProject) => {
-//     const { project_id, ...projectData } = validProjectReq;
-//     if (validProjectReq.project_id !== undefined) {
-//         const exists = await isProjectExist(validProjectReq.project_id);
-//     } 
-
-
-//         //  if not Create the project
-//         const project = await createProject(projectData);
 
 //         // Check if users are already assigned to the project
 //   const existingUserProjects = await db
@@ -43,115 +61,93 @@ export const createProject = async (projectData: NewProject) => {
 //     .from(user_projects)
 //     .where(eq(user_projects.project_id, project.id));
 
-//   const existingUserIds = existingUserProjects.map((userProject) => userProject.user_id);
-//   const newUserIds = validProjectReq.userIds.filter((userId) => !existingUserIds.includes(userId));
+export const createProject = async (projectData: NewProject) => {
+    const project = await db.insert(projects).values(projectData).returning();
+    return project[0];
+};
 
-//   if (newUserIds.length > 0) {
-//     const userProjectData = newUserIds.map((userId: number) => ({
-//       user_id: userId,
-//       project_id: project.id,
-//     }));
+//project exist
+export const isProjectExist = async (project_id: number) => {
+    const existingProject = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.id, project_id));
 
-//         await db.insert(user_projects).values(userProjectData);
-
-//         return project;
-// }
-//     };
+    return existingProject.length > 0;
+};
 
 //update prooject by id
 export async function updateProjectById(projectId: number, projectData: NewProject) {
     return await updateRecordById(projects, projectData, projectId);
 }
 
-//get usersById with projects
-export const getUserWithProjects = async (
-    userId: number,
-    // page: number,
-    // page_size: number,
-    includeProjects: boolean = false
-) => {
-    // const offset = (page - 1) * page_size;
+export async function getUserProjects(userId: number, includeProjects: boolean) {
+  // one query to get user and optionally projects using join
+  const rows = await db
+    .select({
+      userId: users.id,
+      firstName: users.first_name,
+      lastName: users.last_name,
+      userEmail: users.email,
+      userPhone: users.phone,
+      is_active:users.is_active,
+      doj:users.dob,
+      dob:users.doj,
+      projectId: projects.id,
+      projectName: projects.title,
+      projectDescription: projects.description,
+      projectIsActive: projects.is_active,
+    })
+    .from(users)
+    .leftJoin(user_projects, eq(users.id, user_projects.user_id))
+    .leftJoin(projects, eq(user_projects.project_id, projects.id))
+    .where(eq(users.id, userId));
 
-    // Fetch user data
-    const userResult = await db
-        .select({
-            id: users.id,
-            name: users.first_name,
-            email: users.email,
-        })
-        .from(users)
-        .where(eq(users.id, userId));
+  if (rows.length === 0 || rows[0].userId === undefined) {
+    return USER_NOT_FOUND;
+  }
 
-    if (userResult.length === 0) {
-        return null;
-    }
-
-    const user = userResult[0];
-
-    if (!includeProjects) {
-        return { user };
-    }
-    //get projec data by using joins
-    const projectsResult = await db
-        .select({
-            id: projects.id,
-            title: projects.title,
-            description: projects.description,
-            is_active: projects.is_active,
-            created_at: projects.created_at,
-            updated_at: projects.updated_at,
-        })
-        .from(user_projects)
-        .innerJoin(projects, eq(user_projects.project_id, projects.id))
-        .where(eq(user_projects.user_id, userId))
-    // .limit(page_size)
-    //.offset(offset);
-    const total = projectsResult.length
-
-    //const totalPages = Math.ceil(total / page_size);
-
+  if (!includeProjects) {
+    // return only user info
     return {
-        total_records: total,
-        // page,
-        // page_size,
-        //totalPages,
-        // next_page: page < totalPages ? page + 1 : null,
-        //prev_page: page > 1 ? page - 1 : null,
-        user,
-        projects: projectsResult
+      user: {
+        id: rows[0].userId,
+        first_name: rows[0].firstName,
+        last_name: rows[0].lastName,
+        email: rows[0].userEmail,
+        phone: rows[0].userPhone,
+        doj:rows[0].dob,
+        dob:rows[0].doj,
+        is_active:rows[0].is_active,
+        
+      },
+      
     };
-};
-//assign users
-export const assignUsersToProject = async (userIds: number[], projectId: number) => {
-    // Check users are already assigned to the project
-    const existingUserAssignments = await db
-        .select({ user_id: user_projects.user_id })
-        .from(user_projects)
-        .where(
-            and(
-                eq(user_projects.project_id, projectId),
-                inArray(user_projects.user_id, userIds)
-            )
-        );
+  }
 
-    const existingUserIds = existingUserAssignments.map(({ user_id }) => user_id);
-
-    // Filter users who are already assigned
-    const newUserIds = userIds.filter((id) => !existingUserIds.includes(id));
-
-    //data for new users insertion
-    const newUserAssignments = newUserIds.map((userId) => ({
-        user_id: userId,
-        project_id: projectId,
+  // extract projects from rows
+  const userProjects = rows
+    // .filter(row => row.projectId !== null && row.projectId !== undefined)
+    .map(row => ({
+      id: row.projectId,
+      name: row.projectName,
+      description: row.projectDescription,
+      is_active: row.projectIsActive,
     }));
 
-    // Insert new user assignments
-    if (newUserAssignments.length > 0) {
-        await db.insert(user_projects).values(newUserAssignments);
-    }
+  return {
+    user: {
+      id: rows[0].userId,
+      first_name: rows[0].firstName,
+      last_name: rows[0].lastName,
+      email: rows[0].userEmail,
+      phone: rows[0].userPhone,
+      doj:rows[0].dob,
+      dob:rows[0].doj,
+      is_active:rows[0].is_active,
 
-    return {
-        assigned: newUserIds,
-        alreadyAssigned: existingUserIds,
-    };
-};
+    },
+    Total_projects:userProjects.length,
+    userProjects: userProjects.length > 0 ? userProjects : [],
+  };
+}

@@ -5,5 +5,3 @@ export const timestamps = {
   updated_at: timestamp().notNull().defaultNow(),
   deleted_at: timestamp(),
 };
-
-

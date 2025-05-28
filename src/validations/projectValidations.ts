@@ -1,11 +1,24 @@
 import z from "zod";
 
 export const vCreateProject = z.object({
-  title: z.string({ required_error: 'Project_title is required' }).min(3, { message: "Project title must be more than 3 characters long" }),
-  description: z.string({ required_error: 'Description  is required' }).min(3, { message: "Description must be more than 3 characters long" }),
+  title: z.string({
+    required_error: "Title is required",
+    invalid_type_error: "Title must be a string",
+  }).min(6, { message: "Title name required" }),
+
+  description: z.string({
+    required_error: "Description is required",
+    invalid_type_error: "Description must be a string",
+  }).min(5, { message: "Description is required" }),
+  
+  is_active:z.boolean().optional()
+  // userIDs:z.array(z.number()).min(1,{message:"userId is required"}),
+  
+  // project_id:z.number({required_error: "Project ID is required",
+  //   invalid_type_error: "Project ID must be a number",}).optional()
+  
   
 });
-
-export const vUpdateProject = vCreateProject;
+export const vUpdateProject =vCreateProject
 export type ValidatedCreateProject = z.infer<typeof vCreateProject>;
-export type ValidatedUpdateProject = z.infer<typeof vUpdateProject>;
+export type validatedProjectData=z.infer<typeof vUpdateProject>;
