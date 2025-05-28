@@ -2,8 +2,6 @@ export const SERVICE_UP = "Service is up and running";
 
 export const USER_CREATED = "User created successfully";
 
-<<<<<<< HEAD
-=======
 export const COMMIT_CREATED = "Commit created successfully";
 
 export const COMMITS_FETCHED = "Commit fetched successfully";
@@ -14,16 +12,12 @@ export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
 export const VALIDATION_ERRORS = "Validation Errors";
 
->>>>>>> 455572aa48837731d32bec2487086e75434cd12a
 export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 
 export const EMPTY_DB_DATA = "Empty data to save in database";
 
-<<<<<<< HEAD
-=======
 export const FILE_NAME_TYPE_REQUIRED='fileName and fileType are required'
 
->>>>>>> 455572aa48837731d32bec2487086e75434cd12a
 export const DB_ID_INVALID = "Invalid database ID";
 
 export const DB_RECORD_NOT_FOUND = "Database record not found";
