@@ -1,5 +1,5 @@
 {
-  "id": "7dbe5972-0ee0-4cff-ba1e-27cfb9f33df2",
+  "id": "c755e02a-c817-432d-8d7b-285c41894a97",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -153,6 +153,31 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.user_profiles": {
+      "name": "user_profiles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.projects": {
       "name": "projects",
       "schema": "",
@@ -252,9 +277,9 @@
           "primaryKey": true,
           "notNull": true
         },
-        "project_name": {
-          "name": "project_name",
-          "type": "text",
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -272,11 +297,11 @@
         }
       },
       "indexes": {
-        "repositories__project_name_idx": {
-          "name": "repositories__project_name_idx",
+        "repositories__project_id_idx": {
+          "name": "repositories__project_id_idx",
           "columns": [
             {
-              "expression": "project_name",
+              "expression": "project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -303,7 +328,21 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "repositories_project_id_projects_id_fk": {
+          "name": "repositories_project_id_projects_id_fk",
+          "tableFrom": "repositories",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

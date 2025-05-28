@@ -13,6 +13,11 @@ CREATE TABLE "commits" (
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
 );
+-- --> statement-breakpoint
+-- CREATE TABLE "user_profiles" (
+-- 	"id" serial PRIMARY KEY NOT NULL,
+-- 	"image_url" text
+-- );
 --> statement-breakpoint
 CREATE TABLE "projects" (
 	"id" serial PRIMARY KEY NOT NULL,
@@ -26,7 +31,7 @@ CREATE TABLE "projects" (
 --> statement-breakpoint
 CREATE TABLE "repositories" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"project_name" text NOT NULL,
+	"project_id" integer NOT NULL,
 	"repository_name" text,
 	"repository_link" text NOT NULL
 );
@@ -60,12 +65,13 @@ CREATE TABLE "users" (
 ALTER TABLE "commits" ADD CONSTRAINT "commits_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "commits" ADD CONSTRAINT "commits_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "commits" ADD CONSTRAINT "commits_repository_id_repositories_id_fk" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "repositories" ADD CONSTRAINT "repositories_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_projects" ADD CONSTRAINT "user_projects_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_projects" ADD CONSTRAINT "user_projects_project_id_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "commits_commit_name_idx" ON "commits" USING btree ("commit_message");--> statement-breakpoint
 CREATE INDEX "projects_title_idx" ON "projects" USING btree ("title");--> statement-breakpoint
 CREATE INDEX "projects_id_idx" ON "projects" USING btree ("id");--> statement-breakpoint
-CREATE INDEX "repositories__project_name_idx" ON "repositories" USING btree ("project_name");--> statement-breakpoint
+CREATE INDEX "repositories__project_id_idx" ON "repositories" USING btree ("project_id");--> statement-breakpoint
 CREATE INDEX "repositories__repository_name_idx" ON "repositories" USING btree ("repository_name");--> statement-breakpoint
 CREATE INDEX "user_projects_user_id_idx" ON "user_projects" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "user_projects_project_id_idx" ON "user_projects" USING btree ("project_id");--> statement-breakpoint

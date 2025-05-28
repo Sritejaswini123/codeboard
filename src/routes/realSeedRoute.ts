@@ -7,7 +7,6 @@ seed.post("/seed-projects", ...seedRealProjectHandler)
 seed.post("/seed-userprojects", ...seedUserProjectsHandler)
 seed.post("/seed-commits", ...seedCommitHandler);
 seed.post("/seed-repository", ...seedRealRepoHandler)
-
 export default seed;
 
 

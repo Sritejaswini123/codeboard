@@ -10,6 +10,7 @@ const VEnvSchema = z.object({
     DB_USER: z.string(),
     DB_PASSWORD: z.string(),
     DB_NAME: z.string(),
+    HOST_NAME: z.string(),
 });
 // eslint-disable-next-line import/no-mutable-exports
 let envData;

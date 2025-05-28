@@ -1,8 +1,9 @@
 // import factory from "../factory.js";
-// import { getAllProjectsHandlers, getProjectByIdHandlers } from "../handlers/projectHandlers.js";
+// import { createProjectHandlers, getAllProjectsHandlers } from "../handlers/projectHandlers.js";
 
 // const projectRoutes = factory.createApp();
-// projectRoutes.get("/projects/:project_id", ...getProjectByIdHandlers);
+
+// projectRoutes.post("/projects", ...createProjectHandlers);
 // projectRoutes.get("/projects", ...getAllProjectsHandlers);
 
 // export default projectRoutes;
