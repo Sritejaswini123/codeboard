@@ -9,12 +9,6 @@ serve({
     port,
 });
 console.log(`🚀 Server running at http://localhost:${port}/${apiVersion}/`);
-// serve({
-//   fetch: app.fetch,
-//   port,
-//   hostname,
-// });
-// console.log(` Server running at http://localhost:${port}/${env.API_VERSION}/`);
 // handling errors globally
 app.onError((err, c) => {
     if (err.isOperational) {

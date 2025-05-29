@@ -3,7 +3,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
-import { repositories } from "../database/schemas/repositories";
+import { repositories } from "../database/schemas/repo";
 import { users } from "../database/schemas/users";
 
 // export async function getAllCommits(page: number, page_size: number, project_id?: number, user_id?: number) {

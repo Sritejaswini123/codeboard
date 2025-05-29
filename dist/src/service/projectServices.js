@@ -3,6 +3,8 @@ import db from "../database/db";
 import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
+import { USER_NOT_FOUND } from "../constants/appMessages";
+import { updateRecordById } from "./baseDbServices";
 // all projects
 export async function getAllProjects(page, page_size, user_id, project_id) {
     const offset = (page - 1) * page_size;
@@ -43,19 +45,87 @@ export async function getAllProjects(page, page_size, user_id, project_id) {
         data: projectData,
     };
 }
-// check project exist or not
-export async function isProjectExist(title) {
+//         // Check if users are already assigned to the project
+//   const existingUserProjects = await db
+//     .select()
+//     .from(user_projects)
+//     .where(eq(user_projects.project_id, project.id));
+export const createProject = async (projectData) => {
+    const project = await db.insert(projects).values(projectData).returning();
+    return project[0];
+};
+//project exist
+export const isProjectExist = async (project_id) => {
     const existingProject = await db
         .select()
         .from(projects)
-        .where(eq(projects.title, title));
-    return existingProject;
+        .where(eq(projects.id, project_id));
+    return existingProject.length > 0;
+};
+//update prooject by id
+export async function updateProjectById(projectId, projectData) {
+    return await updateRecordById(projects, projectData, projectId);
 }
-// check if project is existing with id
-export async function deletedProjectById(projectId) {
-    const result = await db
-        .select()
-        .from(projects)
-        .where(eq(projects.id, projectId));
-    return result[0];
+export async function getUserProjects(userId, includeProjects) {
+    // one query to get user and optionally projects using join
+    const rows = await db
+        .select({
+        userId: users.id,
+        firstName: users.first_name,
+        lastName: users.last_name,
+        userEmail: users.email,
+        userPhone: users.phone,
+        is_active: users.is_active,
+        doj: users.dob,
+        dob: users.doj,
+        projectId: projects.id,
+        projectName: projects.title,
+        projectDescription: projects.description,
+        projectIsActive: projects.is_active,
+    })
+        .from(users)
+        .leftJoin(user_projects, eq(users.id, user_projects.user_id))
+        .leftJoin(projects, eq(user_projects.project_id, projects.id))
+        .where(eq(users.id, userId));
+    if (rows.length === 0 || rows[0].userId === undefined) {
+        return USER_NOT_FOUND;
+    }
+    if (!includeProjects) {
+        // return only user info
+        return {
+            user: {
+                id: rows[0].userId,
+                first_name: rows[0].firstName,
+                last_name: rows[0].lastName,
+                email: rows[0].userEmail,
+                phone: rows[0].userPhone,
+                doj: rows[0].dob,
+                dob: rows[0].doj,
+                is_active: rows[0].is_active,
+            },
+        };
+    }
+    // extract projects from rows
+    const userProjects = rows
+        // .filter(row => row.projectId !== null && row.projectId !== undefined)
+        .map(row => ({
+        id: row.projectId,
+        name: row.projectName,
+        description: row.projectDescription,
+        is_active: row.projectIsActive,
+    }));
+    return {
+        user: {
+            id: rows[0].userId,
+            first_name: rows[0].firstName,
+            last_name: rows[0].lastName,
+            email: rows[0].userEmail,
+            phone: rows[0].userPhone,
+            doj: rows[0].dob,
+            dob: rows[0].doj,
+            is_active: rows[0].is_active,
+        },
+        Total_projects: userProjects.length,
+        userProjects: userProjects.length > 0 ? userProjects : [],
+    };
 }

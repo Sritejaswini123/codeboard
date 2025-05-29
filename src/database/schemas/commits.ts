@@ -10,7 +10,7 @@ import {
 import { timestamps } from "./helperColumns";
 import { users } from "./users";
 import { projects } from "./projects";
-import { repositories } from "./repositories";
+import { repositories } from "./repo";
 
 export const commits = pgTable(
   "commits",
@@ -34,7 +34,7 @@ export const commits = pgTable(
     index("commits_repository_id_idx").on(t.repository_id),
     index("commits_date_idx").on(t.date),
   ]
-);  
+);
 
 export type Commit = typeof commits.$inferSelect;
 export type NewCommit = typeof commits.$inferInsert;

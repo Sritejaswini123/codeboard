@@ -6,10 +6,11 @@ import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
+import { NewRepositories, Repositories, RepositoryTable } from "../database/schemas/repo";
 
-type DBTable = UsersTable | ProjectsTable | CommitsTable;
-type NewDBRecord = NewUser | NewProject | NewCommit;
-type DBRecordRow = User | Project | CommitsTable;
+type DBTable = UsersTable | ProjectsTable | CommitsTable| RepositoryTable;
+type NewDBRecord = NewUser | NewProject | NewCommit|NewRepositories;
+type DBRecordRow = User | Project | CommitsTable|Repositories;
 
 export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord) {
   const result = await db
