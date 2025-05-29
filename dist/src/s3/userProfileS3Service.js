@@ -1,6 +1,6 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { s3Config } from '../config/s3Config';
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3Config } from "../config/s3Config";
 class UserProfileS3Service {
     config;
     s3Client;
@@ -18,12 +18,12 @@ class UserProfileS3Service {
     }
     generateUploadPresignedUrl = async (fileKey, fileType) => {
         // Prefix for user profile pictures folder
-        fileKey = 'user-profile-pics/' + fileKey;
+        fileKey = `user-profile-pics/${fileKey}`;
         const params = {
             Bucket: this.config.s3_bucket,
             Key: fileKey,
             ContentType: fileType,
-            ACL: 'private',
+            ACL: "private",
         };
         try {
             const command = new PutObjectCommand(params);
@@ -31,12 +31,12 @@ class UserProfileS3Service {
             return { uploadUrl: presignedUrl, fileKey };
         }
         catch (error) {
-            console.error('Error generating upload presigned URL:', error);
+            console.error("Error generating upload presigned URL:", error);
             throw error;
         }
     };
     generateDownloadPresignedUrl = async (fileKey) => {
-        fileKey = 'user-profile-pics/' + fileKey;
+        fileKey = `user-profile-pics/${fileKey}`;
         const params = {
             Bucket: this.config.s3_bucket,
             Key: fileKey,
@@ -47,7 +47,7 @@ class UserProfileS3Service {
             return presignedUrl;
         }
         catch (error) {
-            console.error('Error generating download presigned URL:', error);
+            console.error("Error generating download presigned URL:", error);
             throw error;
         }
     };

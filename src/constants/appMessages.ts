@@ -30,7 +30,11 @@ export const COMMIT_EXIST = "Commit already exists";
 
 export const REPOSITORY_EXIST = " Repository already exists";
 
+export const REPOSITORY_ID_REQUIRED = " Repository alr exists";
+
 export const REPOSITORY_CREATED = " Repository created successfully";
+
+export const REPOSITORY_UPDATED = " Repository updated successfully";
 
 export const PROJECT_EXIST = "Project already exists";
 
@@ -47,6 +51,8 @@ export const PROJECT_ID_REQUIRED = "Project ID is required";
 export const PROJECT_FETCHED = "Project fetched successfully";
 
 export const USER_NOT_FOUND = "User not found";
+
+export const REPO_NOT_FOUND = "Repository not found ";
 
 export const PROJECT_NOT_FOUND = "Project not found ";
 

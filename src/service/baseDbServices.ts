@@ -6,7 +6,7 @@ import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
-import { NewRepositories, Repositories, RepositoriesTable } from "../database/schemas/repositories";
+import { NewRepositories, Repositories, RepositoriesTable } from "../database/schemas/repo";
 
 type DBTable = UsersTable | ProjectsTable | CommitsTable|RepositoriesTable;
 type NewDBRecord = NewUser | NewProject | NewCommit|NewRepositories;

@@ -2,9 +2,9 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
-import { repositories } from "../database/schemas/repositories";
+import { repositories } from "../database/schemas/repo";
 import { users } from "../database/schemas/users";
-export const getAllCommits = async (page, page_size, project_id, user_id, repository_id) => {
+export async function getAllCommits(page, page_size, project_id, user_id, repository_id) {
     const offset = (page - 1) * page_size;
     // Filters
     const conditions = [];
@@ -15,7 +15,7 @@ export const getAllCommits = async (page, page_size, project_id, user_id, reposi
     if (repository_id)
         conditions.push(eq(repositories.id, repository_id));
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-    //query
+    // query
     const data = await db
         .select({
         id: commits.id,
@@ -54,7 +54,7 @@ export const getAllCommits = async (page, page_size, project_id, user_id, reposi
         prev_page: page > 1 ? page - 1 : null,
         data,
     };
-};
+}
 export async function checkCommitExist(id) {
     const result = await db.select().from(commits).where(eq(commits.id, id));
     return result[0];

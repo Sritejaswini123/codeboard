@@ -57,7 +57,7 @@ export const vCreateCommit = z
         .min(1, { message: "Commit message cannot be empty" }),
 })
     .superRefine((data, ctx) => {
-    //(YYYY-MM-DD)
+    // (YYYY-MM-DD)
     const parsedDate = new Date(data.date);
     if (isNaN(parsedDate.getTime()) || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
         ctx.addIssue({

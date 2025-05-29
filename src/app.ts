@@ -13,7 +13,7 @@ import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
-import repositoryRoutes from "./routes/repositoryRoutes.js";
+import repositoryRoutes from "./routes/repoRoutes";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 

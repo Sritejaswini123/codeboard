@@ -9,7 +9,7 @@ import { createRecord, getRecordById, updateRecordById } from "../service/baseDb
 import { getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
-//create new project
+// create new project
 export const createProjectHandlers = factory.createHandlers(async (c) => {
     try {
         const reqBody = await c.req.json();
@@ -47,7 +47,7 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
         return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
     }
 });
-//user+Profile
+// user+Profile
 export const userProjectsProfileHandler = factory.createHandlers(async (c) => {
     try {
         const userId = Number(c.req.param("id"));
@@ -65,9 +65,10 @@ export const userProjectsProfileHandler = factory.createHandlers(async (c) => {
         throw error;
     }
 });
+//update
 export const updateproject = factory.createHandlers(async (c) => {
     try {
-        const projectId = Number(c.req.param('id'));
+        const projectId = Number(c.req.param("id"));
         if (!projectId)
             return c.json(PROJECT_ID_REQUIRED);
         const reqBody = await c.req.json();
@@ -76,7 +77,7 @@ export const updateproject = factory.createHandlers(async (c) => {
         if (!checkProjectExist)
             return c.json({ status: NOT_FOUND, success: false, message: `${PROJECT_NOT_FOUND} with id ${projectId}` });
         const projectData = {
-            ...validateUpdatedProject
+            ...validateUpdatedProject,
         };
         const updateProject = await updateRecordById(projects, projectData, projectId);
         return sendResponse(c, OK, PROJECT_UPDATED, updateProject);
@@ -90,12 +91,12 @@ export const updateproject = factory.createHandlers(async (c) => {
         throw error;
     }
 });
-//get project by id
+// get project by id
 export const getProjectByIdHandler = factory.createHandlers(async (c) => {
     try {
-        const projectId = Number(c.req.param('id'));
+        const projectId = Number(c.req.param("id"));
         if (!projectId)
-            return c.json(PROJECT_ID_REQUIRED);
+            throw new NotFoundException(PROJECT_ID_REQUIRED);
         const checkProjectExist = await isProjectExist(projectId);
         if (!checkProjectExist)
             return c.json({ status: NOT_FOUND, success: false, message: `${PROJECT_NOT_FOUND} with id ${projectId}` });

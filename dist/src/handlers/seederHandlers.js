@@ -36,7 +36,7 @@ export const seedRealUserBulkDataHandler = [
             const jsonData = await fs.readFile(filePath, "utf-8");
             const parsedUsers = JSON.parse(jsonData);
             const validUsersRaw = vCreateUserArray.parse(parsedUsers);
-            const validUsers = validUsersRaw.map((user) => ({
+            const validUsers = validUsersRaw.map(user => ({
                 ...user,
                 dob: new Date(user.dob),
                 doj: new Date(user.doj),
@@ -62,7 +62,7 @@ export const seedUserProjectsHandler = [
             const filePath = path.join(process.cwd(), "src", "data", "userProjects.json");
             const jsonData = await fs.readFile(filePath, "utf-8");
             const parsed = JSON.parse(jsonData);
-            const userProjects = parsed.map((entry) => ({
+            const userProjects = parsed.map(entry => ({
                 ...entry,
             }));
             if (userProjects.length > 0) {
