@@ -1,8 +1,8 @@
 // s3.ts
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { v4 as uuidv4 } from 'uuid';
-import 'dotenv/config';
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v4 as uuidv4 } from "uuid";
+import "dotenv/config";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION!,
@@ -17,10 +17,10 @@ export async function generateUploadUrl() {
   const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: key,
-    ContentType: 'image/jpeg',
+    ContentType: "image/jpeg",
   });
 
-  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 }); 
+  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
   return { uploadUrl, key };
 }
 
@@ -29,7 +29,7 @@ export async function generateDownloadUrl(key: string) {
     Bucket: process.env.S3_BUCKET_NAME,
     Key: key,
   });
-  
+
   const downloadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 }); // 5 minutes
   return downloadUrl;
 }

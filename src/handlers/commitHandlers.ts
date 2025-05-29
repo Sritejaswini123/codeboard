@@ -2,7 +2,7 @@ import { z, ZodError } from "zod";
 
 import type { Commit, NewCommit } from "../database/schemas/commits";
 
-import {COMMIT_CREATED,COMMIT_DELETED,COMMIT_EXIST,COMMIT_ID_REQUIRED,COMMIT_NOT_FOUND, COMMIT_UPDATED,COMMITS_FETCHED,VALIDATION_ERRORS,} from "../constants/appMessages";
+import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import {
   BAD_REQUEST,
   CREATED,
@@ -41,16 +41,17 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
     }
     const commit = await createRecord<Commit>(commits, commitData);
     return sendResponse(c, CREATED, COMMIT_CREATED, commit);
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof z.ZodError) {
       const formattedErrors = Object.fromEntries(
-        error.errors.map(({ path, message }) => [path[0], message])
+        error.errors.map(({ path, message }) => [path[0], message]),
       );
       return sendResponse(
         c,
         UNPROCESSABLE_ENTITY,
         VALIDATION_ERRORS,
-        formattedErrors
+        formattedErrors,
       );
     }
 
@@ -58,12 +59,10 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
   }
 });
 
-
-//getAll Commits
+// getAll Commits
 export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
-    
 
     const page_size = Number(c.req.query("page_size"));
     const project_id = c.req.query("project_id")
@@ -80,14 +79,15 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
       page_size,
       project_id,
       user_id,
-      repository_id
+      repository_id,
     );
 
     if (!commits) {
       throw new NotFoundException("No commits found matching the criteria");
     }
     return sendResponse(c, OK, COMMITS_FETCHED, commits);
-  } catch (error) {
+  }
+  catch (error) {
     throw error;
   }
 });
@@ -106,7 +106,8 @@ export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
       throw new NotFoundException(COMMIT_NOT_FOUND);
     }
     return sendResponse(c, OK, COMMITS_FETCHED, commit);
-  } catch (error) {
+  }
+  catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
   }
 });
@@ -124,10 +125,11 @@ export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
     const updatedCommitResult = await updateRecordById(
       commits,
       updatedProject,
-      commitId
+      commitId,
     );
     return sendResponse(c, CREATED, COMMIT_UPDATED, updatedCommitResult);
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ZodError) {
       const errorMessage = error.errors?.[0]?.message || "Validation error";
       return c.json({ message: errorMessage }, NOT_FOUND);
@@ -140,15 +142,18 @@ export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
 export const deleteCommitByIdHandlers = factory.createHandlers(async (c) => {
   const commitId = Number(c.req.param("id"));
   try {
-    if (!commitId) return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+    if (!commitId)
+      return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
 
     const isCommitIdExist = await checkCommitExist(commitId);
 
-    if (!isCommitIdExist) throw new NotFoundException(COMMIT_NOT_FOUND);
+    if (!isCommitIdExist)
+      throw new NotFoundException(COMMIT_NOT_FOUND);
 
     const deletedCommit = await deleteRecordById(commits, commitId);
     return sendResponse(c, OK, COMMIT_DELETED, deletedCommit);
-  } catch (error) {
+  }
+  catch (error) {
     throw error;
   }
 });

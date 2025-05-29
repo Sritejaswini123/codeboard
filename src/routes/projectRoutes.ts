@@ -6,7 +6,7 @@ const projectRoutes = factory.createApp();
 projectRoutes.post("/projects", ...createProjectHandlers);
 projectRoutes.get("/projects", ...getAllProjectsHandlers);
 projectRoutes.get("/user-projects/:id", ...userProjectsProfileHandler);
-projectRoutes.get("/projects/:id",...getProjectByIdHandler)
+projectRoutes.get("/projects/:id", ...getProjectByIdHandler);
 projectRoutes.put("/projects/:id", ...updateproject);
 
 export default projectRoutes;

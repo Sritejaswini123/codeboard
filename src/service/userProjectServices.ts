@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+
 import db from "../database/db";
 import { user_projects } from "../database/schemas/userProjects";
 
@@ -9,5 +10,3 @@ export async function userProjectExist(userProjectId: number) {
     .where(eq(user_projects.id, userProjectId));
   return result[0];
 }
-
-

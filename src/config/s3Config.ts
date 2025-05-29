@@ -6,5 +6,5 @@ export const s3Config = {
   expires: 3600,
   public_access_key_id: process.env.PUBLIC_AWS_S3_ACCESS_KEY_ID!,
   public_secret_access_key: process.env.PUBLIC_AWS_S3_SECRET_ACCESS_KEY!,
-  public_bucket: process.env.PUBLIC_AWS_S3_BUCKET!
+  public_bucket: process.env.PUBLIC_AWS_S3_BUCKET!,
 };

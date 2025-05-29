@@ -30,9 +30,10 @@ export const seedUsersHandler = factory.createHandlers(async (c) => {
       c,
       CREATED,
       `${insertedUsers.length} users created`,
-      insertedUsers
+      insertedUsers,
     );
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Seeder error:", error);
     return c.json({ error: "Failed to seed users" }, 500);
   }
@@ -50,7 +51,7 @@ export const seedRealUserBulkDataHandler = [
 
       const validUsersRaw = vCreateUserArray.parse(parsedUsers);
 
-      const validUsers = validUsersRaw.map((user) => ({
+      const validUsers = validUsersRaw.map(user => ({
         ...user,
         dob: new Date(user.dob),
         doj: new Date(user.doj),
@@ -64,7 +65,8 @@ export const seedRealUserBulkDataHandler = [
         success: true,
         inserted: validUsers.length,
       });
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Bulk insert seeding error:", error);
       return c.json({ success: false, message: "Failed to seed users" }, 500);
     }
@@ -79,12 +81,12 @@ export const seedUserProjectsHandler = [
         process.cwd(),
         "src",
         "data",
-        "userProjects.json"
+        "userProjects.json",
       );
       const jsonData = await fs.readFile(filePath, "utf-8");
       const parsed: any[] = JSON.parse(jsonData);
 
-      const userProjects: NewUserProject[] = parsed.map((entry) => ({
+      const userProjects: NewUserProject[] = parsed.map(entry => ({
         ...entry,
       }));
 
@@ -96,13 +98,13 @@ export const seedUserProjectsHandler = [
         success: true,
         inserted: userProjects.length,
       });
-    } catch (error) {
+    }
+    catch (error) {
       console.error("User projects bulk insert seeding error:", error);
       return c.json(
         { success: false, message: "Failed to seed user projects" },
-        500
+        500,
       );
     }
   },
 ];
-

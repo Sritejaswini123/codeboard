@@ -1,6 +1,6 @@
 import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
-import { users } from "../database/schemas/users";
 import db from "../database/db";
+import { users } from "../database/schemas/users";
 export async function createRecord(table, record) {
     const result = await db
         .insert(table)
@@ -60,7 +60,7 @@ export async function updateRecordById(table, record, id) {
     return updatedRecord;
 }
 export async function getPaginatedRecords(table, curent_page, page_size, username, id) {
-    let filterCondition = undefined;
+    let filterCondition;
     if (table === users) {
         if (username && id !== undefined) {
             filterCondition = and(or(like(users.first_name, `%${username}%`), like(users.email, `%${username}%`)), eq(users.id, id));

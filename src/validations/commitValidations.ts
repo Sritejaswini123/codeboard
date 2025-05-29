@@ -6,41 +6,41 @@ export const vCreateCommit = z
       .number({
         required_error: "UserId is required",
         invalid_type_error: "UserId must be a Number",
-    })
+      })
       .min(1, { message: "UserId must be a positive integer" }),
     project_id: z
       .number({
         required_error: "ProjectId is required",
         invalid_type_error: "ProjectId must be a Number",
-    })
-    .min(1, { message: "ProjectId must be a positive integer" }),
+      })
+      .min(1, { message: "ProjectId must be a positive integer" }),
 
     repository_id: z
       .number({
         required_error: "repositoryid is required",
         invalid_type_error: "repositoryid must be a Number",
-    })
-    .min(1, { message: "repositoryid must be a positive integer" }),
+      })
+      .min(1, { message: "repositoryid must be a positive integer" }),
 
     month: z
       .string({
         required_error: "Month is required",
         invalid_type_error: "Month must be a string",
-    })
-    .min(1, { message: "Month of commit is required" }),
+      })
+      .min(1, { message: "Month of commit is required" }),
 
     date: z
       .string({
         required_error: "Date is required",
         invalid_type_error: "Date must be a string",
-    })
-    .min(1, { message: "Date of commit is required" }),
+      })
+      .min(1, { message: "Date of commit is required" }),
 
     time: z
       .string({
         required_error: "Time is required",
         invalid_type_error: "Time must be a string",
-    })
+      })
       .min(1, { message: "Time is required" }),
 
     lines_of_code: z
@@ -65,7 +65,7 @@ export const vCreateCommit = z
       .min(1, { message: "Commit message cannot be empty" }),
   })
   .superRefine((data, ctx) => {
-    //(YYYY-MM-DD)
+    // (YYYY-MM-DD)
     const parsedDate = new Date(data.date);
     if (isNaN(parsedDate.getTime()) || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
       ctx.addIssue({

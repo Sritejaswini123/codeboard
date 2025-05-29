@@ -1,59 +1,56 @@
+import type { ObjectCannedACL } from "@aws-sdk/client-s3";
 
-import { ObjectCannedACL,PutObjectCommand,S3Client} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { s3Config } from '../config/s3Config';
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
+import { s3Config } from "../config/s3Config";
 
-
-interface Config{
-    credentials:{
-        accessKeyId: string;
-        secretAccessKey: string;
-    },
-  region: string,
-  s3_bucket: string,
-  expires: number,
+interface Config {
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  region: string;
+  s3_bucket: string;
+  expires: number;
   useAccelerateEndpoint?: boolean;
 }
 
-
 class PublicS3FileService {
-
   config: Config;
   s3Client: S3Client;
   constructor() {
     this.config = {
       credentials: {
         accessKeyId: s3Config.public_access_key_id,
-        secretAccessKey: s3Config.public_secret_access_key
+        secretAccessKey: s3Config.public_secret_access_key,
       },
       region: s3Config.bucket_region,
       s3_bucket: s3Config.public_bucket,
-      expires: 3600
+      expires: 3600,
     };
     this.s3Client = new S3Client(this.config);
   }
 
-
   generateUploadPresignedUrl = async (fileKey: string, fileType: string) => {
+    fileKey = `code-board/${fileKey}`;
 
-    fileKey = 'code-board/' + fileKey;
-
-    let acl: ObjectCannedACL = "public-read";
+    const acl: ObjectCannedACL = "public-read";
 
     const params = {
       Bucket: s3Config.public_bucket,
       Key: fileKey,
       ContentType: fileType,
-      ACL: acl
+      ACL: acl,
     };
-    
+
     try {
       const command = new PutObjectCommand(params);
       const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
 
       return { target_url: presignedUrl, file_key: fileKey };
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error generating presigned URL:", error);
       throw error;
     }

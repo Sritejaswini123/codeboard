@@ -6,13 +6,14 @@ import factory from "./factory.js";
 import commitRoutes from "./routes/commitRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import seedRoute from "./routes/seederRoutes.js";
+import userProfileRoutes from "./routes/userProfileRoutes.js";
 import userProject from "./routes/userProjectRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
-import userProfileRoutes from "./routes/userProfileRoutes.js";
+import repositoryRoutes from "./routes/repositoryRoutes.js";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 
@@ -31,7 +32,7 @@ app.route("/", seedRoute);
 app.route("/", userProject);
 app.route("/", commitRoutes);
 app.route("/", userProfileRoutes);
-
+app.route("/", repositoryRoutes);
 
 app.get("/error", (c) => {
   c.status(422);

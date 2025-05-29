@@ -2,7 +2,7 @@ import { boolean, index, pgTable, serial, text } from "drizzle-orm/pg-core";
 import { timestamps } from "./helperColumns";
 export const projects = pgTable("projects", {
     id: serial().primaryKey(),
-    title: text().notNull(),
+    title: text().notNull().unique(),
     description: text().notNull(),
     is_active: boolean().notNull().default(true),
     ...timestamps,

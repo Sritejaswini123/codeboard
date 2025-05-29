@@ -7,7 +7,7 @@ import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
-import { deleteUserById, getAllUsers, isUserExist } from "../service/userServices";
+import { deleteUserById, isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 
@@ -31,12 +31,12 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
   catch (error) {
     if (error instanceof z.ZodError) {
       const formattedErrors = Object.fromEntries(
-        error.errors.map(({path,message})=>[path[0],message])
+        error.errors.map(({ path, message }) => [path[0], message]),
       );
-      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+      return sendResponse(c, UNPROCESSABLE_ENTITY, VALIDATION_ERRORS, formattedErrors);
     }
 
-   throw error;
+    throw error;
   }
 });
 
@@ -45,21 +45,22 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param("user_id"));
 
-    if (!userId)return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+    if (!userId)
+      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
 
     const user = await getRecordById(users, userId);
 
-    if (!user)throw new NotFoundException(USER_NOT_FOUND);
+    if (!user)
+      throw new NotFoundException(USER_NOT_FOUND);
 
     return sendResponse(c, OK, USER_FETCHED, user);
   }
   catch (error) {
-
     throw error;
   }
 });
 
-//get all users
+// get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page")) || 1;
@@ -91,8 +92,7 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
     return sendResponse(c, OK, USER_DELETEED, deletedUser);
   }
   catch (error) {
-    
-   throw error;
+    throw error;
   }
 });
 
@@ -120,11 +120,11 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
   catch (error) {
     if (error instanceof z.ZodError) {
       const formattedErrors = Object.fromEntries(
-        error.errors.map(({path,message})=>[path[0],message])
+        error.errors.map(({ path, message }) => [path[0], message]),
       );
-      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+      return sendResponse(c, UNPROCESSABLE_ENTITY, VALIDATION_ERRORS, formattedErrors);
     }
 
-   throw error;
+    throw error;
   }
 });

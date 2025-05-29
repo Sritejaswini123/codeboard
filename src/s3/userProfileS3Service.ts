@@ -1,6 +1,9 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, ObjectCannedACL } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { s3Config } from '../config/s3Config';
+import type { ObjectCannedACL } from "@aws-sdk/client-s3";
+
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+import { s3Config } from "../config/s3Config";
 
 interface Config {
   credentials: {
@@ -31,29 +34,29 @@ class UserProfileS3Service {
   }
 
   generateUploadPresignedUrl = async (fileKey: string, fileType: string) => {
-  
     // Prefix for user profile pictures folder
-    fileKey = 'user-profile-pics/' + fileKey;
+    fileKey = `user-profile-pics/${fileKey}`;
 
     const params = {
       Bucket: this.config.s3_bucket,
       Key: fileKey,
       ContentType: fileType,
-      ACL: 'private' as ObjectCannedACL,
+      ACL: "private" as ObjectCannedACL,
     };
 
     try {
       const command = new PutObjectCommand(params);
       const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: this.config.expires });
       return { uploadUrl: presignedUrl, fileKey };
-    } catch (error) {
-      console.error('Error generating upload presigned URL:', error);
+    }
+    catch (error) {
+      console.error("Error generating upload presigned URL:", error);
       throw error;
     }
   };
 
   generateDownloadPresignedUrl = async (fileKey: string) => {
-    fileKey = 'user-profile-pics/' + fileKey;
+    fileKey = `user-profile-pics/${fileKey}`;
 
     const params = {
       Bucket: this.config.s3_bucket,
@@ -64,8 +67,9 @@ class UserProfileS3Service {
       const command = new GetObjectCommand(params);
       const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: this.config.expires });
       return presignedUrl;
-    } catch (error) {
-      console.error('Error generating download presigned URL:', error);
+    }
+    catch (error) {
+      console.error("Error generating download presigned URL:", error);
       throw error;
     }
   };

@@ -43,7 +43,7 @@ export const vCreateUser = z.object({
     required_error: "Designation is required",
     invalid_type_error: "Designation must be a string",
   })
-  .min(3, { message: "Designation must be at least 3 characters long" }),
+    .min(3, { message: "Designation must be at least 3 characters long" }),
 
 }).superRefine((data, ctx) => {
   const dobDate = new Date(data.dob);
@@ -63,7 +63,6 @@ export const vCreateUser = z.object({
       message: "Invalid date of joining",
     });
   }
-
 });
 
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;

@@ -1,12 +1,12 @@
 import { and, asc, count, eq } from "drizzle-orm";
 
+import type { NewProject } from "../database/schemas/projects";
+
+import { USER_NOT_FOUND } from "../constants/appMessages";
 import db from "../database/db";
-import { NewProject, projects } from "../database/schemas/projects";
+import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
-import{ValidatedCreateProject} from "../validations/projectValidations"
-import { USER_NOT_FOUND } from "../constants/appMessages";
-
 
 // all projects
 export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
@@ -55,22 +55,20 @@ export async function getAllProjects(page: number, page_size: number, user_id: n
   };
 }
 
+export async function createProject(projectData: NewProject) {
+  const project = await db.insert(projects).values(projectData).returning();
+  return project[0];
+}
 
-export const createProject = async (projectData: NewProject) => {
-    const project = await db.insert(projects).values(projectData).returning();
-    return project[0];
-};
+// project exist
+export async function isProjectExist(project_id: number) {
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, project_id));
 
-//project exist
-export const isProjectExist = async (project_id: number) => {
-    const existingProject = await db
-        .select()
-        .from(projects)
-        .where(eq(projects.id, project_id));
-
-    return existingProject.length > 0;
-};
-
+  return existingProject.length > 0;
+}
 
 export async function getUserProjects(userId: number, includeProjects: boolean) {
   // one query to get user and optionally projects using join
@@ -81,9 +79,9 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
       lastName: users.last_name,
       userEmail: users.email,
       userPhone: users.phone,
-      is_active:users.is_active,
-      doj:users.dob,
-      dob:users.doj,
+      is_active: users.is_active,
+      doj: users.dob,
+      dob: users.doj,
       projectId: projects.id,
       projectName: projects.title,
       projectDescription: projects.description,
@@ -107,12 +105,12 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
         last_name: rows[0].lastName,
         email: rows[0].userEmail,
         phone: rows[0].userPhone,
-        doj:rows[0].dob,
-        dob:rows[0].doj,
-        is_active:rows[0].is_active,
-        
+        doj: rows[0].dob,
+        dob: rows[0].doj,
+        is_active: rows[0].is_active,
+
       },
-      
+
     };
   }
 
@@ -133,12 +131,12 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
       last_name: rows[0].lastName,
       email: rows[0].userEmail,
       phone: rows[0].userPhone,
-      doj:rows[0].dob,
-      dob:rows[0].doj,
-      is_active:rows[0].is_active,
+      doj: rows[0].dob,
+      dob: rows[0].doj,
+      is_active: rows[0].is_active,
 
     },
-    Total_projects:userProjects.length,
+    Total_projects: userProjects.length,
     userProjects: userProjects.length > 0 ? userProjects : [],
   };
 }

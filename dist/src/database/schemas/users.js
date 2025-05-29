@@ -14,5 +14,5 @@ export const users = pgTable("users", {
 }, t => [
     index("users_email_idx").on(t.email),
     index("users_first_name_idx").on(t.first_name),
-    index("users_phone_idx").on(t.phone)
+    index("users_phone_idx").on(t.phone),
 ]);
