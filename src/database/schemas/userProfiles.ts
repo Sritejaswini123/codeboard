@@ -1,4 +1,5 @@
-// db/userProfile.ts
+//userProfile schema
+
 import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 
 export const userProfiles = pgTable('user_profiles', {

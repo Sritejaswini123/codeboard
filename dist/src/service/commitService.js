@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { and, asc, eq, sql } from "drizzle-orm";
 // import db from "../database/db";
 // import { commits } from "../database/schemas/commits";
@@ -77,12 +78,15 @@
 //     data,
 //   };
 // }
+=======
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
 import { and, asc, eq, sql } from "drizzle-orm";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
 import { repositories } from "../database/schemas/repositories";
 import { users } from "../database/schemas/users";
+<<<<<<< HEAD
 // export async function getAllCommits(page: number, page_size: number, project_id?: number, user_id?: number) {
 //   const offset = (page - 1) * page_size;
 //   // Check if user exists
@@ -161,6 +165,8 @@ import { users } from "../database/schemas/users";
 //   };
 // }// get all
 //get all
+=======
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
 export const getAllCommits = async (page, page_size, project_id, user_id, repository_id) => {
     const offset = (page - 1) * page_size;
     // Filters

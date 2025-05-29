@@ -28,6 +28,7 @@ import { INTERNAL_SERVER_ERROR } from "../constants/httpStatusCodes";
 //     dob: new Date(user.dob),
 //     doj: new Date(user.doj),
 //     }));
+
 //     if (validUsers.length > 0) {
 //       await db.insert(users).values(validUsers);
 //     }
@@ -62,7 +63,6 @@ export const seedRealUserHandler = [async (c: Context) => {
       .from(users)
       .where(inArray(users.email, emails));
     const existingEmails = new Set(existingUsers.map(u => u.email));
-
     // Step 3: Filter out users with already existing emails
     const newUsers = validUsers.filter(user => !existingEmails.has(user.email));
 
@@ -80,6 +80,7 @@ export const seedRealUserHandler = [async (c: Context) => {
     return c.json({ success: false, message: "Failed to seed users" }, INTERNAL_SERVER_ERROR);
   }
 }];
+
 
 export const seedRealProjectHandler = [ async (c: Context) => {
     try {

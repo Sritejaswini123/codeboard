@@ -10,5 +10,12 @@ export const vCreateProject = z.object({
     required_error: "Project description is required",
     invalid_type_error: "Project description must be a string",
   }).min(2, { message: "Description is required" }),
+  
+   is_active: z.boolean({
+    required_error: "Project status is required",
+    invalid_type_error: "Project status must be a boolean",
+   })
 });
 export type ValidatedCreateProject = z.infer<typeof vCreateProject>;
+export const vUpdateProject = vCreateProject;
+ export type validatedProjectData = z.infer<typeof vUpdateProject>;

@@ -1,6 +1,6 @@
-// user_projects
-import { index, integer, pgTable, serial } from "drizzle-orm/pg-core";
+// user_projects schema 
 
+import { index, integer, pgTable, serial } from "drizzle-orm/pg-core";
 import { timestamps } from "./helperColumns";
 import { projects } from "./projects";
 import { users } from "./users";
@@ -13,8 +13,10 @@ export const user_projects = pgTable("user_projects", {
 }, t => [
   index("user_projects_user_id_idx").on(t.user_id),
   index("user_projects_project_id_idx").on(t.project_id),
+
 ]);
 export type UserProject = typeof user_projects.$inferSelect;
 export type NewUserProject = typeof user_projects.$inferInsert;
 export type UserProjectsTable = typeof user_projects;
+
 

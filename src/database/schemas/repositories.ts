@@ -1,4 +1,5 @@
-// repositories.ts
+// repositories schema
+
 import {  index, pgTable, serial, text, integer } from "drizzle-orm/pg-core";
 import { projects } from "./projects";
 export const repositories = pgTable("repositories", {
@@ -14,3 +15,4 @@ export const repositories = pgTable("repositories", {
 export type Repository = typeof repositories.$inferSelect;
 export type NewRepository = typeof repositories.$inferInsert;
 export type RepositoryTable = typeof repositories;
+

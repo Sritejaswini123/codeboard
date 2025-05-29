@@ -6,7 +6,10 @@ import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getRecordById, updateRecordById } from "../service/baseDbServices";
+<<<<<<< HEAD
 // import { getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
+=======
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
 import { getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";

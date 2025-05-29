@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "id": "c755e02a-c817-432d-8d7b-285c41894a97",
+=======
+  "id": "bccd5a7a-5d39-4c18-b6b0-3b7e4228c724",
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,6 +18,7 @@
           "primaryKey": true,
           "notNull": true
         },
+<<<<<<< HEAD
         "month": {
           "name": "month",
           "type": "text",
@@ -34,6 +39,10 @@
         },
         "user_id": {
           "name": "user_id",
+=======
+        "user_project_id": {
+          "name": "user_project_id",
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -90,11 +99,19 @@
         }
       },
       "indexes": {
+<<<<<<< HEAD
         "commits_commit_name_idx": {
           "name": "commits_commit_name_idx",
           "columns": [
             {
               "expression": "commit_message",
+=======
+        "commits_user_project_id_idx": {
+          "name": "commits_user_project_id_idx",
+          "columns": [
+            {
+              "expression": "user_project_id",
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -107,6 +124,7 @@
         }
       },
       "foreignKeys": {
+<<<<<<< HEAD
         "commits_user_id_users_id_fk": {
           "name": "commits_user_id_users_id_fk",
           "tableFrom": "commits",
@@ -122,9 +140,14 @@
         },
         "commits_project_id_projects_id_fk": {
           "name": "commits_project_id_projects_id_fk",
+=======
+        "commits_user_project_id_user_projects_id_fk": {
+          "name": "commits_user_project_id_user_projects_id_fk",
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
           "tableFrom": "commits",
-          "tableTo": "projects",
+          "tableTo": "user_projects",
           "columnsFrom": [
+<<<<<<< HEAD
             "project_id"
           ],
           "columnsTo": [
@@ -139,6 +162,9 @@
           "tableTo": "repositories",
           "columnsFrom": [
             "repository_id"
+=======
+            "user_project_id"
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
           ],
           "columnsTo": [
             "id"
@@ -153,8 +179,13 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
     "public.user_profiles": {
       "name": "user_profiles",
+=======
+    "public.": {
+      "name": "",
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
       "schema": "",
       "columns": {
         "id": {
@@ -163,6 +194,7 @@
           "primaryKey": true,
           "notNull": true
         },
+<<<<<<< HEAD
         "image_url": {
           "name": "image_url",
           "type": "text",
@@ -171,6 +203,58 @@
         }
       },
       "indexes": {},
+=======
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "title_index": {
+          "name": "title_index",
+          "columns": [
+            {
+              "expression": "title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -267,6 +351,7 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+<<<<<<< HEAD
     "public.repositories": {
       "name": "repositories",
       "schema": "",
@@ -349,6 +434,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+=======
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
     "public.user_projects": {
       "name": "user_projects",
       "schema": "",

@@ -1,5 +1,6 @@
-import z from "zod";
+//userValidations
 
+import z from "zod";
 export const vCreateUser = z.object({
   first_name: z.string({
     required_error: "First name is required",
@@ -23,6 +24,7 @@ email: z.string({
     },
     { message: "Email domain not allowed"}
   ),
+
   phone: z.string({
     required_error: "Phone number is required",
     invalid_type_error: "Phone number must be a string",
@@ -31,11 +33,16 @@ email: z.string({
   .max(15, { message: "Phone number must be at most 15 digits long" })
   .optional(),
 
-
+  
   dob: z.string({
     required_error: "Date of birth is required",
     invalid_type_error: "Date of birth must be a string",
   }).min(1, { message: "Date of birth is required" }),
+
+  is_active: z.boolean({
+    required_error: "Is active is required",
+    invalid_type_error: "Is active must be a boolean",
+  }),
 
   doj: z.string({
     required_error: "Date of joining is required",
@@ -46,6 +53,7 @@ email: z.string({
     required_error: "Designation is required",
     invalid_type_error: "Designation must be a string",
   }).min(3, { message: "Designation must be at least 3 characters long" }),
+
 
 }).superRefine((data, ctx) => {
   const dobDate = new Date(data.dob);
@@ -64,7 +72,9 @@ email: z.string({
       code: z.ZodIssueCode.custom,
       message: "Invalid date of joining",
     });
+   
   }
+  
 });
 
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;

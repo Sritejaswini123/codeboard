@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { eq } from "drizzle-orm";
 import db from "../src/database/db";
 import { commits } from "../src/database/schemas/commits";
@@ -21,3 +22,9 @@ export async function createCommitRecord(commit) {
 export async function deleteCommitById(commitId) {
     return await db.delete(commits).where(eq(commits.id, commitId));
 }
+=======
+import db from "../src/database/db";
+export async function createRecordMany(table, records) {
+    return await db.insert(table).values(records).returning();
+}
+>>>>>>> 017e6737290c9832a0f859a94590d3b404d6e14d
