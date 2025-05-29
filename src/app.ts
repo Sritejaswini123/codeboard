@@ -1,5 +1,4 @@
 import { cors } from "hono/cors";
-
 import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
@@ -13,6 +12,7 @@ import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
 import seed from "./routes/realSeedRoute.js";
 import imageRoutes from "./routes/imageRoutes.js";
+import repositoryRoutes from "./routes/repositoryRoutes.js";
 const app = factory.createApp().basePath(env.API_VERSION);
 
 app.use(piLogger());
@@ -25,6 +25,7 @@ app.get("/", (c) => {
   return sendResponse(c, 200, SERVICE_UP);
 });
 // user routes..........
+app.route("/", repositoryRoutes);
 console.log("inside app");
 app.route("/", userRoutes);
 app.route('/images', imageRoutes);

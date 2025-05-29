@@ -11,6 +11,7 @@ export const vCreateUser = z.object({
     invalid_type_error: "Last name must be a string",
   }).min(3, { message: "Last name must be at least 3 characters long" }).optional(),
 
+  
 email: z.string({
     required_error: "Email is required",
     invalid_type_error: "Email must be a string", 
@@ -31,11 +32,16 @@ email: z.string({
   .max(15, { message: "Phone number must be at most 15 digits long" })
   .optional(),
 
-
   dob: z.string({
     required_error: "Date of birth is required",
     invalid_type_error: "Date of birth must be a string",
   }).min(1, { message: "Date of birth is required" }),
+
+
+   is_active: z.boolean({
+    required_error: "Project status is required",
+    invalid_type_error: "Project status must be a boolean",
+  }),
 
   doj: z.string({
     required_error: "Date of joining is required",

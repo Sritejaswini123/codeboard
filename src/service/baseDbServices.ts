@@ -6,12 +6,13 @@ import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
+import { NewRepository, Repository, RepositoryTable } from "../database/schemas/repositories";
 
-type DBTable = UsersTable | ProjectsTable | CommitsTable;
-type NewDBRecord = NewUser | NewProject | NewCommit;
-type DBRecordRow = User | Project | CommitsTable;
+type DBTable = UsersTable | ProjectsTable | CommitsTable|RepositoryTable;
+type NewDBRecord = NewUser | NewProject | NewCommit|NewRepository;
+type DBRecordRow = User | Project | CommitsTable|Repository;
 
-export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord) {
+export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord){
   const result = await db
     .insert(table)
     .values(record)
@@ -44,12 +45,12 @@ export async function getAllRecords<DBRecordRow>(page: number, page_size: number
   const totalPages = Math.ceil(total_records / page_size);
 
   return {
-   total_records: Number(total_records),
+    total_records: Number(total_records),
     page,
     page_size,
     totalPages,
-    next_page: page >= totalPages || totalPages===0 ?null:page+1,
-    prev_page: page <= 1 ? null: page - 1,
+    next_page: page >= totalPages || totalPages === 0 ? null : page + 1,
+    prev_page: page <= 1 ? null : page - 1,
     data: result,
   };
 }
