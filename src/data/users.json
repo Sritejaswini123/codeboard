@@ -50,7 +50,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Manisha ",
+  "first_name": "Manisha",
   "last_name":"Dasari",
   "dob": "2000-09-28",
   "designation": "FRONTEND DEVELOPER",
@@ -70,7 +70,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Raghu Ram ",
+  "first_name": "Raghu Ram",
    "last_name":"Sanke",
   "dob": "1999-02-24",
   "designation": "BACKEND DEVELOPER",
@@ -80,7 +80,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Sai Chandra ",
+  "first_name": "Sai Chandra",
    "last_name":"Jagu",
   "dob": "2001-09-11",
   "designation": "FRONTEND DEVELOPER",
@@ -90,7 +90,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Sai ",
+  "first_name": "Sai",
    "last_name":"Krishna",
   "dob": "1999-02-26",
   "designation": "BACKEND DEVELOPER",
@@ -110,7 +110,7 @@
   "is_active ": true
  },
  {
-  "first_name": " Ganesh",
+  "first_name": "Ganesh",
    "last_name":"Sirigidi",
   "dob": "2002-10-31",
   "designation": "BACKEND DEVELOPER",
@@ -130,7 +130,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Priyanka ",
+  "first_name": "Priyanka",
    "last_name":"Kommani",
   "dob": "2002-02-01",
   "designation": "BACKEND DEVELOPER(INTERN)",
@@ -150,7 +150,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Ram Nikhil Teja ",
+  "first_name": "Ram Nikhil Teja",
    "last_name":"Budide",
   "dob": "2001-11-04",
   "designation": "UI \/ UX DEVELOPER",
@@ -160,7 +160,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Mahesh Kumar ",
+  "first_name": "Mahesh Kumar",
    "last_name":"Nalluri",
   "dob": "2002-10-10",
   "designation": "UI \/ UX DEVELOPER",
@@ -170,7 +170,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Devadas ",
+  "first_name": "Devadas",
    "last_name":"Palaparthi",
   "dob": "2003-06-18",
   "designation": "MOBILE DEVELOPER(INTERN)",
@@ -289,7 +289,7 @@
   "is_active ": true
  },
  {
-  "first_name": "Deepthi ",
+  "first_name": "Deepthi",
    "last_name":"Naidu Chappa",
   "dob": "2002-05-09",
   "designation": "BACKEND DEVELOPER(INTERN)",
@@ -386,6 +386,16 @@
   "doj": "2025-05-05",
  "email": "balaraju.p@orotron.com",
   "phone": "+91 7569753951",
+  "is_active ": true
+ },
+   {
+  "first_name": "karthik",
+   "last_name":"kanni",
+  "dob": "2002-04-06",
+  "designation": "FRONTEND DEVELOPER(INTERN)",
+  "doj": "2025-05-05",
+ "email": "karthik.k@orotron.com",
+  "phone": "+91 7569753958",
   "is_active ": true
  }
 ]

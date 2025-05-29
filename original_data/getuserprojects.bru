@@ -1,0 +1,15 @@
+meta {
+  name: getuserprojects
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:6000/v1.0/user-projects/17?projects=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  projects: true
+}

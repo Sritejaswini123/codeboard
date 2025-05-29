@@ -8,6 +8,13 @@
       "when": 1748402669384,
       "tag": "0000_stale_queen_noir",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1748495126322,
+      "tag": "0001_supreme_maestro",
+      "breakpoints": true
     }
   ]
 }

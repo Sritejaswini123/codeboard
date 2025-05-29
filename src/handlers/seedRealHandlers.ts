@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import db from "../database/db";
 import { users } from "../database/schemas/users";
+import { inArray } from "drizzle-orm";
 import { vCreateUser } from "../validations/userValidations";
 import { Context } from "hono";
 import { vCreateProject } from "../validations/projectValidations";
@@ -15,30 +16,71 @@ import { NewRepository, repositories } from "../database/schemas/repositories";
 import { vCreateRepository } from "../validations/repositoryValidations";
 import { INTERNAL_SERVER_ERROR } from "../constants/httpStatusCodes";
 
-export const seedRealUserHandler = [ async (c: Context) => {
-   try {
+// export const seedRealUserHandler = [ async (c: Context) => {
+//    try {
+//     const vCreateUserArray = z.array(vCreateUser);
+//     const filePath = path.join(process.cwd(), "src", "data", "users.json");
+//     const jsonData = await fs.readFile(filePath, "utf-8");
+//     const parsedUsers: any[] = JSON.parse(jsonData);
+//     const validUsersRaw = vCreateUserArray.parse(parsedUsers);
+//     const validUsers = validUsersRaw.map(user => ({
+//     ...user,
+//     dob: new Date(user.dob),
+//     doj: new Date(user.doj),
+//     }));
+//     if (validUsers.length > 0) {
+//       await db.insert(users).values(validUsers);
+//     }
+//     return c.json({
+//       success: true,
+//       inserted: validUsers.length,
+//     });
+//   } catch (error) {
+//     console.error(" insert seeding error:", error);
+//     return c.json({ success: false, message: "Failed to seed users" }, INTERNAL_SERVER_ERROR);
+//   }
+// }];
+export const seedRealUserHandler = [async (c: Context) => {
+  try {
     const vCreateUserArray = z.array(vCreateUser);
     const filePath = path.join(process.cwd(), "src", "data", "users.json");
     const jsonData = await fs.readFile(filePath, "utf-8");
     const parsedUsers: any[] = JSON.parse(jsonData);
     const validUsersRaw = vCreateUserArray.parse(parsedUsers);
+
     const validUsers = validUsersRaw.map(user => ({
-    ...user,
-    dob: new Date(user.dob),
-    doj: new Date(user.doj),
+      ...user,
+      dob: new Date(user.dob),
+      doj: new Date(user.doj),
     }));
-    if (validUsers.length > 0) {
-      await db.insert(users).values(validUsers);
+
+    // Step 1: Get all emails of valid users
+    const emails = validUsers.map(user => user.email);
+    // Step 2: Fetch existing emails from DB
+    const existingUsers = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(inArray(users.email, emails));
+    const existingEmails = new Set(existingUsers.map(u => u.email));
+
+    // Step 3: Filter out users with already existing emails
+    const newUsers = validUsers.filter(user => !existingEmails.has(user.email));
+
+    // Step 4: Insert only new users
+    if (newUsers.length > 0) {
+      await db.insert(users).values(newUsers);
     }
+
     return c.json({
       success: true,
-      inserted: validUsers.length,
+      inserted: newUsers.length,
     });
   } catch (error) {
-    console.error(" insert seeding error:", error);
+    console.error("Insert seeding error:", error);
     return c.json({ success: false, message: "Failed to seed users" }, INTERNAL_SERVER_ERROR);
   }
 }];
+
 export const seedRealProjectHandler = [ async (c: Context) => {
     try {
       const vCreateProjectArray = z.array(vCreateProject);
@@ -51,7 +93,6 @@ export const seedRealProjectHandler = [ async (c: Context) => {
       if (validProjects.length > 0) {
         await db.insert(projects).values(validProjects);
       }
-
       return c.json({
         success: true,
         inserted: validProjects.length,
@@ -180,8 +221,6 @@ export const seedCommitHandler = [
     }
   },
 ];
-
-
 ///Repositories
 export const seedRealRepoHandler = [ async (c: Context) => {
   try {

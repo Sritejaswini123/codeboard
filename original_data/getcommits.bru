@@ -1,0 +1,16 @@
+meta {
+  name: getcommits
+  type: http
+  seq: 12
+}
+
+get {
+  url: http://localhost:6000/v1.0/commits?user_id=10&project_id=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  user_id: 10
+  project_id: 1
+}
