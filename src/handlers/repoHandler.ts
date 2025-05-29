@@ -1,13 +1,15 @@
 import { z } from "zod";
-import { REPOSITORY_CREATED, REPOSITORY_EXIST, VALIDATION_ERRORS } from "../constants/appMessages";
+import { PROJECT_CREATED, REPOSITORY_CREATED, REPOSITORY_EXIST, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
-import { NewRepositories, Repositories, repositories } from "../database/schemas/repositories";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
-import { checkRepoExist } from "../service/repositoryService";
+
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateRepositories } from "../validations/repositoriesValidations";
+import { vCreateProject } from "../validations/projectValidations";
+import { checkRepoExist } from "../service/repoService";
+import { NewRepositories, Repositories, repositories } from "../database/schemas/repo";
 
 export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
     try {
@@ -39,3 +41,13 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
     }
 
 })
+
+
+
+
+
+
+
+
+
+

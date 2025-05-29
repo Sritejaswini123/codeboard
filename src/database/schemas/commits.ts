@@ -9,7 +9,8 @@ import {
 
 import { timestamps } from "./helperColumns";
 import { projects } from "./projects";
-import { repositories } from "./repositories";
+
+import { repositories } from "./repo";
 import { users } from "./users";
 
 export const commits = pgTable(

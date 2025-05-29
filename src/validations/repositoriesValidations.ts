@@ -16,9 +16,12 @@ export const vCreateRepositories=z.object({
         required_error: "repository_url is required",
         invalid_type_error: "repository_url must be a string",
     }).url({ message: "repository_url must be a valid URL" }),
-    
+
+   projectIds: z.array(z.number()).min(1, "At least one project must be assigned"),
+
    is_active:z.boolean().default(true)
-})
+
+});
 
 
 export type ValidatedCreateRepository = z.infer<typeof vCreateRepositories>;

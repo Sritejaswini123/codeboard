@@ -12,6 +12,7 @@ export const vCreateProject = z.object({
   }).min(5, { message: "Description is required" }),
 
   is_active: z.boolean().optional(),
+  
   // userIDs:z.array(z.number()).min(1,{message:"userId is required"}),
 
   // project_id:z.number({required_error: "Project ID is required",
