@@ -119,8 +119,6 @@ export const updateproject=factory.createHandlers(async(c)=>{
   }
 })
 
-    const result = await assignUsersToProject(user_id, project_id);
-
 //get project by id
 export const getProjectByIdHandler=factory.createHandlers(async(c)=>{
   try {

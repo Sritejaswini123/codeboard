@@ -6,6 +6,7 @@ import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
 import{ValidatedCreateProject} from "../validations/projectValidations"
 import { USER_NOT_FOUND } from "../constants/appMessages";
+import { updateRecordById } from "./baseDbServices";
 
 
 // all projects

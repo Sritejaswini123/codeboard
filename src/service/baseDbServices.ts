@@ -44,41 +44,6 @@ export async function getAllRecords<DBRecordRow>(page: number, page_size: number
   const totalPages = Math.ceil(total_records / page_size);
 
   return {
-<<<<<<< HEAD
-    total_records: Number(total_records),
-    page,
-    page_size,
-    totalPages,
-    next_page: page >= totalPages || totalPages === 0 ? null : page + 1,
-    prev_page: page <= 1 ? null : page - 1,
-    data: result
-  };
-};
-
-//delete 
-export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) => {
-  const columnInfo = sql.raw(`${getTableName(table)}.id`)
-
-  const result = await db
-    .delete(table)
-    .where(eq(columnInfo, id))
-    .returning();
-  return result[0];
-};
-
-//update
-export const updateRecordById = async <DBRecordRow>(table: DBTable, record: NewDBRecord, id: number) => {
-  const columnInfo = sql.raw(`${getTableName(table)}.id`)
-  const updatedRecord = await db
-    .update(table)
-    .set({
-      ...record,
-      updated_at: new Date()
-    })
-    .where(eq(columnInfo, id))
-    .returning();
-  return updatedRecord;
-=======
    total_records: Number(total_records),
     page,
     page_size,
@@ -171,5 +136,4 @@ export async function getPaginatedRecords(
     prev_page: curent_page <= 1 ? null : curent_page - 1,
     data: result,
   };
->>>>>>> 455572aa48837731d32bec2487086e75434cd12a
 }

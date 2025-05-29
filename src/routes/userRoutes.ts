@@ -1,5 +1,5 @@
 import factory from "../factory.js";
-import { createUserHandlers, deleteUserByIdHandlers, getAllUsersHandlers } from "../handlers/userHandlers.js";
+import { createUserHandlers, deleteUserByIdHandlers, getAllUsersHandlers, updateUserByIdHandlers } from "../handlers/userHandlers.js";
 
 const userRoutes = factory.createApp();
 userRoutes.post("/users", ...createUserHandlers);
