@@ -52,8 +52,8 @@ export const seedRealUserBulkDataHandler = [
 
       const validUsers = validUsersRaw.map((user) => ({
         ...user,
-        dob: new Date(user.dob),
-        doj: new Date(user.doj),
+        // dob: new Date(user.dob),
+        // doj: new Date(user.doj),
       }));
 
       if (validUsers.length > 0) {

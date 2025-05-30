@@ -31,7 +31,7 @@ import { checkCommitExist, getAllCommits } from "../service/commitService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
 
-// create commit
+//AddCommit
 export const createCommitHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();

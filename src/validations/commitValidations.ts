@@ -35,6 +35,7 @@ export const vCreateCommit = z
         invalid_type_error: "Date must be a string",
       })
     .min(1, { message: "Date of commit is required" }),
+    // .transform((val) => new Date(val)) ,
 
     time: z
       .string({
@@ -71,9 +72,10 @@ export const vCreateCommit = z
       ctx.addIssue({
         path: ["date"],
         code: z.ZodIssueCode.custom,
-        message: "Invalid date format. Use YYYY-MM-DD.",
+        message: "Invalid date format. Use YYYY-MM-DD."
       });
     }
+   
 
     const isValidTime = /^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(data.time);
     if (!isValidTime) {

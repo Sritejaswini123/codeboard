@@ -6,9 +6,9 @@ import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
-import { NewRepository, Repository, RepositoryTable } from "../database/schemas/repositories";
+import { NewRepository, Repository, RepositoriesTable } from "../database/schemas/repositories";
 
-type DBTable = UsersTable | ProjectsTable | CommitsTable | RepositoryTable;
+type DBTable = UsersTable | ProjectsTable | CommitsTable | RepositoriesTable;
 type NewDBRecord = NewUser | NewProject | NewCommit | NewRepository;
 type DBRecordRow = User | Project | Commit | Repository;
 

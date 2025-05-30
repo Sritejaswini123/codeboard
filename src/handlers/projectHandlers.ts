@@ -1,4 +1,5 @@
-import { z, ZodError } from "zod";
+import { number, z, ZodError } from "zod";
+import { and, asc, count, eq } from "drizzle-orm";
 
 import type { NewProject, Project } from "../database/schemas/projects";
 
@@ -8,16 +9,22 @@ import { projects } from "../database/schemas/projects";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
-import { createProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
+import { assignUsersToProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
 import ConflictException from "../exceptions/conflictException";
+import db from "../database/db";
+import { vCreateUserProject } from "../validations/userProjectValidatons";
+import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
 
-// createproject
+// AddProject
 export const createProjectHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
     const validProjectReq = vCreateProject.parse(reqBody);
+    // if(!validProjectReq){
+    //   throw new UnprocessableEntityException(VALIDATION_ERRORS)
+    // }
     const projectData: NewProject = {
       ...validProjectReq,
     };
@@ -48,9 +55,12 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
     const page_size = Number(c.req.query("page_size"));
-    const user_id = Number(c.req.query("user_id"));
-    const project_id = Number(c.req.query("project_id"));
-    const projectData = await getAllProjects(page, page_size, user_id, project_id);
+    const project_id = c.req.query("project_id");
+    const filter = project_id ? eq(projects.id, Number.parseInt(project_id)) : undefined;
+    console.log("filters fetched: ", filter);
+    // const user_id = Number(c.req.query("user_id"));
+
+    const projectData = await getAllProjects(page, page_size,projects,filter);
     return sendResponse(c, OK, PROJECTS_FETCHED, projectData);
   }
   catch (error) {
@@ -64,9 +74,7 @@ export const userProjectsHandler = factory.createHandlers(async (c) => {
     const userId = Number(c.req.param("id"));
 
     // if (!userId || isNaN(userId)) return c.json({message:USER_ID_REQUIRED})
-
     // const isUserExist = await getRecordById(users, userId);
-
     // if (!isUserExist) return c.json({status: NOT_FOUND,success: false,message:`${USER_NOT_FOUND} with id ${userId}`})
      
     const includeProjects = c.req.query("projects") === "true";
@@ -81,4 +89,26 @@ export const userProjectsHandler = factory.createHandlers(async (c) => {
 });
 
 
+// // add users in project
 
+// export const assignUsersHandler = factory.createHandlers(async (c) => {
+//   try {
+//     const reqBody = await c.req.json();
+//     const validData = vCreateUserProject.parse(reqBody);
+
+//     const { user_id, project_id } = validData;
+
+//     const result = await assignUsersToProject(user_id, project_id);
+
+//     return sendResponse(c, CREATED, "Users processed", result);
+//   } catch (error) {
+//     if (error instanceof z.ZodError) {
+//       const formattedErrors = Object.fromEntries(
+//         error.errors.map(({ path, message }) => [path[0], message])
+//       );
+//       return sendResponse(c, UNPROCESSABLE_ENTITY, "validation errors", formattedErrors)
+
+//     }
+//     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+//   }
+// });

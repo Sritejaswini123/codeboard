@@ -11,12 +11,16 @@ import { deleteUserById, getAllUsers, isUserExist } from "../service/userService
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 import ConflictException from "../exceptions/conflictException";
+import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
 
-// save record
+// AddUser
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
     const validUserReq = vCreateUser.parse(reqBody);
+    if(!validUserReq){
+      throw new UnprocessableEntityException("validationErrors")
+    }
     const userData: NewUser = {
       ...validUserReq,
       // dob: new Date(validUserReq.dob),
@@ -35,31 +39,30 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       const formattedErrors = Object.fromEntries(
         error.errors.map(({path,message})=>[path[0],message])
       );
-      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
+      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);  
     }
-
    throw error;
   }
 });
 
-// get by id
-// export const getUserByIdHandlers = factory.createHandlers(async (c) => {
-//   try {
-//     const userId = Number(c.req.param("user_id"));
+//get by id
+export const getUserByIdHandlers = factory.createHandlers(async (c) => {
+  try {
+    const userId = Number(c.req.param("user_id"));
 
-//     if (!userId)return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+    if (!userId)return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
 
-//     const user = await getRecordById(users, userId);
+    const user = await getRecordById(users, userId);
 
-//     if (!user)throw new NotFoundException(USER_NOT_FOUND);
+    if (!user)throw new NotFoundException(USER_NOT_FOUND);
 
-//     return sendResponse(c, OK, USER_FETCHED, user);
-//   }
-//   catch (error) {
+    return sendResponse(c, OK, USER_FETCHED, user);
+  }
+  catch (error) {
 
-//     throw error;
-//   }
-// });
+    throw error;
+  }
+});
 
 //get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
