@@ -134,9 +134,57 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
       doj: rows[0].dob,
       dob: rows[0].doj,
       is_active: rows[0].is_active,
-
     },
     Total_projects: userProjects.length,
     userProjects: userProjects.length > 0 ? userProjects : [],
+  };
+}
+
+
+
+export async function getProjectWithUsers(projectId: number) {
+  const rows = await db
+    .select({
+      projectId: projects.id,
+      projectTitle: projects.title,
+      projectDescription: projects.description,
+      projectIsActive: projects.is_active,
+      userId: users.id,
+      userFirstName: users.first_name,
+      userLastName: users.last_name,
+      userEmail: users.email,
+      userPhone: users.phone,
+      userDesignation: users.designation,
+    })
+    .from(projects)
+    .innerJoin(user_projects, eq(projects.id, user_projects.project_id))
+    .innerJoin(users, eq(user_projects.user_id, users.id))
+    .where(eq(projects.id, projectId));
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  // Extract project info from first row
+  const project = {
+    id: rows[0].projectId,
+    title: rows[0].projectTitle,
+    description: rows[0].projectDescription,
+    isActive: rows[0].projectIsActive,
+  };
+
+
+  const usersList = rows.map(row => ({
+    id: row.userId,
+    firstName: row.userFirstName,
+    lastName: row.userLastName,
+    email: row.userEmail,
+    phone: row.userPhone,
+    designation: row.userDesignation,
+  }));
+
+  return {
+    project,
+    users: usersList,
   };
 }

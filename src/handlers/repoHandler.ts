@@ -8,10 +8,9 @@ import { NewRepositories, repositories, Repositories } from "../database/schemas
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, updateRecordById } from "../service/baseDbServices";
-import { sendResponse } from "../utils/sendResponse";
 import { checkRepoExist } from "../service/repoService";
+import { sendResponse } from "../utils/sendResponse";
 import { vCreateRepositories } from "../validations/repositoriesValidations";
-import { PgTableWithColumns, PgColumn } from "drizzle-orm/pg-core";
 
 export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
     try {
@@ -31,12 +30,10 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
       .select()
       .from(projects)
       .where(eq(projects.id, validateRepo.project_id))
-
-
+      
     if (!projectExists) {
       throw new NotFoundException(PROJECT_NOT_FOUND);
     }
-
       const createdRepo=await createRecord<Repositories>(repositories,repoData)
       return sendResponse(c, CREATED, REPOSITORY_CREATED, createdRepo);
 
@@ -56,7 +53,7 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
 
 export const updateRepoByIdHandlers=factory.createHandlers(async(c)=>{
   try {
-    const repoId=c.req.param('id');
+    const repoId=Number(c.req.param('id'));
     if(!repoId) throw new NotFoundException();
     const reqBody=await c.req.json();
     const validateRepo=vCreateRepositories.parse(reqBody);
@@ -65,7 +62,7 @@ export const updateRepoByIdHandlers=factory.createHandlers(async(c)=>{
     const repoData:NewRepositories={
       ...validateRepo,
     }
-    const updatedRepo=updateRecordById(repositories,repoData,+repoId);
+    const updatedRepo=updateRecordById<Repositories>(repositories,repoData,+repoId);
     return sendResponse(c, OK, REPOSITORY_UPDATED,updatedRepo);
   } catch (error) {
        if (error instanceof z.ZodError) {

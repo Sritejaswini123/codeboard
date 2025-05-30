@@ -24,6 +24,8 @@ export const DB_RECORD_NOT_FOUND = "Database record not found";
 
 export const USERS_FETCHED = "Users fetched successfully";
 
+export const USERS_PROJECTS_FETCHED = "Users involved in Projects fetched successfully";
+
 export const USER_EXIST = "User already exists";
 
 export const COMMIT_EXIST = "Commit already exists";
