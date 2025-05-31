@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { PROJECT_CREATED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { INVALID_ID, INVALID_PROJECT_ID, PROJECT_CREATED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
-import type { NewProject } from "../database/schemas/projects";
+import type { NewProject, Project } from "../database/schemas/projects";
 import { projects } from "../database/schemas/projects";
 import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
@@ -10,9 +10,11 @@ import { createRecord, getRecordById, updateRecordById } from "../service/baseDb
 import { getAllProjects, getProjectWithUsers, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
+import BadRequestException from "../exceptions/badRequestException";
+import { Context } from "hono";
 
 // create new project
-export const createProjectHandlers = factory.createHandlers(async (c) => {
+export const createProjectHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const reqBody = await c.req.json();
 
@@ -26,9 +28,11 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
 
     const checkProjectIdExist = isProjectExist(projectId);
 
-    if (!checkProjectIdExist)throw new NotFoundException(PROJECT_NOT_FOUND);
+    if (!checkProjectIdExist){
+      throw new NotFoundException(PROJECT_NOT_FOUND);
+    }
 
-    const project = await createRecord(projects, projectData);
+    const project = await createRecord<Project>(projects, projectData);
 
     return sendResponse(c, CREATED, PROJECT_CREATED, project);
   }
@@ -45,7 +49,7 @@ export const createProjectHandlers = factory.createHandlers(async (c) => {
 });
 
 // get all projects handler
-export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
+export const getAllProjectsHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const page = Number(c.req.query("page")) || 1;
 
@@ -65,17 +69,19 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c) => {
 });
 
 // user+Profile
-export const userProjectsProfileHandler = factory.createHandlers(async (c) => {
+export const userProjectsProfileHandler = factory.createHandlers(async (c:Context) => {
   try {
     const userId = Number(c.req.param("id"));
 
-    if (!userId)
-      return c.json({ message: USER_ID_REQUIRED });
+    if (!userId){
+      throw new BadRequestException(INVALID_ID);
+    }
+     
+    const isUserExist = await getRecordById<Project>(users, userId);
 
-    const isUserExist = await getRecordById(users, userId);
-
-    if (!isUserExist)
-      return c.json({ status: NOT_FOUND, success: false, message: `${USER_NOT_FOUND} with id ${userId}` });
+    if (!isUserExist){
+      throw new NotFoundException(`${USER_NOT_FOUND} with id ${userId}`);
+    }
 
     const includeProjects = c.req.query("projects") === "true";
 
@@ -91,12 +97,13 @@ export const userProjectsProfileHandler = factory.createHandlers(async (c) => {
 });
 
 //update
-export const updateproject = factory.createHandlers(async (c) => {
+export const updateproject = factory.createHandlers(async (c:Context) => {
   try {
     const projectId = Number(c.req.param("id"));
 
-    if (!projectId)
-      return c.json(PROJECT_ID_REQUIRED);
+    if (!projectId){
+      throw new BadRequestException(INVALID_ID)
+    }
 
     const reqBody = await c.req.json();
 
@@ -104,13 +111,13 @@ export const updateproject = factory.createHandlers(async (c) => {
 
     const checkProjectExist = await isProjectExist(projectId);
 
-    if (!checkProjectExist)
-      return c.json({ status: NOT_FOUND, success: false, message: `${PROJECT_NOT_FOUND} with id ${projectId}` });
-
+    if (!checkProjectExist){
+      throw new NotFoundException(`${PROJECT_NOT_FOUND} with id ${projectId}`);
+    }
     const projectData: NewProject = {
       ...validateUpdatedProject,
     };
-    const updateProject = await updateRecordById(projects, projectData, projectId);
+    const updateProject = await updateRecordById<Project>(projects, projectData, projectId);
 
     return sendResponse(c, OK, PROJECT_UPDATED, updateProject);
   }
@@ -127,18 +134,19 @@ export const updateproject = factory.createHandlers(async (c) => {
 });
 
 // get project by id
-export const getProjectByIdHandler = factory.createHandlers(async (c) => {
+export const getProjectByIdHandler = factory.createHandlers(async (c:Context) => {
   try {
     const projectId = Number(c.req.param("id"));
 
-    if (!projectId)throw new NotFoundException(PROJECT_ID_REQUIRED);
-
+    if (!projectId){
+      throw new BadRequestException(INVALID_ID);
+    }
     const checkProjectExist = await isProjectExist(projectId);
 
-    if (!checkProjectExist)
-      return c.json({ status: NOT_FOUND, success: false, message: `${PROJECT_NOT_FOUND} with id ${projectId}` });
-
-    const result = await getRecordById(projects, projectId);
+    if (!checkProjectExist){
+      throw new NotFoundException(`${PROJECT_NOT_FOUND} with id ${projectId}`);
+    }
+    const result = await getRecordById<Project>(projects, projectId);
     return sendResponse(c, OK, PROJECT_FETCHED, result);
   }
   catch (error) {
@@ -150,16 +158,18 @@ export const getProjectByIdHandler = factory.createHandlers(async (c) => {
 
 
 
-export const getAllUsersByProjectId=factory.createHandlers(async(c)=>{
+export const getAllUsersByProjectId=factory.createHandlers(async(c:Context)=>{
   try {
     const projectId=Number(c.req.query('id'));
 
-    if(!projectId)throw new NotFoundException(PROJECT_ID_REQUIRED);
-
+    if(!projectId){
+      throw new BadRequestException(INVALID_ID);
+    }
     const checkProjectExist=await isProjectExist(projectId);
 
-    if(!checkProjectExist)throw new NotFoundException(`${PROJECT_NOT_FOUND} with id ${projectId}`);
-
+    if(!checkProjectExist){
+      throw new NotFoundException(`${PROJECT_NOT_FOUND} with id ${projectId}`);
+    }
     const result = await getProjectWithUsers(projectId);
 
     return sendResponse(c, OK, USERS_PROJECTS_FETCHED, result);
@@ -169,3 +179,5 @@ export const getAllUsersByProjectId=factory.createHandlers(async(c)=>{
   }
 })
 
+//TODO:write api for deleting for projects
+//FIXME:

@@ -1,18 +1,20 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import {  INVALID_ID, USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import type { NewUser, User } from "../database/schemas/users";
-import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { users } from "../database/schemas/users";
+import BadRequestException from "../exceptions/badRequestException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
-import { deleteUserById, isUserExist } from "../service/userServices";
+import { createRecord, deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
+import { Context } from "hono";
 
 // save record
-export const createUserHandlers = factory.createHandlers(async (c) => {
+export const createUserHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const reqBody = await c.req.json();
     const validUserReq = vCreateUser.parse(reqBody);
@@ -41,18 +43,18 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 });
 
 // get by id
-export const getUserByIdHandlers = factory.createHandlers(async (c) => {
+export const getUserByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const userId = Number(c.req.param("user_id"));
 
-    if (!userId)
-      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+    if (!userId){
+      throw new BadRequestException(INVALID_ID);
+    }
+    const user = await getRecordById<User>(users, userId);
 
-    const user = await getRecordById(users, userId);
-
-    if (!user)
+    if (!user){
       throw new NotFoundException(USER_NOT_FOUND);
-
+    }
     return sendResponse(c, OK, USER_FETCHED, user);
   }
   catch (error) {
@@ -61,14 +63,14 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
 });
 
 // get all users
-export const getAllUsersHandlers = factory.createHandlers(async (c) => {
+export const getAllUsersHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const page = Number(c.req.query("page")) || 1;
     const page_size = Number(c.req.query("page_size")) || 10;
     const userId = c.req.query("user_id");
     const filter = userId ? eq(users.id, Number.parseInt(userId)) : undefined;
     console.log("filters fetched: ", filter);
-    const userData = await getAllRecords(page, page_size, users, filter);
+    const userData = await getAllRecords<User>(page, page_size, users, filter);
     console.log("Users fetched: ", userData);
     return sendResponse(c, OK, USERS_FETCHED, userData);
   }
@@ -79,13 +81,13 @@ export const getAllUsersHandlers = factory.createHandlers(async (c) => {
 });
 
 // delete user by id
-export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
+export const deleteUserByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const userId = Number(c.req.param("user_id"));
     if (!userId) {
-      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+      throw new BadRequestException(INVALID_ID);
     }
-    const deletedUser = await deleteUserById(userId);
+    const deletedUser = await deleteRecordById<User>(users,userId);
     if (!deletedUser) {
       throw new NotFoundException(USER_NOT_FOUND);
     }
@@ -97,11 +99,12 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
 });
 
 // update record
-export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
+export const updateUserByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const userId = Number(c.req.param("user_id"));
+
     if (!userId) {
-      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+     throw new BadRequestException(INVALID_ID)
     }
 
     const reqBody = await c.req.json();
@@ -114,7 +117,7 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
       doj: new Date(validatedUser.doj),
     };
 
-    const result = await updateRecordById(users, userData, userId);
+    const result = await updateRecordById<User>(users, userData, userId);
     return sendResponse(c, OK, USER_UPDATED, result);
   }
   catch (error) {

@@ -18,6 +18,8 @@ export const BAD_GATEWAY = "Bad Gateway";
  * This response means that server could not understand the request due to invalid syntax.
  */
 export const BAD_REQUEST = "Bad Request";
+
+export const BAD_REQUEST_MESSAGE = "Bad Request";
 /**
  * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.5.8
  *

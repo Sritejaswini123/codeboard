@@ -2,16 +2,16 @@ import { z, ZodError } from "zod";
 
 import type { Commit, NewCommit } from "../database/schemas/commits";
 
-import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { Context } from "hono";
+import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_UPDATED, COMMITS_FETCHED, COMMITS_NOT_FOUND, INVALID_ID, VALIDATION_ERRORS } from "../constants/appMessages";
 import {
-  BAD_REQUEST,
   CREATED,
-  INTERNAL_SERVER_ERROR,
   NOT_FOUND,
   OK,
-  UNPROCESSABLE_ENTITY,
+  UNPROCESSABLE_ENTITY
 } from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
+import BadRequestException from "../exceptions/badRequestException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import {
@@ -25,7 +25,7 @@ import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
 
 // create commit
-export const createCommitHandlers = factory.createHandlers(async (c) => {
+export const createCommitHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const reqBody = await c.req.json();
 
@@ -60,7 +60,7 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
 });
 
 // getAll Commits
-export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
+export const getAllCommitsHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const page = Number(c.req.query("page"));
 
@@ -73,8 +73,8 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
       : undefined;
     const repository_id = c.req.query("repository_id")
       ? Number(c.req.query("repository_id"))
-      : undefined;
-    const commits = await getAllCommits(
+      : undefined;//TODO:check with out undefine? why undefined?
+    const commits = await getAllCommits (
       page,
       page_size,
       project_id,
@@ -93,36 +93,40 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
 });
 
 // getCommitById
-export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
+export const getCommitByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
-    const commitId = Number(c.req.param("commit_id"));
+    const commitId = +c.req.param("commit_id")
 
-    if (!commitId) {
-      return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+    if (!commitId){
+      throw new BadRequestException(INVALID_ID)
     }
-    const commit = await getRecordById(commits, commitId);
+
+    const commit = await getRecordById<Commit>(commits, commitId);
 
     if (!commit) {
-      throw new NotFoundException(COMMIT_NOT_FOUND);
+      throw new NotFoundException(COMMITS_NOT_FOUND);
     }
     return sendResponse(c, OK, COMMITS_FETCHED, commit);
   }
   catch (error) {
-    return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
+    throw error;
   }
 });
 
 // update by id
-export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
+export const updateCommitByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const commitId = Number(c.req.param("id"));
+     if (!commitId) {
+        throw new BadRequestException(INVALID_ID);
+      }
     const reqBody = await c.req.json();
     const validatedCommit = vCreateCommit.parse(reqBody);
     const updatedProject: NewCommit = {
       ...validatedCommit,
       date: new Date(validatedCommit.date),
     };
-    const updatedCommitResult = await updateRecordById(
+    const updatedCommitResult = await updateRecordById <Commit>(
       commits,
       updatedProject,
       commitId,
@@ -139,18 +143,21 @@ export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
 });
 
 // delete by id
-export const deleteCommitByIdHandlers = factory.createHandlers(async (c) => {
-  const commitId = Number(c.req.param("id"));
+export const deleteCommitByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
-    if (!commitId)
-      return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+      const commitId = +(c.req.param("commit_id"));
 
+    if (!commitId){
+      throw new BadRequestException(INVALID_ID);
+    } 
+     
     const isCommitIdExist = await checkCommitExist(commitId);
 
-    if (!isCommitIdExist)
-      throw new NotFoundException(COMMIT_NOT_FOUND);
-
-    const deletedCommit = await deleteRecordById(commits, commitId);
+    if (!isCommitIdExist){
+       throw new NotFoundException(`${COMMITS_NOT_FOUND} with ${commitId}`);  
+    }
+   
+    const deletedCommit = await deleteRecordById<Commit>(commits, commitId);
     return sendResponse(c, OK, COMMIT_DELETED, deletedCommit);
   }
   catch (error) {

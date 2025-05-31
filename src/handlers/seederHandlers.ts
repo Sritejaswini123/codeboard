@@ -3,9 +3,7 @@ import type { Context } from "node:vm";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-
 import type { NewUserProject } from "../database/schemas/userProjects";
-
 import { createRecordMany } from "../../seeder/seederDb";
 import { generateFakeUsers } from "../../seeder/userSeeder";
 import { CREATED } from "../constants/httpStatusCodes";
@@ -35,7 +33,7 @@ export const seedUsersHandler = factory.createHandlers(async (c) => {
   }
   catch (error) {
     console.error("Seeder error:", error);
-    return c.json({ error: "Failed to seed users" }, 500);
+    throw error;
   }
 });
 
@@ -68,7 +66,7 @@ export const seedRealUserBulkDataHandler = [
     }
     catch (error) {
       console.error("Bulk insert seeding error:", error);
-      return c.json({ success: false, message: "Failed to seed users" }, 500);
+       throw error;
     }
   },
 ];
@@ -101,10 +99,7 @@ export const seedUserProjectsHandler = [
     }
     catch (error) {
       console.error("User projects bulk insert seeding error:", error);
-      return c.json(
-        { success: false, message: "Failed to seed user projects" },
-        500,
-      );
+      throw error;
     }
   },
 ];

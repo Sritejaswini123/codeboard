@@ -2,11 +2,19 @@ export const SERVICE_UP = "Service is up and running";
 
 export const USER_CREATED = "User created successfully";
 
+export const INVALID_ID="Invalid  ID";
+
+export const INVALID_PROJECT_ID="Invalid project ID";
+
+export const INVALID_COMMIT_ID="Invalid commit ID";
+
+export const INVALID_REPO_ID="Invalid REPO ID";
+
 export const COMMIT_CREATED = "Commit created successfully";
 
 export const COMMITS_FETCHED = "Commit fetched successfully";
 
-export const COMMIT_NOT_FOUND = "Commits not found";
+export const COMMITS_NOT_FOUND = "Commits not found";
 
 export const COMMIT_ID_REQUIRED = "Commit ID is required";
 
@@ -17,6 +25,8 @@ export const DB_SAVE_DATA_FAILED = "Failed to save data in database";
 export const EMPTY_DB_DATA = "Empty data to save in database";
 
 export const FILE_NAME_TYPE_REQUIRED = "fileName and fileType are required";
+
+export const FILE_TYPE_REQUIRED= "fileKey is required";
 
 export const DB_ID_INVALID = "Invalid database ID";
 

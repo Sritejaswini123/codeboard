@@ -9,6 +9,7 @@ projectRoutes.get("/user-projects/:id", ...userProjectsProfileHandler);
 projectRoutes.get("/projects/:id", ...getProjectByIdHandler);
 projectRoutes.put("/projects/:id", ...updateproject);
 projectRoutes.get("/projects-users", ...getAllUsersByProjectId);
+projectRoutes.put("/projects/:id", ...updateproject);
 
 
 

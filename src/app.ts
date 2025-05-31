@@ -1,5 +1,4 @@
 import { cors } from "hono/cors";
-
 import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
@@ -34,23 +33,25 @@ app.route("/", commitRoutes);
 app.route("/", userProfileRoutes);
 app.route("/", repositoryRoutes);
 
-app.get("/error", (c) => {
+app.get("/error", (c) => { 
+  
   c.status(422);
   c.var.logger.debug("Test error only visible in development");
   throw new Error("Test error");
 });
+
 app.notFound(notFound);
-// app.notFound((c) => {
-//   const invalidUrl = c.req.url;
-//   return c.json(
-//     {
-//       status: 404,
-//       success: false,
-//       message: `The URL you entered is invalid: ${invalidUrl}`,
-//     },
-//     404
-//   );
-// });
+app.notFound((c) => {
+  const invalidUrl = c.req.url;
+  return c.json(
+    {
+      status: 404,
+      success: false,
+      message: `The URL you entered is invalid: ${invalidUrl}`,
+    },
+    404
+  );
+});
 app.onError(onError);
 
 export default app;

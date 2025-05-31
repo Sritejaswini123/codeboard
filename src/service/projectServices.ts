@@ -173,7 +173,6 @@ export async function getProjectWithUsers(projectId: number) {
     isActive: rows[0].projectIsActive,
   };
 
-
   const usersList = rows.map(row => ({
     id: row.userId,
     firstName: row.userFirstName,

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { PROJECT_NOT_FOUND, REPO_NOT_FOUND, REPOSITORY_CREATED, REPOSITORY_EXIST, REPOSITORY_UPDATED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { INVALID_ID, PROJECT_NOT_FOUND, REPO_NOT_FOUND, REPOSITORY_CREATED, REPOSITORY_EXIST, REPOSITORY_UPDATED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import db from "../database/db";
 import { projects } from "../database/schemas/projects";
@@ -11,8 +11,10 @@ import { createRecord, updateRecordById } from "../service/baseDbServices";
 import { checkRepoExist } from "../service/repoService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateRepositories } from "../validations/repositoriesValidations";
+import BadRequestException from "../exceptions/badRequestException";
+import { Context } from "hono";
 
-export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
+export const createRepositoriesHandlers=factory.createHandlers(async(c:Context)=>{
     try {
         const reqBody=await c.req.json();
 
@@ -23,8 +25,9 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
         }
       const id=Number(repoData.id);
       const isRepositoryExist=await checkRepoExist(id);
-      if(!isRepositoryExist)throw new NotFoundException(REPOSITORY_EXIST);
-      
+      if(!isRepositoryExist){
+        throw new NotFoundException(REPOSITORY_EXIST);
+      }
     // Check if the provided project_id exists
     const projectExists = await db
       .select()
@@ -51,18 +54,22 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c)=>{
 });
 
 
-export const updateRepoByIdHandlers=factory.createHandlers(async(c)=>{
+export const updateRepoByIdHandlers=factory.createHandlers(async(c:Context)=>{
   try {
     const repoId=Number(c.req.param('id'));
-    if(!repoId) throw new NotFoundException();
+    if(!repoId){
+      throw new BadRequestException(INVALID_ID);
+    }
     const reqBody=await c.req.json();
     const validateRepo=vCreateRepositories.parse(reqBody);
-    const isRepositoryExist=await checkRepoExist(+repoId);
-    if(!isRepositoryExist)throw new NotFoundException(REPO_NOT_FOUND);
-    const repoData:NewRepositories={
+    const isRepositoryExist=await checkRepoExist(repoId);
+    if(!isRepositoryExist){
+      throw new NotFoundException(REPO_NOT_FOUND);
+    }
+      const repoData:NewRepositories={
       ...validateRepo,
     }
-    const updatedRepo=updateRecordById<Repositories>(repositories,repoData,+repoId);
+    const updatedRepo=updateRecordById<Repositories>(repositories,repoData,repoId);
     return sendResponse(c, OK, REPOSITORY_UPDATED,updatedRepo);
   } catch (error) {
        if (error instanceof z.ZodError) {

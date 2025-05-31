@@ -6,12 +6,7 @@ export default class BaseException extends Error {
   errData: any;
 
   constructor(
-    status: StatusCode,
-    message: string,
-    name: string,
-    isOperational: boolean,
-    errData?: any,
-  ) {
+    status: StatusCode,message: string,name: string,isOperational: boolean,errData?: any,) {
     super(message);
     this.status = status;
     this.name = name;
