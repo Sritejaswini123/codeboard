@@ -7,11 +7,12 @@ import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, getRecordById, updateRecordById } from "../service/baseDbServices";
-import { getAllProjects, getProjectWithUsers, getUserProjects, isProjectExist } from "../service/projectServices";
+import { getAllProjects, getProjectWithUsers, getUserProjects, isProjectExist, projectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
 import BadRequestException from "../exceptions/badRequestException";
 import { Context } from "hono";
+import conflictException from "../exceptions/conflictException";
 
 // create new project
 export const createProjectHandlers = factory.createHandlers(async (c:Context) => {
@@ -24,12 +25,12 @@ export const createProjectHandlers = factory.createHandlers(async (c:Context) =>
       ...validatedProject,
     };
 
-    const projectId = Number(projectData.id);
+    const projectTitle = projectData.title;
 
-    const checkProjectIdExist = isProjectExist(projectId);
+    const checkProjectTitleExist = await projectExist(projectTitle);
 
-    if (!checkProjectIdExist){
-      throw new NotFoundException(PROJECT_NOT_FOUND);
+    if (checkProjectTitleExist){
+      throw new conflictException(PROJECT_NOT_FOUND);
     }
 
     const project = await createRecord<Project>(projects, projectData);
@@ -53,7 +54,7 @@ export const getAllProjectsHandlers = factory.createHandlers(async (c:Context) =
   try {
     const page = Number(c.req.query("page")) || 1;
 
-    const page_size = Number(c.req.query("page_size")) || 5;
+    const page_size = Number(c.req.query("page_size")) ;
 
     const user_id = Number(c.req.query("user_id"));
 
@@ -157,7 +158,7 @@ export const getProjectByIdHandler = factory.createHandlers(async (c:Context) =>
 
 
 
-
+//get all users based on users
 export const getAllUsersByProjectId=factory.createHandlers(async(c:Context)=>{
   try {
     const projectId=Number(c.req.query('id'));
@@ -180,4 +181,4 @@ export const getAllUsersByProjectId=factory.createHandlers(async(c:Context)=>{
 })
 
 //TODO:write api for deleting for projects
-//FIXME:
+

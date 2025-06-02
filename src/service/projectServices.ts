@@ -61,12 +61,21 @@ export async function createProject(projectData: NewProject) {
 }
 
 // project exist
-export async function isProjectExist(project_id: number) {
+export async function projectExist(projectTitle: string) {
   const existingProject = await db
     .select()
     .from(projects)
-    .where(eq(projects.id, project_id));
+    .where(eq(projects.title, projectTitle));
 
+  return existingProject.length > 0;
+}
+
+
+export async function isProjectExist(projectId: number) {
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectId));
   return existingProject.length > 0;
 }
 
@@ -96,10 +105,7 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
     return USER_NOT_FOUND;
   }
 
-  if (!includeProjects) {
-    // return only user info
-    return {
-      user: {
+  const user= {
         id: rows[0].userId,
         first_name: rows[0].firstName,
         last_name: rows[0].lastName,
@@ -109,8 +115,12 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
         dob: rows[0].doj,
         is_active: rows[0].is_active,
 
-      },
+      };
 
+  if (!includeProjects) {
+    // return only user info
+    return {
+      user
     };
   }
 
@@ -125,16 +135,7 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
     }));
 
   return {
-    user: {
-      id: rows[0].userId,
-      first_name: rows[0].firstName,
-      last_name: rows[0].lastName,
-      email: rows[0].userEmail,
-      phone: rows[0].userPhone,
-      doj: rows[0].dob,
-      dob: rows[0].doj,
-      is_active: rows[0].is_active,
-    },
+    user,
     Total_projects: userProjects.length,
     userProjects: userProjects.length > 0 ? userProjects : [],
   };

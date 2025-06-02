@@ -6,13 +6,14 @@ import { timestamps } from "./helperColumns";
 export const repositories = pgTable("repositories", {
   id: serial().primaryKey(),
   project_id: integer().notNull().references(() => projects.id),
-  repository_name: text(),
-  repository_url: text().notNull(),
-  is_active: boolean().default(true),
+  title: text(),
+ link: text().notNull(),
+  // is_active: boolean().default(true),
+  description: text(),
   ...timestamps,
 }, t => [
   index("repositories_project_name_idx").on(t.project_id),
-  index("repositories_repository_name_idx").on(t.repository_name),
+  index("repositories_repository_name_idx").on(t.title),
 ]);
 
 

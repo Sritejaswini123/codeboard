@@ -63,17 +63,12 @@ export const createCommitHandlers = factory.createHandlers(async (c:Context) => 
 export const getAllCommitsHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const page = Number(c.req.query("page"));
-
     const page_size = Number(c.req.query("page_size"));
-    const project_id = c.req.query("project_id")
-      ? Number(c.req.query("project_id"))
-      : undefined;
-    const user_id = c.req.query("user_id")
-      ? Number(c.req.query("user_id"))
-      : undefined;
-    const repository_id = c.req.query("repository_id")
-      ? Number(c.req.query("repository_id"))
-      : undefined;//TODO:check with out undefine? why undefined?
+    const project_id = Number(c.req.query("project_id"))
+    const user_id =Number(c.req.query("user_id"))
+    const repository_id =Number(c.req.query("repository_id"));
+    
+//TODO:check with out undefine? why undefined?
     const commits = await getAllCommits (
       page,
       page_size,

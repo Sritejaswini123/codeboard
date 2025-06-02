@@ -12,6 +12,7 @@ import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 import { Context } from "hono";
+import conflictException from "../exceptions/conflictException";
 
 // save record
 export const createUserHandlers = factory.createHandlers(async (c:Context) => {
@@ -24,8 +25,9 @@ export const createUserHandlers = factory.createHandlers(async (c:Context) => {
       doj: new Date(validUserReq.doj),
     };
     const existingUser = await isUserExist(validUserReq.email);
-    if (!existingUser) {
-      throw new NotFoundException(USER_EXIST);
+
+    if (existingUser) {
+      throw new conflictException(USER_EXIST);//Todo:
     }
     const user = await createRecord<User>(users, userData);
     return sendResponse(c, CREATED, USER_CREATED, user);
@@ -69,9 +71,9 @@ export const getAllUsersHandlers = factory.createHandlers(async (c:Context) => {
     const page_size = Number(c.req.query("page_size")) || 10;
     const userId = c.req.query("user_id");
     const filter = userId ? eq(users.id, Number.parseInt(userId)) : undefined;
-    console.log("filters fetched: ", filter);
+   
     const userData = await getAllRecords<User>(page, page_size, users, filter);
-    console.log("Users fetched: ", userData);
+    
     return sendResponse(c, OK, USERS_FETCHED, userData);
   }
   catch (error) {
