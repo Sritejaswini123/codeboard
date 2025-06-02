@@ -35,7 +35,6 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       );
       return sendResponse(c, UNPROCESSABLE_ENTITY, VALIDATION_ERRORS, formattedErrors);
     }
-
     throw error;
   }
 });
@@ -44,15 +43,11 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param("user_id"));
-
     if (!userId)
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
-
     const user = await getRecordById(users, userId);
-
     if (!user)
       throw new NotFoundException(USER_NOT_FOUND);
-
     return sendResponse(c, OK, USER_FETCHED, user);
   }
   catch (error) {
@@ -103,7 +98,6 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
     if (!userId) {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
-
     const reqBody = await c.req.json();
 
     const validatedUser = vCreateUser.parse(reqBody);

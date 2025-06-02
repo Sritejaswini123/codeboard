@@ -1,15 +1,22 @@
 import {
- index, integer,pgTable,serial,text,date,time,} from "drizzle-orm/pg-core";
+  date,
+  index,
+  integer,
+  pgTable,
+  serial,
+  text,
+} from "drizzle-orm/pg-core";
+
 import { timestamps } from "./helperColumns";
-import { users } from "./users";
 import { projects } from "./projects";
 import { repositories } from "./repositories";
- 
+import { users } from "./users";
+
 export const commits = pgTable("commits", {
   id: serial().primaryKey(),
-  month: text().notNull(), 
+  month: text().notNull(),
   date: date({ mode: "date" }).notNull(),
-  time: text().notNull(), 
+  time: text().notNull(),
   user_id: integer().notNull().references(() => users.id),
   project_id: integer().notNull().references(() => projects.id),
   repository_id: integer().notNull().references(() => repositories.id),

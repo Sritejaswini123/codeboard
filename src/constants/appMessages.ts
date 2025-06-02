@@ -65,3 +65,7 @@ export const COMMIT_UPDATED = "Commit updated successfully";
 export const COMMIT_DELETED = "Commit deleted successfully";
 
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
+
+export const FAILED_SEED_USERS = "Seeding users failed";
+export const FAILED_SEED_PROJECTS = "Seeding projects failed";
+export const FAILED_SEED_REPOSITORIES = "Seeding repositories failed";

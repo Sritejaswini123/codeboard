@@ -66,7 +66,6 @@ export async function isProjectExist(project_id: number) {
     .select()
     .from(projects)
     .where(eq(projects.id, project_id));
-
   return existingProject.length > 0;
 }
 

@@ -1,31 +1,36 @@
 import { z } from "zod";
 
+const validMonths = [
+  "january", "february","march","april","may","june","july","august","september","october","november","december",
+  "jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"
+];
 export const vCreateCommit = z.object({
- 
   month: z.string({
     required_error: "Month is required",
     invalid_type_error: "Month must be a string",
   })
-  .min(1, { message: "Month cannot be empty" }) 
-  .refine((val) => {
-    const monthNumber = parseInt(val.trim(), 10);
-    return !isNaN(monthNumber) && monthNumber >= 1 && monthNumber <= 12;
-  }, {
-    message: "Month must be a valid number between 1 and 12",
-  }),
-
+    .min(1, { message: "Month cannot be empty" })
+    .transform(val => val.trim().toLowerCase())
+    .refine(val => validMonths.includes(val), {
+      message: "Month must be a valid name (e.g. January or Jan)",
+    }),
 
   date: z.string({
     required_error: "Date is required",
     invalid_type_error: "Date must be a string",
-  }).min(1, { message: "Date cannot be empty" }), // ISO date string
+  })
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { 
+      message: "Date must be in YYYY-MM-DD format" 
+    }) .refine(val => !isNaN(Date.parse(val)), { 
+      message: "Invalid date" 
+    }),
 
- time: z.string({
-  required_error: "Time is required",
-  invalid_type_error: "Time must be a string",
- }).regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
-  message: "Time must be in HH:mm format (24-hour)",
-}),
+  time: z.string({
+    required_error: "Time is required",
+    invalid_type_error: "Time must be a string",
+  }).regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
+    message: "Time must be in HH:mm format (24-hour)",
+  }),
 
   user_id: z.number({
     required_error: "User ID is required",
@@ -55,7 +60,7 @@ export const vCreateCommit = z.object({
   commit_link: z.string({
     required_error: "Commit link is required",
     invalid_type_error: "Commit link must be a string",
-  }).min(1, { message: "Commit link cannot be empty"
+  }).min(1, { message: "Commit link cannot be empty",
   }).url({ message: "Commit link must be a valid URL" }),
 });
 

@@ -1,7 +1,7 @@
 // projects
 import { boolean, index, pgTable, serial, text } from "drizzle-orm/pg-core";
-import { timestamps } from "./helperColumns";
 
+import { timestamps } from "./helperColumns";
 
 export const projects = pgTable("projects", {
   id: serial().primaryKey(),
@@ -16,4 +16,3 @@ export const projects = pgTable("projects", {
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 export type ProjectsTable = typeof projects;
-

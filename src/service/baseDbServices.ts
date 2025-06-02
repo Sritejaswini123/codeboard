@@ -2,17 +2,17 @@ import { and, asc, eq, getTableName, like, or, sql } from "drizzle-orm";
 
 import type { CommitsTable, NewCommit } from "../database/schemas/commits";
 import type { NewProject, Project, ProjectsTable } from "../database/schemas/projects";
+import type { NewRepository, Repository, RepositoryTable } from "../database/schemas/repositories";
 import type { NewUser, User, UsersTable } from "../database/schemas/users";
 
 import db from "../database/db";
 import { users } from "../database/schemas/users";
-import { NewRepository, Repository, RepositoryTable } from "../database/schemas/repositories";
 
-type DBTable = UsersTable | ProjectsTable | CommitsTable|RepositoryTable;
-type NewDBRecord = NewUser | NewProject | NewCommit|NewRepository;
-type DBRecordRow = User | Project | CommitsTable|Repository;
+type DBTable = UsersTable | ProjectsTable | CommitsTable | RepositoryTable;
+type NewDBRecord = NewUser | NewProject | NewCommit | NewRepository;
+type DBRecordRow = User | Project | CommitsTable | Repository;
 
-export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord){
+export async function createRecord<DBRecordRow>(table: DBTable, record: NewDBRecord) {
   const result = await db
     .insert(table)
     .values(record)

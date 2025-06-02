@@ -27,6 +27,8 @@ export async function isUserExist(email: string) {
   return existingUser;
 }
 
+
+
 // get all users
 export async function getAllUsers(page: number, page_size: number, users: UsersTable, filter: any) {
   return await getAllRecords(page, page_size, users, filter);
