@@ -32,10 +32,10 @@ export async function getAllUsers(page: number, page_size: number, users: UsersT
   return await getAllRecords(page, page_size, users, filter);
 }
 
-// delete user by id
-export async function deleteUserById(userId: number) {
-  return await deleteRecordById(users, userId);
-}
+// // delete user by id
+// export async function deleteUserById(userId: number) {
+//   return await deleteRecordById(users, userId);
+// }
 
 // // update user by id
 // export async function updateUserById(userData: NewUser, userId: number) {

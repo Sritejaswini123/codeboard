@@ -1,9 +1,5 @@
 import factory from "../factory.js";
-import {
-  seedRealUserBulkDataHandler,
-  seedUserProjectsHandler,
-  seedUsersHandler,
-} from "../handlers/seederHandlers.js";
+import {seedRealUserBulkDataHandler,seedUserProjectsHandler,seedUsersHandler,} from "../handlers/seederHandlers.js";
 
 const seedRoute = factory.createApp();
 

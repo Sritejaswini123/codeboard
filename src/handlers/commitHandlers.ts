@@ -1,32 +1,11 @@
 import { z, ZodError } from "zod";
+import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY, } from "../constants/httpStatusCodes";
 import type { Commit, NewCommit } from "../database/schemas/commits";
-import {
-  COMMIT_CREATED,
-  COMMIT_DELETED,
-  COMMIT_EXIST,
-  COMMIT_ID_REQUIRED,
-  COMMIT_NOT_FOUND,
-  COMMIT_UPDATED,
-  COMMITS_FETCHED,
-  VALIDATION_ERRORS,
-} from "../constants/appMessages";
-import {
-  BAD_REQUEST,
-  CREATED,
-  INTERNAL_SERVER_ERROR,
-  NOT_FOUND,
-  OK,
-  UNPROCESSABLE_ENTITY,
-} from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import {
-  createRecord,
-  deleteRecordById,
-  getRecordById,
-  updateRecordById,
-} from "../service/baseDbServices";
+import { createRecord, deleteRecordById, getRecordById, updateRecordById, } from "../service/baseDbServices";
 import { checkCommitExist, getAllCommits } from "../service/commitService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
@@ -42,10 +21,10 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
       ...validatedCommitData,
       date: new Date(validatedCommitData.date),
     };
-    const commitExist = checkCommitExist(validatedCommitData.project_id);
-    if (!commitExist) {
-      throw new NotFoundException(COMMIT_EXIST);
-    }
+    // const commitExist = checkCommitExist(validatedCommitData.id);
+    // if (!commitExist) {
+    //   throw new NotFoundException(COMMIT_EXIST);
+    // }
     const commit = await createRecord<Commit>(commits, commitData);
     return sendResponse(c, CREATED, COMMIT_CREATED, commit);
   } catch (error) {
@@ -53,25 +32,17 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
       const formattedErrors = Object.fromEntries(
         error.errors.map(({ path, message }) => [path[0], message])
       );
-      return sendResponse(
-        c,
-        UNPROCESSABLE_ENTITY,
-        VALIDATION_ERRORS,
-        formattedErrors
-      );
+      return sendResponse(c,UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
     }
-
     throw error;
   }
 });
-
 
 //getAll Commits
 export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
   try {
     const page = Number(c.req.query("page"));
-    console.log("hello1----------->", page);
-
+    // console.log("hello1----------->", page);
     const page_size = Number(c.req.query("page_size"));
     const project_id = Number(c.req.query("project_id"));
     const user_id =Number(c.req.query("user_id"));

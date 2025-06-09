@@ -6,21 +6,21 @@ import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY }
 import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
-import { deleteUserById, getAllUsers, isUserExist } from "../service/userServices";
+import { createRecord, deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 import ConflictException from "../exceptions/conflictException";
-import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
+
 
 // AddUser
 export const createUserHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
     const validUserReq = vCreateUser.parse(reqBody);
-    if(!validUserReq){
-      throw new UnprocessableEntityException("validationErrors")
-    }
+    // if(!validUserReq){
+    //   // throw new UnprocessableEntityException("validationErrors")
+    // }
     const userData: NewUser = {
       ...validUserReq,
       // dob: new Date(validUserReq.dob),
@@ -28,7 +28,6 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     };
     const existingUser = await isUserExist(validUserReq.email);
     if (existingUser) {
-      // throw new NotFoundException(USER_EXIST);
       throw new ConflictException(USER_EXIST);
     }
     const user = await createRecord<User>(users, userData);
@@ -39,7 +38,8 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       const formattedErrors = Object.fromEntries(
         error.errors.map(({path,message})=>[path[0],message])
       );
-      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);  
+      return sendResponse(c, UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors); 
+      
     }
    throw error;
   }
@@ -85,11 +85,11 @@ export const getAllUsersHandlers = factory.createHandlers(async (c) => {
 // delete user by id
 export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
-    const userId = Number(c.req.param("user_id"));
+    const userId = Number(c.req.param("id"));
     if (!userId) {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
-    const deletedUser = await deleteUserById(userId);
+    const deletedUser = await deleteRecordById(users,userId);
     if (!deletedUser) {
       throw new NotFoundException(USER_NOT_FOUND);
     }

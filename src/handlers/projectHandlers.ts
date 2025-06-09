@@ -1,21 +1,18 @@
-import { number, z, ZodError } from "zod";
-import { and, asc, count, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 
 import type { NewProject, Project } from "../database/schemas/projects";
 
-import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
-import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_FETCHED, USERS_PROJECT_DELETED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { projects } from "../database/schemas/projects";
-import NotFoundException from "../exceptions/notFoundException";
+import ConflictException from "../exceptions/conflictException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
-import { assignUsersToProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
+import { assignUsersToProject, deleteUsersinProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
-import ConflictException from "../exceptions/conflictException";
-import db from "../database/db";
 import { vCreateUserProject } from "../validations/userProjectValidatons";
-import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
 
 // AddProject
 export const createProjectHandlers = factory.createHandlers(async (c) => {
@@ -89,26 +86,55 @@ export const userProjectsHandler = factory.createHandlers(async (c) => {
 });
 
 
-// // add users in project
+// add users in project
+export const assignUsersHandler = factory.createHandlers(async (c) => {
+  try {
+    const reqBody = await c.req.json();
+    const validData = vCreateUserProject.parse(reqBody);
+    const { userIds, project_id } = validData;
 
-// export const assignUsersHandler = factory.createHandlers(async (c) => {
-//   try {
-//     const reqBody = await c.req.json();
-//     const validData = vCreateUserProject.parse(reqBody);
+    const result = await assignUsersToProject(userIds, project_id);
+    console.log("assigned users",result);
+    return sendResponse(c, CREATED, "Users processed", result);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const formattedErrors = Object.fromEntries(
+        error.errors.map(({ path, message }) => [path[0], message])
+      );
+      return sendResponse(c, UNPROCESSABLE_ENTITY, "validation errors", formattedErrors)
+    }
+     throw error;
+  }
+});
 
-//     const { user_id, project_id } = validData;
+//delete users in project
+export const deleteAssignUsersHandler = factory.createHandlers(async (c) => {
+  try {
+    const reqBody = await c.req.json();
+    const userIds = reqBody.userIds; // Assuming userIds is an array in the request body
+    const projectId = reqBody.projectId; // Assuming projectId is a number in the request body
+    const result = await deleteUsersinProject(userIds, projectId);
+    return sendResponse(c, OK, USERS_PROJECT_DELETED, result);
+  } catch (error) {
+    throw error
+  }
+});
 
-//     const result = await assignUsersToProject(user_id, project_id);
 
-//     return sendResponse(c, CREATED, "Users processed", result);
-//   } catch (error) {
-//     if (error instanceof z.ZodError) {
-//       const formattedErrors = Object.fromEntries(
-//         error.errors.map(({ path, message }) => [path[0], message])
-//       );
-//       return sendResponse(c, UNPROCESSABLE_ENTITY, "validation errors", formattedErrors)
-
-//     }
-//     return sendResponse(c, INTERNAL_SERVER_ERROR, PROJECT_NOT_FOUND);
+// //delete user project
+// export const deleteUsersInProject =factory.createHandlers(async(c)=>{
+//   try{
+//   const userProjectsId = Number(c.req.param("userProjects.id"));
+//   if(!userProjectsId){
+//     return sendResponse (c, BAD_REQUEST, USER_PROJECTS_ID_REQUIRED)
 //   }
-// });
+//  const deletedUserProjects = await deleteRecordById(user_projects,userProjectsId);
+//     if (!deletedUserProjects) {
+//       throw new NotFoundException(USER_PROJECTS_NOT_FOUND);
+//     }
+//     return sendResponse(c, OK, USER_PROJECTS_DELETED, deletedUserProjects);
+//   }
+//   catch (error) {
+//    throw error;
+//   }
+// })

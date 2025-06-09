@@ -3,7 +3,7 @@ import { createCommitHandlers, deleteCommitByIdHandlers, getAllCommitsHandlers, 
 
 const commitRoutes = factory.createApp();
 
-commitRoutes.post("/save-commits", ...createCommitHandlers);
+commitRoutes.post("/commits", ...createCommitHandlers);
 commitRoutes.get("/commits", ...getAllCommitsHandlers);
 commitRoutes.get("/commits/:commit_id", ...getCommitByIdHandlers);
 commitRoutes.put("/commits/:commit_id", ...updateCommitByIdHandlers);

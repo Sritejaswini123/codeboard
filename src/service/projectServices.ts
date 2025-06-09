@@ -4,62 +4,14 @@ import db from "../database/db";
 import { NewProject, ProjectsTable, projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
-import { USER_NOT_FOUND } from "../constants/appMessages";
+import { USER_EXIST, USER_NOT_FOUND } from "../constants/appMessages";
 import { getAllRecords } from "./baseDbServices";
+import ConflictException from "../exceptions/conflictException";
 
 //getAll projects
 export async function getAllProjects(page: number, page_size: number, projects: ProjectsTable, filter: any) {
   return await getAllRecords(page, page_size, projects, filter);
 }
-
-// // get All projects
-// export async function getAllProjects(page: number, page_size: number, user_id: number, project_id: number) {
-//   const offset = (page - 1) * page_size;
-
-//   const conditions = [];
-
-//   if (user_id) {
-//     conditions.push(eq(users.id, user_id));
-//   }
-//   if (project_id) {
-//     conditions.push(eq(projects.id, project_id));
-//   }
-//   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
-//   const projectData = await db
-//     .select({
-//       project_id: projects.id,
-//       project_name: projects.title,
-//       user_id: users.id,
-//       user_name: users.first_name,
-//       user_email: users.email,
-//     })
-//     .from(projects)
-//     .innerJoin(user_projects, eq(projects.id, user_projects.project_id))
-//     .innerJoin(users, eq(users.id, user_projects.user_id))
-//     .where(whereClause)
-//     .orderBy(asc(projects.id))
-//     .limit(page_size)
-//     .offset(offset);
-//   //count
-//   const [{ total }] = await db
-//     .select({
-//       total: sql<number>`count(*)`,
-//     })
-//     .from(projects);
-//   const totalPages = Math.ceil(total / page_size);
-
-
-//   return {
-//     total_records: total,
-//     page,
-//     page_size,
-//     totalPages,
-//     next_page: page < totalPages ? page + 1 : null,
-//     prev_page: page > 1 ? page - 1 : null,
-//     data: projectData,
-//   };
-// }
 
 // //delete project
 // export async function deletedProjectById(projectId: number) {
@@ -70,11 +22,6 @@ export async function getAllProjects(page: number, page_size: number, projects: 
 //   return result[0];
 // }
  
-// //create project
-// export const createProject = async (projectData: NewProject) => {
-//     const project = await db.insert(projects).values(projectData).returning();
-//     return project[0];
-// };
 
 //is project exists
 export const isProjectExist = async (project_title: string) => {
@@ -89,24 +36,30 @@ export const isProjectExist = async (project_title: string) => {
 //add users in project
 export const assignUsersToProject = async (userIds: number[], projectId: number) => {
   // Check users are already assigned to the project
-  const existingUserAssignments = await db
-      .select({ user_id: user_projects.user_id })
-      .from(user_projects)
-      .where(
-          and(
-              eq(user_projects.project_id, projectId),
-              inArray(user_projects.user_id, userIds)
-          )
-      );
+ const existingUsersInProject = await db
+  .select({ 
+    project_id:user_projects.project_id,
+    user_id: user_projects.user_id })
+  .from(user_projects)
+  .where(
+    and(
+      eq(user_projects.project_id, projectId),
+      inArray(user_projects.user_id, userIds)
+    )
+  );
 
-  const existingUserIds = existingUserAssignments.map(({ user_id }) => user_id);
+  console.log(existingUsersInProject);
+  
 
+  const existingUserIds = existingUsersInProject.map(({ user_id }) => user_id);
+  console.log('existingUserIds: ', existingUserIds);
+  
   // Filter users who are already assigned
   const newUserIds = userIds.filter((id) => !existingUserIds.includes(id));
 
   //data for new users insertion
-  const newUserAssignments = newUserIds.map((userId) => ({
-      user_id: userId,
+  const newUserAssignments = newUserIds.map((userIds) => ({
+      user_id: userIds,
       project_id: projectId,
   }));
 
@@ -159,3 +112,32 @@ export async function getUserProjects(userId: number, includeProjects: boolean) 
   };
 }
 
+//delete users in project
+export const deleteUsersinProject = async (userIds: number[], projectId: number) => {
+  // Check users are already assigned to the project
+ const existingUsersInProject = await db
+  .select({ user_id: user_projects.user_id })
+  .from(user_projects)
+  .where(
+    and(
+      eq(user_projects.project_id, projectId),
+      inArray(user_projects.user_id, userIds)
+    )
+  );
+  const existingUserIds = existingUsersInProject.map(({ user_id }) => user_id);
+  
+  //data for existing users deletion
+  const deleteUserAssignments = existingUserIds.map((userIds) => ({
+      user_id: userIds,
+      project_id: projectId,
+  }));
+
+  // Delete existing user assignments
+  if (deleteUserAssignments.length > 0) {
+      await db.insert(user_projects).values(deleteUserAssignments);
+  }
+
+  return {
+      deleteUserAssignments,
+  };
+};

@@ -58,4 +58,18 @@ export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
 
 export const REPOSITORY_EXIST = "Repository already exists";
 
-export const REPOSITORY_ADDED = "Repository added successfully "
+export const REPOSITORY_ADDED = "Repository added successfully ";
+
+export const REPOS_FETCHED = "Repositories fetched Successfully";
+
+export const REPOSITORY_UPDATED = "Repo updated Successfully";
+
+export const REPOS_NOT_FOUND = "Repositories not found";
+
+export const USER_PROJECTS_ID_REQUIRED ="UserProjects id is required";
+
+export const USER_PROJECTS_NOT_FOUND = "Not Found  Users in project ";
+
+export const USERS_PROJECT_DELETED = " users in project deleted Successfully";
+
+export const INVALID_ID = "id is invalid";

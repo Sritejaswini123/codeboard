@@ -15,7 +15,7 @@ export const user_projects = pgTable("user_projects", {
   index("user_projects_project_id_idx").on(t.project_id),
 
 ]);
-
-export type userProject = typeof user_projects.$inferSelect;
+export type UserProjectsTable = typeof user_projects;
+export type UserProject = typeof user_projects.$inferSelect;
 export type NewUserProject = typeof user_projects.$inferInsert;
-export type userProjectsTable = typeof user_projects;
+
