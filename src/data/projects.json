@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Peepul Agri - APFC",
+    "description": "Peepul Agri-APFC",
+    "is_active": true
+  },
+  {
+    "title": "IOT Soft Starter",
+    "description": "IOT Soft Starter",
+    "is_active": true
+  },
+  {
+    "title": "eSigns",
+    "description": "esigns",
+    "is_active": true
+  },
+  {
+    "title": "Nyayatech",
+    "description": "nyayatech",
+    "is_active": true
+  },
+  {
+    "title": "Ashika Group",
+    "description": "Ashika Group ",
+    "is_active": true
+  },
+  {
+    "title": "Figlinks",
+    "description": "Flglinks",
+    "is_active": true
+  },
+  {
+    "title": "Internal UI/UX",
+    "description": "Inhouse project to automate UI/UX work across projects",
+    "is_active": true
+  },
+  {
+    "title": "CodeBoard",
+    "description": "Tracking commits of our devs",
+    "is_active": true
+  },
+  {
+    "title": "avatu pvt ltd",
+    "description": "Tracking students of our devs",
+    "is_active": true
+  }
+]

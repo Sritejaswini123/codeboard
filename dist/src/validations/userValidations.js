@@ -9,11 +9,13 @@ export const vCreateUser = z.object({
         required_error: "Last name is required",
         invalid_type_error: "Last name must be a string",
     })
-        .min(3, { message: "Last name must be at least 3 characters long" }).optional(),
+        .min(3, { message: "Last name must be at least 3 characters long" })
+        .optional(),
     email: z.string({
         required_error: "Email is required",
         invalid_type_error: "Email must be a string",
     }).email({ message: "Invalid email address" }),
+    is_active: z.boolean().default(true),
     phone: z.string({
         required_error: "Phone number is required",
         invalid_type_error: "Phone number must be a string",
@@ -24,11 +26,13 @@ export const vCreateUser = z.object({
         required_error: "Date of birth is required",
         invalid_type_error: "Date of birth must be a string",
     })
-        .min(1, { message: "Date of birth is required" }),
+        .min(1, { message: "Date of birth is required" })
+        .transform((val) => new Date(val)),
     doj: z.string({
         required_error: "Date of joining is required",
         invalid_type_error: "Date of joining must be a string",
-    }).min(1, { message: "Date of joining is required" }),
+    }).min(1, { message: "Date of joining is required" })
+        .transform((val) => new Date(val)),
     designation: z.string({
         required_error: "Designation is required",
         invalid_type_error: "Designation must be a string",
@@ -50,19 +54,5 @@ export const vCreateUser = z.object({
             code: z.ZodIssueCode.custom,
             message: "Invalid date of joining",
         });
-    }
-    if (!isNaN(dobDate.getTime()) && !isNaN(dojDate.getTime())) {
-        if (dobDate >= dojDate) {
-            ctx.addIssue({
-                path: ["dob"],
-                code: z.ZodIssueCode.custom,
-                message: "Date of birth must be earlier than date of joining",
-            });
-            ctx.addIssue({
-                path: ["doj"],
-                code: z.ZodIssueCode.custom,
-                message: "Date of joining must be later than date of birth",
-            });
-        }
     }
 });

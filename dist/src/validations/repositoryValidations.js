@@ -1,0 +1,18 @@
+import { z } from "zod";
+export const vCreateRepositories = z.object({
+    project_id: z.number({
+        required_error: "project id is required",
+        invalid_type_error: "project id must be a number",
+    })
+        .min(0, { message: "project id cannot be negative" }),
+    title: z.string({
+        required_error: "title is required",
+        invalid_type_error: "title must be a string",
+    }).min(6, { message: "title is required" }),
+    link: z.string({
+        required_error: "link is required",
+        invalid_type_error: "link must be a string",
+    }).url({ message: "link must be a valid URL" }),
+    description: z.string().optional(),
+    //    is_active:z.boolean().default(true)
+});

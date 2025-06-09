@@ -378,5 +378,15 @@
     "email": "venkatrao00998@gmail.com",
     "phone": "+91 6303354645",
     "is_active": true
+  },
+    {
+    "first_name": "Nagarjuna",
+    "last_name": "kandi",
+    "dob": "2002-04-07",
+    "designation": "FRONTEND DEVELOPER(INTERN)",
+    "doj": "2025-05-05",
+    "email": "nagarjunakandi.k@orotron.com",
+    "phone": "+91 8688906109",
+    "is_active ": true
   }
 ]
