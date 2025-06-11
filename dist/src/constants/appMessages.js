@@ -36,3 +36,6 @@ export const USER_PROJECTS_ID_REQUIRED = "UserProjects id is required";
 export const USER_PROJECTS_NOT_FOUND = "Not Found  Users in project ";
 export const USERS_PROJECT_DELETED = " users in project deleted Successfully";
 export const INVALID_ID = "id is invalid";
+export const FAILED_SEED_PROJECTS = "Failed to seed Projects";
+export const FAILED_SEED_REPOSITORIES = "Failed to seed Repositories";
+export const FAILED_SEED_USERS = "Failed to Seed Users";

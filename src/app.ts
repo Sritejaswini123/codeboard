@@ -13,6 +13,7 @@ import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
 import seed from "./routes/realSeedRoutes.js";
+import authRoute from "./routes/authRoutes.js";
 
 
 const app = factory.createApp().basePath(env.API_VERSION);
@@ -32,6 +33,7 @@ app.route("/", projectRoutes);
 app.route("/", commitRoutes);
 app.route("/", repositoryRoutes);
 app.route("/", seed);
+app.route("/",authRoute)
 
 
 app.get("/error", (c) => {

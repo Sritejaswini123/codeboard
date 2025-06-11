@@ -1,15 +1,18 @@
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_FETCHED, USERS_PROJECT_DELETED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { PROJECT_CREATED, PROJECT_EXIST, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USERS_PROJECT_DELETED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { projects } from "../database/schemas/projects";
 import ConflictException from "../exceptions/conflictException";
 import factory from "../factory";
 import { createRecord } from "../service/baseDbServices";
-import { assignUsersToProject, deleteUsersinProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
+import { assignUsersToProject, getAllProjects, getUserProjects, isProjectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
 import { vCreateUserProject } from "../validations/userProjectValidatons";
+import db from "../database/db";
+import { user_projects } from "../database/schemas/userProjects";
+import BadRequestException from "../exceptions/badRequestException";
 // AddProject
 export const createProjectHandlers = factory.createHandlers(async (c) => {
     try {
@@ -88,11 +91,20 @@ export const assignUsersHandler = factory.createHandlers(async (c) => {
 });
 //delete users in project
 export const deleteAssignUsersHandler = factory.createHandlers(async (c) => {
+    const { projectId, userIds } = await c.req.json();
+    if (userIds.length === 0) {
+        throw new BadRequestException(USER_ID_REQUIRED);
+        // return c.json({ message: 'No user IDs provided' }, 400);
+    }
+    if (!projectId) {
+        throw new BadRequestException(PROJECT_ID_REQUIRED);
+    }
     try {
-        const reqBody = await c.req.json();
-        const userIds = reqBody.userIds; // Assuming userIds is an array in the request body
-        const projectId = reqBody.projectId; // Assuming projectId is a number in the request body
-        const result = await deleteUsersinProject(userIds, projectId);
+        // Delete users from the specified project
+        const result = await db
+            .delete(user_projects)
+            .where(and(eq(user_projects.project_id, projectId), inArray(user_projects.user_id, userIds)))
+            .returning();
         return sendResponse(c, OK, USERS_PROJECT_DELETED, result);
     }
     catch (error) {

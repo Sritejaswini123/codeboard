@@ -86,24 +86,3 @@ export async function getUserProjects(userId, includeProjects) {
         userProjects: userProjects.length > 0 ? userProjects : [],
     };
 }
-//delete users in project
-export const deleteUsersinProject = async (userIds, projectId) => {
-    // Check users are already assigned to the project
-    const existingUsersInProject = await db
-        .select({ user_id: user_projects.user_id })
-        .from(user_projects)
-        .where(and(eq(user_projects.project_id, projectId), inArray(user_projects.user_id, userIds)));
-    const existingUserIds = existingUsersInProject.map(({ user_id }) => user_id);
-    //data for existing users deletion
-    const deleteUserAssignments = existingUserIds.map((userIds) => ({
-        user_id: userIds,
-        project_id: projectId,
-    }));
-    // Delete existing user assignments
-    if (deleteUserAssignments.length > 0) {
-        await db.insert(user_projects).values(deleteUserAssignments);
-    }
-    return {
-        deleteUserAssignments,
-    };
-};

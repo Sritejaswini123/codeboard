@@ -10,6 +10,7 @@ import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
 import ConflictException from "../exceptions/conflictException";
+import BadRequestException from "../exceptions/badRequestException";
 // AddUser
 export const createUserHandlers = factory.createHandlers(async (c) => {
     try {
@@ -92,14 +93,15 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c) => {
     try {
         const userId = Number(c.req.param("user_id"));
         if (!userId) {
-            return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+            throw new BadRequestException(USER_ID_REQUIRED);
+            // return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
         }
         const reqBody = await c.req.json();
         const validatedUser = vCreateUser.parse(reqBody);
         const userData = {
             ...validatedUser,
-            dob: new Date(validatedUser.dob),
-            doj: new Date(validatedUser.doj),
+            // dob: new Date(validatedUser.dob),
+            // doj: new Date(validatedUser.doj),
         };
         const result = await updateRecordById(users, userData, userId);
         return sendResponse(c, OK, USER_UPDATED, result);

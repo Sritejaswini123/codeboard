@@ -3,7 +3,7 @@ import { projects } from "./projects";
 export const repositories = pgTable("repositories", {
     id: serial().primaryKey(),
     project_id: integer().notNull().references(() => projects.id),
-    title: text(),
+    title: text().notNull(),
     link: text().notNull(),
     description: text(),
 }, t => [
