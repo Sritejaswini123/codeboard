@@ -4,6 +4,10 @@ export const USER_CREATED = "User created successfully";
 
 export const INVALID_ID="Invalid  ID";
 
+export const REFRESH_TOKEN_EXP="Refresh token missing";
+
+export const AUTH_HEADER_MISSING="Authorization header missing";
+
 export const INVALID_PROJECT_ID="Invalid project ID";
 
 export const INVALID_COMMIT_ID="Invalid commit ID";
@@ -71,6 +75,8 @@ export const PROJECT_FETCHED = "Project fetched successfully";
 
 export const USER_NOT_FOUND = "User not found";
 
+
+
 export const REPO_NOT_FOUND = "Repository not found ";
 
 export const PROJECT_NOT_FOUND = "Project not found";
@@ -81,6 +87,8 @@ export const PROJECT_DELETED = "Project deleted successfully";
 
 export const USER_UPDATED = "User updated successfully";
 
+export const FILE_UPLOADED = "File uploaded successfully";
+
 export const PROJECT_CREATED = "Project created successfully";
 
 export const PROJECT_UPDATED = "Project updated successfully";
@@ -90,3 +98,5 @@ export const COMMIT_UPDATED = "Commit updated successfully";
 export const COMMIT_DELETED = "Commit deleted successfully";
 
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
+
+export const PROFILE_PIC = "Profile picture downloaded successfully";

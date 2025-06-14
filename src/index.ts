@@ -18,7 +18,6 @@ console.log(`🚀 Server running at http://localhost:${port}/${apiVersion}/`);
 // handling errors globally
 app.onError((err: any, c: Context) => {
   if (err.isOperational) {
-    // TODO: Log the error
     console.log(err);
   }
   console.error(err);

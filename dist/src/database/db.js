@@ -14,7 +14,7 @@ const pool = new Pool({
         ca: fs.readFileSync("./ca.pem").toString(),
     },
 });
-pool.query("select 2+4").then((res) => {
+pool.query("select").then((res) => {
     console.log("db connected");
 }).catch((err) => {
     console.log("Db connection failed");

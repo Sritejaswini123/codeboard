@@ -1,7 +1,7 @@
-import { boolean, index, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
-import { projects } from "./projects";
 import { timestamps } from "./helperColumns";
+import { projects } from "./projects";
 
 export const repositories = pgTable("repositories", {
   id: serial().primaryKey(),

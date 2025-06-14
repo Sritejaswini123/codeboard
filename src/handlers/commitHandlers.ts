@@ -67,8 +67,8 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c:Context) =>
     const project_id = Number(c.req.query("project_id"))
     const user_id =Number(c.req.query("user_id"))
     const repository_id =Number(c.req.query("repository_id"));
-    
-//TODO:check with out undefine? why undefined?
+
+
     const commits = await getAllCommits (
       page,
       page_size,

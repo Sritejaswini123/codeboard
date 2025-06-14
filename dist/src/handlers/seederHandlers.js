@@ -24,7 +24,7 @@ export const seedUsersHandler = factory.createHandlers(async (c) => {
     }
     catch (error) {
         console.error("Seeder error:", error);
-        return c.json({ error: "Failed to seed users" }, 500);
+        throw error;
     }
 });
 // users seeding
@@ -51,7 +51,7 @@ export const seedRealUserBulkDataHandler = [
         }
         catch (error) {
             console.error("Bulk insert seeding error:", error);
-            return c.json({ success: false, message: "Failed to seed users" }, 500);
+            throw error;
         }
     },
 ];
@@ -75,7 +75,7 @@ export const seedUserProjectsHandler = [
         }
         catch (error) {
             console.error("User projects bulk insert seeding error:", error);
-            return c.json({ success: false, message: "Failed to seed user projects" }, 500);
+            throw error;
         }
     },
 ];

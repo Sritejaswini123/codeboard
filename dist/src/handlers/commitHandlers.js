@@ -1,7 +1,8 @@
 import { z, ZodError } from "zod";
-import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
-import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY, } from "../constants/httpStatusCodes";
+import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_UPDATED, COMMITS_FETCHED, COMMITS_NOT_FOUND, INVALID_ID, VALIDATION_ERRORS } from "../constants/appMessages";
+import { CREATED, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
+import BadRequestException from "../exceptions/badRequestException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getRecordById, updateRecordById, } from "../service/baseDbServices";
@@ -37,15 +38,9 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
     try {
         const page = Number(c.req.query("page"));
         const page_size = Number(c.req.query("page_size"));
-        const project_id = c.req.query("project_id")
-            ? Number(c.req.query("project_id"))
-            : undefined;
-        const user_id = c.req.query("user_id")
-            ? Number(c.req.query("user_id"))
-            : undefined;
-        const repository_id = c.req.query("repository_id")
-            ? Number(c.req.query("repository_id"))
-            : undefined;
+        const project_id = Number(c.req.query("project_id"));
+        const user_id = Number(c.req.query("user_id"));
+        const repository_id = Number(c.req.query("repository_id"));
         const commits = await getAllCommits(page, page_size, project_id, user_id, repository_id);
         if (!commits) {
             throw new NotFoundException("No commits found matching the criteria");
@@ -59,24 +54,27 @@ export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
 // getCommitById
 export const getCommitByIdHandlers = factory.createHandlers(async (c) => {
     try {
-        const commitId = Number(c.req.param("commit_id"));
+        const commitId = +c.req.param("commit_id");
         if (!commitId) {
-            return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+            throw new BadRequestException(INVALID_ID);
         }
         const commit = await getRecordById(commits, commitId);
         if (!commit) {
-            throw new NotFoundException(COMMIT_NOT_FOUND);
+            throw new NotFoundException(COMMITS_NOT_FOUND);
         }
         return sendResponse(c, OK, COMMITS_FETCHED, commit);
     }
     catch (error) {
-        return sendResponse(c, INTERNAL_SERVER_ERROR, COMMIT_NOT_FOUND);
+        throw error;
     }
 });
 // update by id
 export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
     try {
         const commitId = Number(c.req.param("id"));
+        if (!commitId) {
+            throw new BadRequestException(INVALID_ID);
+        }
         const reqBody = await c.req.json();
         const validatedCommit = vCreateCommit.parse(reqBody);
         const updatedProject = {
@@ -96,13 +94,15 @@ export const updateCommitByIdHandlers = factory.createHandlers(async (c) => {
 });
 // delete by id
 export const deleteCommitByIdHandlers = factory.createHandlers(async (c) => {
-    const commitId = Number(c.req.param("id"));
     try {
-        if (!commitId)
-            return sendResponse(c, BAD_REQUEST, COMMIT_ID_REQUIRED);
+        const commitId = +(c.req.param("commit_id"));
+        if (!commitId) {
+            throw new BadRequestException(INVALID_ID);
+        }
         const isCommitIdExist = await checkCommitExist(commitId);
-        if (!isCommitIdExist)
-            throw new NotFoundException(COMMIT_NOT_FOUND);
+        if (!isCommitIdExist) {
+            throw new NotFoundException(`${COMMITS_NOT_FOUND} with ${commitId}`);
+        }
         const deletedCommit = await deleteRecordById(commits, commitId);
         return sendResponse(c, OK, COMMIT_DELETED, deletedCommit);
     }

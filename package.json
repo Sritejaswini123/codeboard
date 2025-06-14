@@ -19,7 +19,9 @@
     "@dotenvx/dotenvx": "^1.43.0",
     "@hono/node-server": "^1.14.1",
     "@ngneat/falso": "^7.3.0",
+    "argon2": "^0.43.0",
     "aws-sdk": "^2.1692.0",
+    "bcrypt": "^6.0.0",
     "cloudinary": "^2.6.1",
     "drizzle-orm": "^0.43.1",
     "drizzle-seed": "^0.3.1",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.0",
     "@types/aws-sdk": "^0.0.42",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
     "@types/pg": "^8.15.0",
     "drizzle-kit": "^0.31.1",

@@ -1,39 +1,69 @@
+import { PutObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Context } from "hono";
-import { FILE_NAME_TYPE_REQUIRED, FILE_TYPE_REQUIRED } from "../constants/appMessages";
-import { INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constants/httpStatusCodes";
+import { OK, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "../constants/httpStatusCodes";
+import { sendResponse } from "../utils/sendResponse";
+import { UploadSchema } from "../validations/uploadSchemaValidation";
 import factory from "../factory";
-import UserProfileS3Service from "../s3/userProfileS3Service";
-import NotFoundException from "../exceptions/notFoundException";
 
-const userProfileS3Service = new UserProfileS3Service();
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY!,
+    secretAccessKey: process.env.AWS_SECRET_KEY!,
+  },
+});
 
-export const getUploadPresignedUrl = factory.createHandlers(async (c:Context) => {
+const BUCKET_NAME = process.env.AWS_BUCKET!;
+
+const generateFileKey = (fileName: string) => {
+  const timestamp = Date.now();
+  const randomId = Math.random().toString(36).slice(2, 8);
+  const sanitized = fileName.replace(/[^a-zA-Z0-9.-]/g, "_");
+  return `profile-pics/${timestamp}-${randomId}-${sanitized}`;
+};
+
+export const generateUploadUrlHandler = factory.createHandlers(async (c: Context) => {
   try {
-    const { fileName, fileType } = await c.req.json();
-    if (!fileName || !fileType){
-      throw new NotFoundException(FILE_NAME_TYPE_REQUIRED , NOT_FOUND);
-    }
-    const { uploadUrl, fileKey } = await userProfileS3Service.generateUploadPresignedUrl(fileName, fileType);
-    return c.json({ uploadUrl, fileKey });
-  }
-  catch (error) {
-    console.error("Error generating upload presigned URL:", error);
-    throw error;
+    const reqBody = await c.req.formData();
+    const { fileName, fileType, isPublic } = UploadSchema.parse(reqBody);
+
+    const fileKey = generateFileKey(fileName);
+    const command = new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: fileKey,
+      ContentType: fileType,
+      ACL: isPublic ? "public-read" : "private",
+      Metadata: {
+        originalName: fileName,
+        generatedAt: new Date().toISOString(),
+      },
+    });
+
+    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    return sendResponse(c, OK, "Upload URL generated successfully", { uploadUrl, fileKey });
+  } catch (error) {
+    console.error("Error generating upload URL:", error);
+    return sendResponse(c, INTERNAL_SERVER_ERROR, "Failed to generate upload URL");
   }
 });
 
-export const getDownloadPresignedUrl = factory.createHandlers(async (c:Context) => {
+export const generateDownloadUrlHandler = factory.createHandlers(async (c: Context) => {
   try {
-    const fileKey = c.req.param("fileKey");
-    if (!fileKey){
-      throw new NotFoundException(FILE_TYPE_REQUIRED, NOT_FOUND);
+    const key = c.req.query("key");
+    if (!key) {
+      return sendResponse(c, BAD_REQUEST, "Missing 'key' query parameter");
     }
-    const downloadUrl = await userProfileS3Service.generateDownloadPresignedUrl(fileKey);
-    return c.json({ downloadUrl });
-  }
-  catch (error) {
-    console.error("Error generating download presigned URL:", error);
-    throw error;
 
+    const command = new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+    });
+
+    const downloadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    return sendResponse(c, OK, "Download URL generated successfully", { downloadUrl });
+  } catch (error) {
+    console.error("Error generating download URL:", error);
+    return sendResponse(c, INTERNAL_SERVER_ERROR, "Failed to generate download URL");
   }
 });

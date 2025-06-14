@@ -75,8 +75,7 @@ export const getAllUsersHandlers = factory.createHandlers(async (c:Context) => {
     const userData = await getAllRecords<User>(page, page_size, users, filter);
     
     return sendResponse(c, OK, USERS_FETCHED, userData);
-  }
-  catch (error) {
+  }catch (error) {
     console.error("Error in getAllUsersHandlers:", error);
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
   }
@@ -133,3 +132,8 @@ export const updateUserByIdHandlers = factory.createHandlers(async (c:Context) =
     throw error;
   }
 });
+
+
+
+
+

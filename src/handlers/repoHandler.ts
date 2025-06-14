@@ -1,20 +1,19 @@
 import { eq } from "drizzle-orm";
+import { Context } from "hono";
 import { z } from "zod";
-import { INVALID_ID, PROJECT_EXIST, PROJECT_NOT_FOUND, REPO_NOT_FOUND, REPOSITORY_CREATED, REPOSITORY_DELETED, REPOSITORY_EXIST, REPOSITORY_FETCHED, REPOSITORY_NOT_EXIST, REPOSITORY_UPDATED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { INVALID_ID, PROJECT_NOT_FOUND, REPO_NOT_FOUND, REPOSITORY_CREATED, REPOSITORY_DELETED, REPOSITORY_FETCHED, REPOSITORY_NOT_EXIST, REPOSITORY_UPDATED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import db from "../database/db";
 import { projects } from "../database/schemas/projects";
 import { NewRepositories, repositories, Repositories } from "../database/schemas/repo";
+import BadRequestException from "../exceptions/badRequestException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { isProjectExist } from "../service/projectServices";
 import { checkProjectExistInRepo, checkRepoExist, getExistingRepositoryNames } from "../service/repoService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateRepositories } from "../validations/repositoriesValidations";
-import BadRequestException from "../exceptions/badRequestException";
-import { Context } from "hono";
-import { isProjectExist } from "../service/projectServices";
-import conflictException from "../exceptions/conflictException";
 
 export const createRepositoriesHandlers=factory.createHandlers(async(c:Context)=>{
     try {
@@ -32,11 +31,11 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c:Context)=
         throw new NotFoundException(PROJECT_NOT_FOUND);
       }
 
-      const isProjectIdExistInRepo=await checkProjectExistInRepo(validateRepo.project_id);
+      // const isProjectIdExistInRepo=await checkProjectExistInRepo(validateRepo.project_id);
 
-      if(isProjectIdExistInRepo){
-        throw new conflictException(REPOSITORY_EXIST);
-      }
+      // if(isProjectIdExistInRepo){
+      //   throw new conflictException(REPOSITORY_EXIST);
+      // }
 
     // Check if the provided project_id exists
     const projectExists = await db
@@ -55,6 +54,7 @@ export const createRepositoriesHandlers=factory.createHandlers(async(c:Context)=
     }
 
     const createdRepo=await createRecord<Repositories>(repositories,repoData)
+
     return sendResponse(c, CREATED, REPOSITORY_CREATED, createdRepo);
 
     } catch (error) {
@@ -80,9 +80,11 @@ export const updateRepoByIdHandlers=factory.createHandlers(async(c:Context)=>{
     }
 
     const reqBody=await c.req.json();
+
     const validateRepo=vCreateRepositories.parse(reqBody);
 
     const isRepositoryExist=await checkRepoExist(repoId);
+
     if(!isRepositoryExist){
       throw new NotFoundException(REPO_NOT_FOUND);
     }
@@ -107,7 +109,8 @@ export const updateRepoByIdHandlers=factory.createHandlers(async(c:Context)=>{
 //get by id
 export const getReopByIdHandler=factory.createHandlers(async(c:Context)=>{
 try {
-    const repoId=+c.req.param('id');
+
+  const repoId=+c.req.param('id');
   if(!repoId){
     throw new BadRequestException(INVALID_ID);
   }
@@ -128,16 +131,19 @@ return sendResponse(c, OK,REPOSITORY_FETCHED,repoData);
 export const deleteRepoByIdHandlers=factory.createHandlers(async(c:Context)=>{
   try {
     const repoId=+c.req.param('id');
+    
     if(!repoId){
       throw new BadRequestException(INVALID_ID);
     }
 
     const isRepoExist=await checkProjectExistInRepo(repoId);
-    
+
     if(!isRepoExist){
       throw new NotFoundException(REPOSITORY_NOT_EXIST);
     }
+
     const deletedRepo=await deleteRecordById<Repositories>(repositories,repoId)
+
     return sendResponse(c, OK,REPOSITORY_DELETED,deletedRepo);
     } catch (error) {
 

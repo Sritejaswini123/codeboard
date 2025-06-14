@@ -27,7 +27,7 @@ export const CONFLICT = 409;
 /**
  * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.2.1
  *
- * This interim response indicates that everything so far is OK and that the client should continue with the request or ignore it if it is already finished.
+ * This interim response indicates that everything so far is OK and that the clien4 should continue with the request or ignore it if it is already finished.
  */
 export const CONTINUE = 100;
 /**
