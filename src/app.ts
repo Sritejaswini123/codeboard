@@ -14,6 +14,7 @@ import notFound from "./utils/notFound.js";
 import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
+import s3Routes from "./routes/S3FileRoutes.js";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 
@@ -34,6 +35,7 @@ app.route("/images", imageRoutes);
 app.route("/", projectRoutes);
 app.route("/", commitRoutes);
 app.route("/seed", seed);
+app.route("/", s3Routes);
 // app.route('/api', uploadRoute);
 app.get("/error", (c) => {
   c.status(422);
