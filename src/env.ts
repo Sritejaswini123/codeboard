@@ -14,8 +14,6 @@ const VEnvSchema = z.object({
   DB_PASSWORD: z.string(),
   DB_NAME: z.string(),
   HOST_NAME: z.string(),
-
-  
   AWS_S3_BUCKET: z.string().nonempty("AWS_S3_BUCKET is required"),
   AWS_S3_ACCESS_KEY_ID: z.string().nonempty("AWS_S3_ACCESS_KEY_ID is required"),
   AWS_S3_SECRET_ACCESS_KEY: z.string().nonempty("AWS_S3_SECRET_ACCESS_KEY is required"),

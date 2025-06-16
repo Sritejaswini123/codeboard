@@ -1,5 +1,5 @@
 // realSeedServices.ts
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import db from "../database/db";
 import { projects } from "../database/schemas/projects";
 import { repositories } from "../database/schemas/repositories";

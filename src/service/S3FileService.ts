@@ -1,91 +1,51 @@
-import { PutObjectCommand, S3Client, ObjectCannedACL , GetObjectCommand} from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand , DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { s3Config } from '../config/s3Config';
+import {s3Client, s3Config} from '../config/s3Config'
+import { UploadRequestBody } from '../types/upload';
+import {  EXCEEDS_MAX_FILE_SIZE } from '../constants/appMessages'
 
-interface Config {
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-  region: string;
-  s3_bucket: string;
-  expires: number;
-  useAccelerateEndpoint?: boolean;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export async function generateSignedUploadUrl({
+  filename, contentType,size,
+}: UploadRequestBody) {
+  if (size > MAX_FILE_SIZE) {
+    throw new Error(EXCEEDS_MAX_FILE_SIZE);
+  }
+
+  const key = `uploads/${Date.now()}-${filename}`;
+  const command = new PutObjectCommand({
+    Bucket: s3Config.bucket,
+    Key: key,
+    ContentType: contentType,
+  });
+  const url = await getSignedUrl(s3Client, command, {
+    expiresIn: s3Config.expires,
+  });
+  return {url,key};
 }
 
-class S3FileService {
-  private config: Config;
-  private s3Client: S3Client;
 
-  constructor() {
-    this.config = {
-      credentials: {
-        accessKeyId: s3Config.access_key_id,
-        secretAccessKey: s3Config.secret_access_key,
-      },
-      region: s3Config.bucket_region, // fixed typo here (was buket_region)
-      s3_bucket: s3Config.bucket,
-      expires: s3Config.expires || 3600,
-    };
+//download signed URL
+export const generateDownloadSignedUrl = async (key: string): Promise<string> => {
+  const command = new GetObjectCommand({
+    Bucket: s3Config.bucket,
+    Key: key,
+  });
+  const url = await getSignedUrl(s3Client, command, {
+    expiresIn: s3Config.expires,
+  });
 
-    this.s3Client = new S3Client({
-      region: this.config.region,
-      credentials: this.config.credentials,
-    });
-  }
+  return url;
+};
 
-  /**
-   * Generate a signed PUT URL for uploading a file privately.
-   * @param originalFileName filename (e.g., image.png)
-   * @param fileType content type (e.g., image/png)
-   */
-  async generateUploadPresignedUrl(originalFileName: string, fileType: string) {
-    const timestamp = Date.now();
-    const fileKey = `userprofile/${timestamp}_${originalFileName}`;
+//DELETE FILE FROM S3
+export async function deleteFileFromS3(key: string) {
+  const command = new DeleteObjectCommand({
+    Bucket: s3Config.bucket,
+    Key: key,
+  });
 
-    const params = {
-      Bucket: this.config.s3_bucket,
-      Key: fileKey,
-      ContentType: fileType,
-     ACL: ObjectCannedACL.private // ✅ proper type from enum
+  await s3Client.send(command);
 
-    };
-
-    try {
-      const command = new PutObjectCommand(params);
-      const presignedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: this.config.expires,
-      });
-
-      return { uploadUrl: presignedUrl, key: fileKey };
-    } catch (error) {
-      console.error("Failed to generate upload URL:", error);
-      throw error;
-    }
-  }
-
-  /**
-   * Generate a signed GET URL for downloading a private file
-   * @param fileKey S3 key from upload (e.g., userprofile/12345_image.png)
-   */
-  async generateDownloadPresignedUrl(fileKey: string) {
-    const params = {
-      Bucket: this.config.s3_bucket,
-      Key: fileKey,
-    };
-
-    try {
-      const command = new GetObjectCommand(params);
-      const downloadUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: this.config.expires,
-      });
-
-      return { downloadUrl };
-    } catch (error) {
-      console.error("Failed to generate download URL:", error);
-      throw error;
-    }
-  }
+  return { success: true, message: ` Successfully Deleted: ${key}` };
 }
-
-export default S3FileService;
