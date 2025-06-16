@@ -25,7 +25,7 @@ class PublicS3FileService {
         accessKeyId: s3Config.public_access_key_id,
         secretAccessKey: s3Config.public_secret_access_key,
       },
-      region: s3Config.bucket_region,
+      region: s3Config.buket_region,
       s3_bucket: s3Config.public_bucket,
       expires: 3600,
     };

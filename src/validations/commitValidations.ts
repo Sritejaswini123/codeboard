@@ -55,14 +55,16 @@ export const vCreateCommit = z
         required_error: "Commit name is required",
         invalid_type_error: "Commit name must be a string",
       })
-      .url({ message: "Commit link must be a valid URL" }),
+      .url({ message: "Commit link must be a valid URL" })
+      .transform((val) => val.trim()),
 
     commit_message: z
       .string({
         required_error: "Commit message  is required",
         invalid_type_error: "Commit message must be a string",
       })
-      .min(1, { message: "Commit message cannot be empty" }),
+      .min(1, { message: "Commit message cannot be empty" })
+      .transform((val) => val.trim()),
   })
   .superRefine((data, ctx) => {
     // (YYYY-MM-DD)

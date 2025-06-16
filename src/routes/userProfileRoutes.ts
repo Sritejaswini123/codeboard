@@ -1,8 +1,10 @@
 import factory from "../factory.js";
-import { generateUploadUrlHandler } from "../s3/profileUpload.js";
+import { getUserProfileDownloadUrlHandler, getUserProfileUploadUrlHandler } from "../handlers/userProfileS3Handlers.js";
 
 const userProfileRoutes = factory.createApp();
 
-userProfileRoutes.put("/users/profile-upload", ...generateUploadUrlHandler);
+userProfileRoutes.put("/upload-url", ...getUserProfileUploadUrlHandler);
+userProfileRoutes.get("/download-url", ...getUserProfileDownloadUrlHandler);
+
 
 export default userProfileRoutes;

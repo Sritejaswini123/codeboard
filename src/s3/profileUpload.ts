@@ -1,12 +1,12 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Context } from "hono";
+import { z } from "zod";
 import { FILE_UPLOADED } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED } from "../constants/httpStatusCodes";
 import factory from "../factory";
 import { sendResponse } from "../utils/sendResponse";
 import { UploadSchema } from "../validations/uploadSchemaValidation";
-import { any, z } from "zod";
 
 const s3Client = new S3Client({
   region:process.env.AWS_REGION!,

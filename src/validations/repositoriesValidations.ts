@@ -10,13 +10,17 @@ export const vCreateRepositories=z.object({
     title:z.string({
         required_error: "title is required",
         invalid_type_error: "title must be a string",
-    }).min(6, { message: "title is required" }),
+    }).min(6, { message: "title is required" })
+    .transform((val) => val.trim()),
 
     link:z.string({
         required_error: "link is required",
         invalid_type_error: "link must be a string",
-    }).url({ message: "link must be a valid URL" }),
-    description:z.string().optional(),
+    }).url({ message: "link must be a valid URL" })
+      .transform((val) => val.trim()),
+
+    description:z.string().transform((val) => val.trim()).optional()
+    
 
 //    projectIds:z.number().min(1,{message:"Minimum 1 project id is required"}),
 

@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { INVALID_ID, INVALID_PROJECT_ID, PROJECT_CREATED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { INVALID_ID, INVALID_PROJECT_ID, PROJECT_CREATED, PROJECT_DELETED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import type { NewProject, Project } from "../database/schemas/projects";
 import { projects } from "../database/schemas/projects";
 import { users } from "../database/schemas/users";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
-import { createRecord, getRecordById, updateRecordById } from "../service/baseDbServices";
+import { createRecord, deleteRecordById, getRecordById, updateRecordById } from "../service/baseDbServices";
 import { getAllProjects, getProjectWithUsers, getUserProjects, isProjectExist, projectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
@@ -182,3 +182,25 @@ export const getAllUsersByProjectId=factory.createHandlers(async(c:Context)=>{
 
 //TODO:write api for deleting for projects
 
+export const deleteProjectHandler = factory.createHandlers(async (c: Context) =>{
+  try {
+    const projectId=+c.req.param("id");
+
+    if(!projectId){
+      throw new BadRequestException(INVALID_ID)
+    }
+
+    const checkProjectExist = await isProjectExist(projectId);
+
+    if(!checkProjectExist){
+      throw new NotFoundException(`${PROJECT_NOT_FOUND} with id ${projectId}`);
+    }
+
+    const deletedUser = await deleteRecordById<Project>(projects,projectId);
+    
+   return sendResponse(c, OK, PROJECT_DELETED, deletedUser);
+  } catch (error) {
+
+    throw error;
+  }
+})

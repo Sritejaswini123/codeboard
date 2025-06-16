@@ -1,23 +1,26 @@
 import z from "zod";
 
 export const vCreateUser = z.object({
+
   first_name: z.string({
     required_error: "First name is required",
     invalid_type_error: "First name must be a string",
-  })
-    .min(3, { message: "First name must be at least 3 characters long" }),
+  }).min(3, { message: "First name must be at least 3 characters long" })
+  .transform((val) => val.trim()),
 
   last_name: z.string({
     required_error: "Last name is required",
     invalid_type_error: "Last name must be a string",
   })
     .min(3, { message: "Last name must be at least 3 characters long" })
+    .transform((val) => val.trim())
     .optional(),
 
   email: z.string({
     required_error: "Email is required",
     invalid_type_error: "Email must be a string",
-  }).email({ message: "Invalid email address" }),
+  }).email({ message: "Invalid email address" })
+  .transform((val) => val.trim()),
 
   is_active: z.boolean().default(true),
 
@@ -25,25 +28,29 @@ export const vCreateUser = z.object({
     required_error: "Phone number is required",
     invalid_type_error: "Phone number must be a string",
   })
-    .min(10, { message: "Phone number must be at least 10 digits" })
-    .max(16, { message: "Phone number can't exceed 15 digits" }),
+.min(10, { message: "Phone number must be at least 10 digits" })
+    .max(16, { message: "Phone number can't exceed 15 digits" })
+    .transform((val) => val.trim()),
 
   dob: z.string({
     required_error: "Date of birth is required",
     invalid_type_error: "Date of birth must be a string",
   })
-    .min(1, { message: "Date of birth is required" }),
+    .min(1, { message: "Date of birth is required" })
+    .transform((val) => val.trim()),
 
   doj: z.string({
     required_error: "Date of joining is required",
     invalid_type_error: "Date of joining must be a string",
-  }).min(1, { message: "Date of joining is required" }),
+  }).min(1, { message: "Date of joining is required" })
+  .transform((val) => val.trim()),
 
   designation: z.string({
     required_error: "Designation is required",
     invalid_type_error: "Designation must be a string",
   })
-    .min(3, { message: "Designation must be at least 3 characters long" }),
+    .min(3, { message: "Designation must be at least 3 characters long" })
+    .transform((val) => val.trim()),
 
 }).superRefine((data, ctx) => {
   const dobDate = new Date(data.dob);

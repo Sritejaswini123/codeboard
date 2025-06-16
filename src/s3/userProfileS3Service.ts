@@ -24,7 +24,7 @@ class UserProfileS3Service {
         accessKeyId: s3Config.access_key_id,
         secretAccessKey: s3Config.secret_access_key,
       },
-      region: s3Config.bucket_region,
+      region: s3Config.buket_region,
       s3_bucket: s3Config.bucket,
       expires: s3Config.expires,
     };
