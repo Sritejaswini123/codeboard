@@ -1,21 +1,11 @@
-import { MiddlewareHandler } from "hono";
-import { verify } from 'hono/jwt';
-import { UNAUTHORIZED } from "../constants/httpStatusCodes";
-import { sendResponse } from "./sendResponse";
+import {betterAuth} from "better-auth";
 
 
-const JWT_SECRET = 'shivaji@kalyan';
-
-export const authMiddleware:MiddlewareHandler=async(c,next)=>{
-try {
-    const authHeader=c.req.header('Authorization');
-    if(!authHeader || !authHeader.startsWith('Bearer ')){
-        return sendResponse(c, UNAUTHORIZED, 'Authorization token missing or invalid');
+//If it's not enabled, it'll not allow you to sign in or sign up with email and password
+export const auth=betterAuth({
+    emailAndPassword:{
+        enabled:true,
     }
-    const token=authHeader.split(' ')[1];
-    const decode=await verify(token, JWT_SECRET)
-    c.set('user',decode);
-    await next();
-} catch (error) {
-    return sendResponse(c,UNAUTHORIZED, 'Invalid or expired token');
-}}; 
+})
+
+

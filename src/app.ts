@@ -3,7 +3,7 @@ import { SERVICE_UP } from "./constants/appMessages.js";
 import env from "./env.js";
 import factory from "./factory.js";
 import commitRoutes from "./routes/commitRoutes.js";
-import loginRoutes from "./routes/loginRoutes.js";
+// import loginRoutes from "./routes/loginRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import repositoryRoutes from "./routes/repoRoutes";
 import seedRoute from "./routes/seederRoutes.js";
@@ -33,7 +33,7 @@ app.route("/", userProject);
 app.route("/", commitRoutes);
 app.route("/", userProfileRoutes);
 app.route("/", repositoryRoutes);
-app.route("/auth",loginRoutes)
+// app.route("/auth",loginRoutes)
 
 app.get("/error", (c) => { 
   

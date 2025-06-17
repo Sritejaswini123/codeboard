@@ -35,11 +35,15 @@ export const createCommitHandlers = factory.createHandlers(async (c:Context) => 
       ...validatedCommitData,
       date: new Date(validatedCommitData.date),
     };
+
     const commitExist = checkCommitExist(validatedCommitData.project_id);
+
     if (!commitExist) {
       throw new NotFoundException(COMMIT_EXIST);
     }
+
     const commit = await createRecord<Commit>(commits, commitData);
+    
     return sendResponse(c, CREATED, COMMIT_CREATED, commit);
   }
   catch (error) {
@@ -112,15 +116,20 @@ export const getCommitByIdHandlers = factory.createHandlers(async (c:Context) =>
 export const updateCommitByIdHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const commitId = Number(c.req.param("id"));
+
      if (!commitId) {
         throw new BadRequestException(INVALID_ID);
       }
+
     const reqBody = await c.req.json();
+
     const validatedCommit = vCreateCommit.parse(reqBody);
+
     const updatedProject: NewCommit = {
       ...validatedCommit,
       date: new Date(validatedCommit.date),
     };
+
     const updatedCommitResult = await updateRecordById <Commit>(
       commits,
       updatedProject,
@@ -129,8 +138,11 @@ export const updateCommitByIdHandlers = factory.createHandlers(async (c:Context)
     return sendResponse(c, CREATED, COMMIT_UPDATED, updatedCommitResult);
   }
   catch (error) {
+
     if (error instanceof ZodError) {
+
       const errorMessage = error.errors?.[0]?.message || "Validation error";
+
       return c.json({ message: errorMessage }, NOT_FOUND);
     }
     return c.json({ error }, UNPROCESSABLE_ENTITY);

@@ -35,15 +35,19 @@ class UserProfileS3Service {
     // Prefix for user profile pictures folder
     fileKey = `user-profile-pics/${fileKey}`;
 
+    console.log("1----->",fileKey,fileType);
+    
     const params = {
       Bucket: this.config.s3_bucket,
       Key: fileKey,
       ContentType: fileType,
       ACL: "private" as ObjectCannedACL,
     };
-
+    console.log("2----->",fileKey,fileType);
+    console.log("3----->",params);
     try {
       const command = new PutObjectCommand(params);
+        console.log("4----->",command);
       const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: this.config.expires });
       return { uploadUrl: presignedUrl, fileKey };
     }

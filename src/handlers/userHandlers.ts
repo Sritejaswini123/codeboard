@@ -1,18 +1,18 @@
 import { eq } from "drizzle-orm";
+import { Context } from "hono";
 import { z } from "zod";
-import {  INVALID_ID, USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { INVALID_ID, USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import type { NewUser, User } from "../database/schemas/users";
 import { users } from "../database/schemas/users";
 import BadRequestException from "../exceptions/badRequestException";
+import conflictException from "../exceptions/conflictException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
 import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
-import { Context } from "hono";
-import conflictException from "../exceptions/conflictException";
 
 // save record
 export const createUserHandlers = factory.createHandlers(async (c:Context) => {

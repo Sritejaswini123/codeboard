@@ -1,20 +1,20 @@
+import { Context } from "hono";
 import { z } from "zod";
-import { INVALID_ID, INVALID_PROJECT_ID, PROJECT_CREATED, PROJECT_DELETED, PROJECT_FETCHED, PROJECT_ID_REQUIRED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USERS_FETCHED, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
-import { CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
+import { INVALID_ID, PROJECT_CREATED, PROJECT_DELETED, PROJECT_FETCHED, PROJECT_NOT_FOUND, PROJECT_UPDATED, PROJECTS_FETCHED, USER_FETCHED, USER_NOT_FOUND, USERS_PROJECTS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
+import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import type { NewProject, Project } from "../database/schemas/projects";
 import { projects } from "../database/schemas/projects";
 import { users } from "../database/schemas/users";
+import BadRequestException from "../exceptions/badRequestException";
+import conflictException from "../exceptions/conflictException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getRecordById, updateRecordById } from "../service/baseDbServices";
 import { getAllProjects, getProjectWithUsers, getUserProjects, isProjectExist, projectExist } from "../service/projectServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateProject } from "../validations/projectValidations";
-import BadRequestException from "../exceptions/badRequestException";
-import { Context } from "hono";
-import conflictException from "../exceptions/conflictException";
 
-// create new project
+// create new project     
 export const createProjectHandlers = factory.createHandlers(async (c:Context) => {
   try {
     const reqBody = await c.req.json();
