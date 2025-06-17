@@ -13,6 +13,7 @@ export const users = pgTable("users", {
   dob: date({ mode: "date" }).notNull(),
   doj: date({ mode: "date" }).notNull(),
   designation: text().notNull(),
+  userProfileImage: text(),
   ...timestamps,
 }, t => [
   index("users_email_idx").on(t.email),

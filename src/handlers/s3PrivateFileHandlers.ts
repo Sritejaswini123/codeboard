@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import { generateSignedUploadUrl , generateDownloadSignedUrl, deleteFileFromS3} from '../service/S3FileService';
+import { generateSignedUploadUrl , generateDownloadSignedUrl, deleteFileFromS3} from '../service/s3PrivateFileService';
 import { FILE_KEY_REQUIRED, FAILED_TO_GENERATE_URL, GENERATE_FAILED, MISSING_FILE_KEY } from '../constants/appMessages';
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from '../constants/httpStatusCodes';
 //Generating 

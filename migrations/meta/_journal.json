@@ -15,6 +15,13 @@
       "when": 1748495126322,
       "tag": "0001_supreme_maestro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750072474297,
+      "tag": "0002_magical_genesis",
+      "breakpoints": true
     }
   ]
 }

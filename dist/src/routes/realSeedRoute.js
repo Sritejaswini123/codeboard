@@ -1,5 +1,5 @@
 import factory from "../factory.js";
-import { seedRealUserHandler, seedRealProjectHandler, seedCommitHandler, seedRealRepoHandler, seedUserProjectsHandler } from "../handlers/seedRealHandlers";
+import { seedCommitHandler, seedRealProjectHandler, seedRealRepoHandler, seedRealUserHandler, seedUserProjectsHandler } from "../handlers/seedRealHandlers.js";
 const seed = factory.createApp();
 seed.post("/seed-users", ...seedRealUserHandler);
 seed.post("/seed-projects", ...seedRealProjectHandler);

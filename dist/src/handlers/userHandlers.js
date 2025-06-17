@@ -49,7 +49,7 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
         throw error;
     }
 });
-//get all users
+// get all users
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
     try {
         const page = Number(c.req.query("page")) || 1;

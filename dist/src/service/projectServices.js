@@ -1,9 +1,9 @@
 import { and, asc, count, eq } from "drizzle-orm";
+import { USER_NOT_FOUND } from "../constants/appMessages";
 import db from "../database/db";
 import { projects } from "../database/schemas/projects";
 import { user_projects } from "../database/schemas/userProjects";
 import { users } from "../database/schemas/users";
-import { USER_NOT_FOUND } from "../constants/appMessages";
 // all projects
 export async function getAllProjects(page, page_size, user_id, project_id) {
     const offset = (page - 1) * page_size;
@@ -44,18 +44,18 @@ export async function getAllProjects(page, page_size, user_id, project_id) {
         data: projectData,
     };
 }
-export const createProject = async (projectData) => {
+export async function createProject(projectData) {
     const project = await db.insert(projects).values(projectData).returning();
     return project[0];
-};
-//project exist
-export const isProjectExist = async (project_id) => {
+}
+// project exist
+export async function isProjectExist(project_id) {
     const existingProject = await db
         .select()
         .from(projects)
         .where(eq(projects.id, project_id));
     return existingProject.length > 0;
-};
+}
 export async function getUserProjects(userId, includeProjects) {
     // one query to get user and optionally projects using join
     const rows = await db

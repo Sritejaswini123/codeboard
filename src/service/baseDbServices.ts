@@ -71,7 +71,6 @@ export async function updateRecordById<DBRecordRow>(table: DBTable, record: NewD
     .update(table)
     .set({
       ...record,
-      updated_at: new Date(),
     })
     .where(eq(columnInfo, id))
     .returning();

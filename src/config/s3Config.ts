@@ -10,11 +10,29 @@ export const s3Config = {
 };
 
 
+export const publicS3Config = {
+  accessPublicKeyId: process.env.AWS_S3_PUBLIC_ACCESS_KEY_ID!,
+  secretPublicAccessKey: process.env.AWS_S3_PUBLIC_SECRET_ACCESS_KEY!,
+  publicRegion: process.env.AWS_S3_PUBLIC_BUCKET_REGION!,
+  publicBucket: process.env.AWS_S3_PUBLIC_BUCKET!,
+  expires: 3600, 
+};
+
 export const s3Client = new S3Client({
   region: s3Config.region,
   credentials: {
     accessKeyId: s3Config.accessKeyId,
     secretAccessKey: s3Config.secretAccessKey,
+  },
+
+  
+})
+
+export const publicS3 = new S3Client({
+  region: publicS3Config.publicRegion,
+  credentials: {
+    accessKeyId: publicS3Config.accessPublicKeyId,
+    secretAccessKey: publicS3Config.secretPublicAccessKey,
   },
 });
 

@@ -1,5 +1,5 @@
 import { z, ZodError } from "zod";
-import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS, } from "../constants/appMessages";
+import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_ID_REQUIRED, COMMIT_NOT_FOUND, COMMIT_UPDATED, COMMITS_FETCHED, VALIDATION_ERRORS } from "../constants/appMessages";
 import { BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY, } from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
 import NotFoundException from "../exceptions/notFoundException";
@@ -32,7 +32,7 @@ export const createCommitHandlers = factory.createHandlers(async (c) => {
         throw error;
     }
 });
-//getAll Commits
+// getAll Commits
 export const getAllCommitsHandlers = factory.createHandlers(async (c) => {
     try {
         const page = Number(c.req.query("page"));

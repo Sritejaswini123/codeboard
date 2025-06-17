@@ -47,6 +47,14 @@ export const vCreateUser = z.object({
     message: "Invalid date of joining format",
   }),
 
-});
+ userProfileImage: z
+    .string()
+    .min(5, "Key must be at least 5 characters")
+    .max(255, "Key is too long")
+    .regex(/^userprofiles\/[a-zA-Z0-9/_\-.]+$/, "Key must start with 'userprofiles/' and only contain valid characters"),
+
+})
+
+
 
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;

@@ -11,8 +11,7 @@ export const vCreateUser = z.object({
     email: z.string({
         required_error: "Email is required",
         invalid_type_error: "Email must be a string",
-    }).email({ message: "Invalid email address" })
-        .refine(val => {
+    }).email({ message: "Invalid email address" }).refine((val) => {
         const allowedDomains = ["gmail.com", "yahoo.com", "orotron.com"];
         const domain = val.split("@")[1];
         return allowedDomains.includes(domain);
@@ -24,33 +23,26 @@ export const vCreateUser = z.object({
         .min(10, { message: "Phone number must be at least 10 digits long" })
         .max(15, { message: "Phone number must be at most 15 digits long" })
         .optional(),
-    dob: z.string({
-        required_error: "Date of birth is required",
-        invalid_type_error: "Date of birth must be a string",
-    }).min(1, { message: "Date of birth is required" }),
-    doj: z.string({
-        required_error: "Date of joining is required",
-        invalid_type_error: "Date of joining must be a string",
-    }).min(1, { message: "Date of joining is required" }),
     designation: z.string({
         required_error: "Designation is required",
         invalid_type_error: "Designation must be a string",
     }).min(3, { message: "Designation must be at least 3 characters long" }),
-}).superRefine((data, ctx) => {
-    const dobDate = new Date(data.dob);
-    if (isNaN(dobDate.getTime())) {
-        ctx.addIssue({
-            path: ["dob"],
-            code: z.ZodIssueCode.custom,
-            message: "Invalid date of birth",
-        });
-    }
-    const dojDate = new Date(data.doj);
-    if (isNaN(dojDate.getTime())) {
-        ctx.addIssue({
-            path: ["doj"],
-            code: z.ZodIssueCode.custom,
-            message: "Invalid date of joining",
-        });
-    }
+    dob: z.string({
+        required_error: "Date of birth is required",
+        invalid_type_error: "Date of birth must be a string",
+    }).regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Date must be in YYYY-MM-DD format" })
+        .refine(val => !isNaN(Date.parse(val)), {
+        message: "Invalid date of birth format",
+    }),
+    doj: z.string({
+        required_error: "Date of joining is required",
+        invalid_type_error: "Date of joining must be a string",
+    }).regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Date must be in YYYY-MM-DD format" }).refine(val => !isNaN(Date.parse(val)), {
+        message: "Invalid date of joining format",
+    }),
+    userProfileImage: z
+        .string()
+        .min(5, "Key must be at least 5 characters")
+        .max(255, "Key is too long")
+        .regex(/^userprofiles\/[a-zA-Z0-9/_\-.]+$/, "Key must start with 'userprofiles/' and only contain valid characters"),
 });

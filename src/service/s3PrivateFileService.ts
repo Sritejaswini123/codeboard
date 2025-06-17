@@ -12,7 +12,7 @@ export async function generateSignedUploadUrl({
     throw new Error(EXCEEDS_MAX_FILE_SIZE);
   }
 
-  const key = `uploads/${Date.now()}-${filename}`;
+  const key = `userprofiles/${Date.now()}-${filename}`;
   const command = new PutObjectCommand({
     Bucket: s3Config.bucket,
     Key: key,
