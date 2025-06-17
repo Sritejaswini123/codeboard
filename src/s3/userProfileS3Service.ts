@@ -1,80 +1,23 @@
-import type { ObjectCannedACL } from "@aws-sdk/client-s3";
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Config } from "../config/s3Config";
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+// import { s3 } from '../utils/s3Client';
+import { publicS3 , publicS3Config} from '../config/s3Config';
 
-interface Config {
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-  region: string;
-  s3_bucket: string;
-  expires: number;
-  useAccelerateEndpoint?: boolean;
-}
 
-class UserProfileS3Service {
-  config: Config;
-  s3Client: S3Client;
+export const uploadPublicFileService = async (file: File): Promise<string> => {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
-  constructor() {
-    this.config = {
-      credentials: {
-        accessKeyId: s3Config.access_key_id,
-        secretAccessKey: s3Config.secret_access_key,
-      },
-      region: s3Config.buket_region,
-      s3_bucket: s3Config.bucket,
-      expires: s3Config.expires,
-    };
-    this.s3Client = new S3Client(this.config);
-  }
+  const key = `projectprofiles/${Date.now()}-${file.name}`;
 
-  generateUploadPresignedUrl = async (fileKey: string, fileType: string) => {
-    // Prefix for user profile pictures folder
-    fileKey = `user-profile-pics/${fileKey}`;
+  const command = new PutObjectCommand({
+    Bucket: publicS3Config.publicBucket,
+    Key: key,
+    Body: buffer,
+    ContentType: file.type,
+  
+  });
 
-    console.log("1----->",fileKey,fileType);
-    
-    const params = {
-      Bucket: this.config.s3_bucket,
-      Key: fileKey,
-      ContentType: fileType,
-      ACL: "private" as ObjectCannedACL,
-    };
-    console.log("2----->",fileKey,fileType);
-    console.log("3----->",params);
-    try {
-      const command = new PutObjectCommand(params);
-        console.log("4----->",command);
-      const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: this.config.expires });
-      return { uploadUrl: presignedUrl, fileKey };
-    }
-    catch (error) {
-      console.error("Error generating upload presigned URL:", error);
-      throw error;
-    }
-  };
-
-  generateDownloadPresignedUrl = async (fileKey: string) => {
-    fileKey = `user-profile-pics/${fileKey}`;
-
-    const params = {
-      Bucket: this.config.s3_bucket,
-      Key: fileKey,
-    };
-
-    try {
-      const command = new GetObjectCommand(params);
-      const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: this.config.expires });
-      return presignedUrl;
-    }
-    catch (error) {
-      console.error("Error generating download presigned URL:", error);
-      throw error;
-    }
-  };
-}
-
-export default UserProfileS3Service;
+  await publicS3.send(command);
+  const url = `https://${publicS3Config.publicBucket}.publicS3.${publicS3Config.publicRegion}.amazonaws.com/${key}`;
+  return url;
+};

@@ -100,3 +100,10 @@ export const COMMIT_DELETED = "Commit deleted successfully";
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
 
 export const PROFILE_PIC = "Profile picture downloaded successfully";
+
+
+export const FILE_KEY_REQUIRED = 'File key is required.';
+export const FAILED_TO_GENERATE_URL = 'Failed to generate the URL.';
+export const GENERATE_FAILED = 'Generate operation failed.';
+export const MISSING_FILE_KEY = 'Missing file key.';
+export const EXCEEDS_MAX_FILE_SIZE = 'The uploaded file exceeds the maximum allowed size.';

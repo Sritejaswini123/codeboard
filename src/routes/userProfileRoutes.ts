@@ -1,10 +1,14 @@
+
+import { uploadHandler , getSignedDownloadUrlHandler, deleteFileHandler} from "../handlers/s3PrivateFileHandlers.js";
 import factory from "../factory.js";
-import { getUserProfileDownloadUrlHandler, getUserProfileUploadUrlHandler } from "../handlers/userProfileS3Handlers.js";
+import { uploadPublicFileHandler } from "../handlers/s3PublicFileHandlers.js";
 
-const userProfileRoutes = factory.createApp();
+const s3Routes = factory.createApp();
+s3Routes.post("/get-upload-url",...uploadHandler);
+s3Routes.get("/get-download-url",...getSignedDownloadUrlHandler);
+s3Routes.delete("/delete-file",...deleteFileHandler);
 
-userProfileRoutes.put("/upload-url", ...getUserProfileUploadUrlHandler);
-userProfileRoutes.get("/download-url", ...getUserProfileDownloadUrlHandler);
 
+s3Routes.post('/upload-public',...uploadPublicFileHandler);
 
-export default userProfileRoutes;
+export default s3Routes;
