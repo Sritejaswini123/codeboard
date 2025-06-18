@@ -20,6 +20,7 @@
     "@hono/node-server": "^1.14.1",
     "@ngneat/falso": "^7.3.0",
     "bcrypt": "^6.0.0",
+    "better-auth": "^1.2.9",
     "cloudinary": "^1.41.3",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",

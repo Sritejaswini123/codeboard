@@ -6,8 +6,7 @@ import type { NewCommit } from "../database/schemas/commits";
 import type { NewProject } from "../database/schemas/projects";
 import type { NewRepository } from "../database/schemas/repositories";
 import type { NewUserProject } from "../database/schemas/userProjects";
-import { FAILED_SEED_PROJECTS, FAILED_SEED_REPOSITORIES, FAILED_SEED_USERS } from "../constants/appMessages";
-import { INTERNAL_SERVER_ERROR } from "../constants/httpStatusCodes";
+import { FAILED_SEED_PROJECTS, FAILED_SEED_REPOSITORIES, FAILED_SEED_USERS, FAILED_SEED_USERS_PROJECTS, FAILED_SEED_COMMITS} from "../constants/appMessages";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
@@ -19,7 +18,7 @@ import { vCreateCommit } from "../validations/commitValidations";
 import { vCreateProject } from "../validations/projectValidations";
 import { vCreateRepository } from "../validations/repositoryValidations";
 import { vCreateUser } from "../validations/userValidations";
-
+import SeedException from "../exceptions/seedException"
 export const seedRealUserHandler = [
   async (c: Context) => {
     try {
@@ -40,14 +39,12 @@ export const seedRealUserHandler = [
       if (newUsers.length > 0) {
         await db.insert(users).values(newUsers);
       }
-      return c.json({
-        success: true,
+      return c.json({success: true,
         inserted: newUsers.length,
       });
     }
     catch (error) {
-      console.error("Insert seeding error:", error);
-      return c.json({ success: false, message: FAILED_SEED_USERS }, INTERNAL_SERVER_ERROR);
+       throw new SeedException(FAILED_SEED_USERS);
     }
   },
 ];
@@ -71,10 +68,12 @@ export const seedRealProjectHandler = [async (c: Context) => {
     });
   }
   catch (error) {
-    console.error("Insert seeding error:", error);
-    return c.json({ success: false, message: FAILED_SEED_PROJECTS }, INTERNAL_SERVER_ERROR);
+    // console.error("Insert seeding error:", error);
+    // // return c.json({ success: false, message: FAILED_SEED_PROJECTS }, INTERNAL_SERVER_ERROR);
+     throw new SeedException(FAILED_SEED_PROJECTS);
   }
 }];
+
 export const seedUserProjectsHandler = [async (c: Context) => {
   try {
     const filePath = path.join(process.cwd(), "src", "data", "user_Projects.json");
@@ -93,8 +92,7 @@ export const seedUserProjectsHandler = [async (c: Context) => {
     });
   }
   catch (error) {
-    console.error("User projects  insert seeding error:", error);
-    return c.json({ success: false, message: "Failed to seed user projects" }, 500);
+    throw new SeedException(FAILED_SEED_USERS_PROJECTS);
   }
 }];
 
@@ -140,15 +138,17 @@ export const seedCommitHandler = [async (c: Context) => {
     });
   }
   catch (error) {
-    console.error("Commit seeding error:", error);
-    return c.json(
-      {
-        success: false,
-        message: "Failed to seed commits",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      INTERNAL_SERVER_ERROR,
-    );
+    // console.error("Commit seeding error:", error);
+    // return c.json(
+    //   {
+    //     success: false,
+    //     message: "Failed to seed commits",
+    //     error: error instanceof Error ? error.message : String(error),
+    //   },
+    //   INTERNAL_SERVER_ERROR,
+    // );
+throw new SeedException(FAILED_SEED_COMMITS)
+    
   }
 }];
 
@@ -172,7 +172,6 @@ export const seedRealRepoHandler = [async (c: Context) => {
     });
   }
   catch (error) {
-    console.error("Insert seeding error:", error);
-    return c.json({ success: false, message: FAILED_SEED_REPOSITORIES }, 500);
+    throw new SeedException(FAILED_SEED_REPOSITORIES)
   }
 }];

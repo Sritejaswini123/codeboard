@@ -47,14 +47,25 @@ export const vCreateUser = z.object({
     message: "Invalid date of joining format",
   }),
 
- userProfileImage: z
-    .string()
+ userProfileImage: z.string({
+  required_error: "User profile image key is required",
+  invalid_type_error: "User profile image key must be a string",
+ })
     .min(5, "Key must be at least 5 characters")
     .max(255, "Key is too long")
     .regex(/^userprofiles\/[a-zA-Z0-9/_\-.]+$/, "Key must start with 'userprofiles/' and only contain valid characters"),
 
+
+  password: z.string({
+    required_error: "Password is required",
+    invalid_type_error: "Password must be a string",
+  })
+  // .min(8, "Password must be at least 8 characters")
+  // .max(255, "Password is too long")
+  // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+  //   message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+  // }),
+
 })
-
-
 
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;

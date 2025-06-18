@@ -20,7 +20,7 @@ const VEnvSchema = z.object({
   AWS_S3_SECRET_ACCESS_KEY: z.string().nonempty("AWS_S3_SECRET_ACCESS_KEY is required"),
   AWS_S3_BUCKET_REGION: z.string().nonempty("AWS_S3_BUCKET_REGION is required"),
 
-
+//for aws public s3
 AWS_S3_PUBLIC_BUCKET: z.string().nonempty("AWS_S3_PUBLIC_BUCKET is required"),
 AWS_S3_PUBLIC_ACCESS_KEY_ID: z.string().nonempty("AWS_S3_PUBLIC_ACCESS_KEY_ID is required"),
 AWS_S3_PUBLIC_SECRET_ACCESS_KEY: z.string().nonempty("AWS_S3_PUBLIC_SECRET_ACCESS_KEY is required"),

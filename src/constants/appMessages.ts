@@ -45,9 +45,12 @@ export const COMMIT_DELETED = "Commit deleted successfully";
 
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
 
+export const FAILED_SEED = "Seeding failed";
 export const FAILED_SEED_USERS = "Seeding users failed";
 export const FAILED_SEED_PROJECTS = "Seeding projects failed";
 export const FAILED_SEED_REPOSITORIES = "Seeding repositories failed";
+export const FAILED_SEED_USERS_PROJECTS = "Seeding users_projects failed";
+export const FAILED_SEED_COMMITS = "Seeding commits failed";
 
 
 export const FILE_NAME_TYPE_REQUIRED = "fileName and fileType are required";
@@ -56,3 +59,6 @@ export const FILE_KEY_REQUIRED = "File key is required";
 export const FAILED_TO_GENERATE_URL = "Error generating signed download URL";
 export const GENERATE_FAILED = "Could not generate download URL"
 export const MISSING_FILE_KEY = "Missing file key in request";
+export const INVALID_FILE_TYPE = 'Invalid file type. Only image files are allowed';
+export const INVALID_FILENAME = 'Invalid filename format';
+export const FILE_TOO_SMALL = 'File size is too small. Minimum size is 1KB';

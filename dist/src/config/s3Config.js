@@ -18,5 +18,12 @@ export const s3Client = new S3Client({
     credentials: {
         accessKeyId: s3Config.accessKeyId,
         secretAccessKey: s3Config.secretAccessKey,
-    },
+    }
+});
+export const publicS3 = new S3Client({
+    region: publicS3Config.publicRegion,
+    credentials: {
+        accessKeyId: publicS3Config.accessPublicKeyId,
+        secretAccessKey: publicS3Config.secretPublicAccessKey,
+    }
 });

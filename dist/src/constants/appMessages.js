@@ -40,3 +40,6 @@ export const FILE_KEY_REQUIRED = "File key is required";
 export const FAILED_TO_GENERATE_URL = "Error generating signed download URL";
 export const GENERATE_FAILED = "Could not generate download URL";
 export const MISSING_FILE_KEY = "Missing file key in request";
+export const INVALID_FILE_TYPE = 'Invalid file type. Only image files are allowed';
+export const INVALID_FILENAME = 'Invalid filename format';
+export const FILE_TOO_SMALL = 'File size is too small. Minimum size is 1KB';

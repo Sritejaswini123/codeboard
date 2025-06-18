@@ -1,6 +1,6 @@
 import { UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes.js";
 import { UNPROCESSABLE_ENTITY as UNPROCESSABLE_ENTITY_MESSAGE } from "../constants/httpStatusPhrases.js";
-import BaseException from "./base-exception.js";
+import BaseException from "./baseException.js";
 
 export default class UnprocessableEntityException extends BaseException {
   constructor(message?: string, errData?: any) {

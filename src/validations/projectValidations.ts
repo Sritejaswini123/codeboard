@@ -10,5 +10,13 @@ export const vCreateProject = z.object({
     required_error: "Project description is required",
     invalid_type_error: "Project description must be a string",
   }).min(2, { message: "Description is required" }),
+
+   projectProfile: z.string({
+    required_error: "User profile image is required",
+    invalid_type_error: "User profile image must be a string",
+   }) .min(5, " Image url must be at least 5 characters")
+      .max(255, "Image Url  is too long")
+   
+  
 });
 export type ValidatedCreateProject = z.infer<typeof vCreateProject>;

@@ -1,5 +1,5 @@
 import { Context } from 'hono';
-import { generateSignedUploadUrl , generateDownloadSignedUrl, deleteFileFromS3} from '../service/s3PrivateFileService';
+import { generateSignedUploadUrl , generateDownloadSignedUrl} from '../service/s3PrivateFileService';
 import { FILE_KEY_REQUIRED, FAILED_TO_GENERATE_URL, GENERATE_FAILED, MISSING_FILE_KEY } from '../constants/appMessages';
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from '../constants/httpStatusCodes';
 //Generating 
@@ -38,20 +38,4 @@ export const getSignedDownloadUrlHandler = async (c: Context) => {
 };
 
 
-
-//Delete file from S3
-
-export const deleteFileHandler = async (c: Context) => {
-  try {
-    const { key } = await c.req.json();
-
-    if (!key) {
-      return c.json({ success: false, error: MISSING_FILE_KEY }, BAD_REQUEST);
-    }
-    const result = await deleteFileFromS3(key);
-    return c.json(result);
-  } catch (err: any) {
-    return c.json({ success: false, error: err.message }, INTERNAL_SERVER_ERROR);
-  }
-};
 

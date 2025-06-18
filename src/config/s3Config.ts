@@ -1,5 +1,4 @@
 
-
 import { S3Client } from '@aws-sdk/client-s3';
 export const s3Config = {
   accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID!,
@@ -8,7 +7,6 @@ export const s3Config = {
   bucket: process.env.AWS_S3_BUCKET!,
   expires: 3600, 
 };
-
 
 export const publicS3Config = {
   accessPublicKeyId: process.env.AWS_S3_PUBLIC_ACCESS_KEY_ID!,
@@ -23,9 +21,7 @@ export const s3Client = new S3Client({
   credentials: {
     accessKeyId: s3Config.accessKeyId,
     secretAccessKey: s3Config.secretAccessKey,
-  },
-
-  
+  }  
 })
 
 export const publicS3 = new S3Client({
@@ -33,6 +29,6 @@ export const publicS3 = new S3Client({
   credentials: {
     accessKeyId: publicS3Config.accessPublicKeyId,
     secretAccessKey: publicS3Config.secretPublicAccessKey,
-  },
-});
+  }
+})
 

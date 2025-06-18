@@ -6,6 +6,7 @@ export const projects = pgTable("projects", {
     title: text().notNull(),
     description: text().notNull(),
     is_active: boolean().notNull().default(true),
+    projectProfile: text().unique(),
     ...timestamps,
 }, t => [
     index("projects_title_idx").on(t.title),
