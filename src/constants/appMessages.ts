@@ -45,12 +45,12 @@ export const COMMIT_DELETED = "Commit deleted successfully";
 
 export const PROFILE_PIC_UPDATED = "Profile picture updated successfully";
 
-export const FAILED_SEED = "Seeding failed";
-export const FAILED_SEED_USERS = "Seeding users failed";
-export const FAILED_SEED_PROJECTS = "Seeding projects failed";
-export const FAILED_SEED_REPOSITORIES = "Seeding repositories failed";
-export const FAILED_SEED_USERS_PROJECTS = "Seeding users_projects failed";
-export const FAILED_SEED_COMMITS = "Seeding commits failed";
+export const FAILED_SEED = "Failed to seed";
+export const FAILED_SEED_USERS = "Failed to seed users";
+export const FAILED_SEED_PROJECTS = "Failed to seed projects";
+export const FAILED_SEED_REPOSITORIES = "Failed to seed repositories";
+export const FAILED_SEED_USERS_PROJECTS = "Failed to seed users_projects";
+export const FAILED_SEED_COMMITS = "Failed to seed commits";
 
 
 export const FILE_NAME_TYPE_REQUIRED = "fileName and fileType are required";
@@ -62,3 +62,4 @@ export const MISSING_FILE_KEY = "Missing file key in request";
 export const INVALID_FILE_TYPE = 'Invalid file type. Only image files are allowed';
 export const INVALID_FILENAME = 'Invalid filename format';
 export const FILE_TOO_SMALL = 'File size is too small. Minimum size is 1KB';
+export const INVALID_UPLOAD_REQUEST ='Invalid request. Required fields: filename, contentType, and size (number).';

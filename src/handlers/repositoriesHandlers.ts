@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import type { NewRepository, Repository } from "../database/schemas/repositories";
-
 import { REPOSITORY_CREATED, REPOSITORY_EXIST, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { repositories } from "../database/schemas/repositories";
@@ -16,9 +15,7 @@ import { vCreateRepository } from "../validations/repositoryValidations";
 export const createRepositoriesHandlers = factory.createHandlers(async (c) => {
   try {
     const reqBody = await c.req.json();
-
     const validateRepo = vCreateRepository.parse(reqBody);
-
     const repoData: NewRepository = {
       ...validateRepo,
     };
@@ -26,7 +23,6 @@ export const createRepositoriesHandlers = factory.createHandlers(async (c) => {
     const isRepositoryExist = await checkRepoExist(id);
     if (!isRepositoryExist)
       throw new NotFoundException(REPOSITORY_EXIST);
-
     const createdRepo = await createRecord<Repository>(repositories, repoData);
     return sendResponse(c, CREATED, REPOSITORY_CREATED, createdRepo);
   }
@@ -36,13 +32,8 @@ export const createRepositoriesHandlers = factory.createHandlers(async (c) => {
         error.errors.map(({ path, message }) => [path[0], message]),
       );
       return sendResponse(
-        c,
-        UNPROCESSABLE_ENTITY,
-        VALIDATION_ERRORS,
-        formattedErrors,
-      );
+        c,UNPROCESSABLE_ENTITY,VALIDATION_ERRORS,formattedErrors);
     }
-
     throw error;
   }
 });

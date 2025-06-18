@@ -7,6 +7,7 @@ import type { NewProject } from "../database/schemas/projects";
 import type { NewRepository } from "../database/schemas/repositories";
 import type { NewUserProject } from "../database/schemas/userProjects";
 import { FAILED_SEED_PROJECTS, FAILED_SEED_REPOSITORIES, FAILED_SEED_USERS, FAILED_SEED_USERS_PROJECTS, FAILED_SEED_COMMITS} from "../constants/appMessages";
+import {INTERNAL_SERVER_ERROR} from "../constants/httpStatusCodes";
 import db from "../database/db";
 import { commits } from "../database/schemas/commits";
 import { projects } from "../database/schemas/projects";
@@ -44,6 +45,8 @@ export const seedRealUserHandler = [
       });
     }
     catch (error) {
+        console.error("Insert seeding error:", error);
+      // return c.json({ success: false, message: FAILED_SEED_USERS }, INTERNAL_SERVER_ERROR);
        throw new SeedException(FAILED_SEED_USERS);
     }
   },
@@ -103,8 +106,6 @@ export const seedCommitHandler = [async (c: Context) => {
     const commitJsonData = await fs.readFile(filePath, "utf-8");
     const parsedCommits: any[] = JSON.parse(commitJsonData);
     const validatedCommits = z.array(vCreateCommit).parse(parsedCommits);
-
-   
     const [userList, projectList, repositoryList] = await Promise.all([
       db.select({ id: users.id }).from(users),
       db.select({ id: projects.id }).from(projects),
@@ -130,7 +131,6 @@ export const seedCommitHandler = [async (c: Context) => {
     if (transformedCommits.length > 0) {
       await db.insert(commits).values(transformedCommits);
     }
-
     return c.json({
       success: true,
       inserted: transformedCommits.length,
