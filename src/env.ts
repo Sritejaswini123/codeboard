@@ -17,6 +17,10 @@ const VEnvSchema = z.object({
   AWS_S3_SECRET_ACCESS_KEY:z.string(),
   AWS_S3_BUCKET_REGION:z.string(),
   AWS_S3_BUCKET:z.string(),
+  EMAIL_USER:z.string(),
+  EMAIL_PASSWORD:z.string(),
+  BETTER_AUTH_SECRET:z.string(),
+  BETTER_AUTH_URL:z.string()
 });
 
 export type Env = z.infer<typeof VEnvSchema>;

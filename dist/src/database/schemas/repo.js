@@ -10,6 +10,7 @@ export const repositories = pgTable("repositories", {
     description: text(),
     ...timestamps,
 }, t => [
-    index("repositories_project_name_idx").on(t.project_id),
-    index("repositories_repository_name_idx").on(t.title),
+    index("repositories_project_name_indx").on(t.project_id),
+    index("repositories_repository_name_index").on(t.title),
+    index("repositories_repository_id_index").on(t.id),
 ]);

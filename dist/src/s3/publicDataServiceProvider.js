@@ -1,39 +1,40 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Config } from "../config/s3Config";
-class PublicS3FileService {
-    config;
-    s3Client;
-    constructor() {
-        this.config = {
-            credentials: {
-                accessKeyId: s3Config.public_access_key_id,
-                secretAccessKey: s3Config.public_secret_access_key,
-            },
-            region: s3Config.bucket_region,
-            s3_bucket: s3Config.public_bucket,
-            expires: 3600,
-        };
-        this.s3Client = new S3Client(this.config);
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { EXCEEDS_MAX_FILE_SIZE } from '../constants/appMessages';
+import { s3Client, s3Config } from '../config/s3Config';
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export async function generateSignedUploadUrl({ filename, contentType, size, }) {
+    if (size > MAX_FILE_SIZE) {
+        throw new Error(EXCEEDS_MAX_FILE_SIZE);
     }
-    generateUploadPresignedUrl = async (fileKey, fileType) => {
-        fileKey = `code-board/${fileKey}`;
-        const acl = "public-read";
-        const params = {
-            Bucket: s3Config.public_bucket,
-            Key: fileKey,
-            ContentType: fileType,
-            ACL: acl,
-        };
-        try {
-            const command = new PutObjectCommand(params);
-            const presignedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
-            return { target_url: presignedUrl, file_key: fileKey };
-        }
-        catch (error) {
-            console.error("Error generating presigned URL:", error);
-            throw error;
-        }
-    };
+    const key = `userprofiles/${Date.now()}-${filename}`;
+    const command = new PutObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+        ContentType: contentType,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+        expiresIn: s3Config.expires,
+    });
+    return { url, key };
 }
-export default PublicS3FileService;
+//download signed URL
+export const generateDownloadSignedUrl = async (key) => {
+    const command = new GetObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+        expiresIn: s3Config.expires,
+    });
+    return url;
+};
+//DELETE FILE FROM S3
+export async function deleteFileFromS3(key) {
+    const command = new DeleteObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+    });
+    await s3Client.send(command);
+    return { success: true, message: ` Successfully Deleted: ${key}` };
+}

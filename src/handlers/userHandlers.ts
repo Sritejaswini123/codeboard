@@ -13,6 +13,7 @@ import { createRecord, deleteRecordById, getAllRecords, getRecordById, updateRec
 import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
+import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
 
 // save record
 export const createUserHandlers = factory.createHandlers(async (c:Context) => {
@@ -26,18 +27,19 @@ export const createUserHandlers = factory.createHandlers(async (c:Context) => {
     };
     const existingUser = await isUserExist(validUserReq.email);
 
+    
     if (existingUser) {
-      throw new conflictException(USER_EXIST);//Todo:
+      throw new conflictException(USER_EXIST);
     }
     const user = await createRecord<User>(users, userData);
     return sendResponse(c, CREATED, USER_CREATED, user);
-  }
+  } 
   catch (error) {
     if (error instanceof z.ZodError) {
       const formattedErrors = Object.fromEntries(
         error.errors.map(({ path, message }) => [path[0], message]),
       );
-      return sendResponse(c, UNPROCESSABLE_ENTITY, VALIDATION_ERRORS, formattedErrors);
+      throw new UnprocessableEntityException(VALIDATION_ERRORS);
     }
 
     throw error;

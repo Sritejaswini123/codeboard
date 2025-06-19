@@ -10,6 +10,13 @@ const VEnvSchema = z.object({
     DB_USER: z.string(),
     DB_PASSWORD: z.string(),
     DB_NAME: z.string(),
+    AWS_S3_ACCESS_KEY_ID: z.string(),
+    AWS_S3_SECRET_ACCESS_KEY: z.string(),
+    AWS_S3_BUCKET_REGION: z.string(),
+    AWS_S3_BUCKET: z.string(),
+    EMAIL_USER: z.string(),
+    EMAIL_PASSWORD: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
 });
 // eslint-disable-next-line import/no-mutable-exports
 let envData;

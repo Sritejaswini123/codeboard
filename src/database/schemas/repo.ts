@@ -7,13 +7,14 @@ export const repositories = pgTable("repositories", {
   id: serial().primaryKey(),
   project_id: integer().notNull().references(() => projects.id),
   title: text(),
- link: text().notNull(),
+  link: text().notNull(),
   // is_active: boolean().default(true),
   description: text(),
   ...timestamps,
 }, t => [
-  index("repositories_project_name_idx").on(t.project_id),
-  index("repositories_repository_name_idx").on(t.title),
+  index("repositories_project_name_indx").on(t.project_id),
+  index("repositories_repository_name_index").on(t.title),
+   index("repositories_repository_id_index").on(t.id),
 ]);
 
 

@@ -2,6 +2,8 @@ export const SERVICE_UP = "Service is up and running";
 
 export const USER_CREATED = "User created successfully";
 
+export const EMAIL_PASSWORD="Email and Password is required";
+
 export const INVALID_ID="Invalid  ID";
 
 export const REFRESH_TOKEN_EXP="Refresh token missing";
@@ -75,8 +77,15 @@ export const PROJECT_FETCHED = "Project fetched successfully";
 
 export const USER_NOT_FOUND = "User not found";
 
+export const STATS_NOT_FOUND= "No stats available";
+
+export const STATUS_FETCH_SUCCESS="Status fetched successfully";
 
 
+export const INVALID_DATES="Missing startDate or endDate";
+
+
+export const AVERAGE_COMMITS_SUCCESS = "Average commits calculated successfully";
 export const REPO_NOT_FOUND = "Repository not found ";
 
 export const PROJECT_NOT_FOUND = "Project not found";
@@ -107,3 +116,5 @@ export const FAILED_TO_GENERATE_URL = 'Failed to generate the URL.';
 export const GENERATE_FAILED = 'Generate operation failed.';
 export const MISSING_FILE_KEY = 'Missing file key.';
 export const EXCEEDS_MAX_FILE_SIZE = 'The uploaded file exceeds the maximum allowed size.';
+
+

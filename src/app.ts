@@ -14,6 +14,11 @@ import onError from "./utils/onError.js";
 import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
 import userProfileRoutes from "./routes/userProfileRoutes.js";
+import { auth } from "./lib/auth.js";
+import authRoutes from "./routes/authRoutes.js";
+
+
+
 
 const app = factory.createApp().basePath(env.API_VERSION);
 
@@ -32,11 +37,19 @@ app.route("/", seedRoute);
 app.route("/", userProject);
 app.route("/", commitRoutes);
 app.route("/", userProfileRoutes);
+app.route("/", authRoutes);
 app.route("/", repositoryRoutes);
 // app.route("/auth",loginRoutes)
 
+app.on(['GET', 'POST'], '/api/auth/**', (c) => {
+  return auth.handler(c.req.raw);
+});
+
+// Your other routes
+app.get('/', (c) => c.text('Hello World!'));
+
 app.get("/error", (c) => { 
-  
+
   c.status(422);
   c.var.logger.debug("Test error only visible in development");
   throw new Error("Test error");

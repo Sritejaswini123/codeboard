@@ -34,6 +34,7 @@ export const commits = pgTable(
     index("commits_project_id_idx").on(t.project_id),
     index("commits_repository_id_idx").on(t.repository_id),
     index("commits_date_idx").on(t.date),
+     index("commits_id_idx").on(t.id),
   ],
 );
 

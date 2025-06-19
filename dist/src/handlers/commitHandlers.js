@@ -1,12 +1,12 @@
 import { z, ZodError } from "zod";
-import { COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_UPDATED, COMMITS_FETCHED, COMMITS_NOT_FOUND, INVALID_ID, VALIDATION_ERRORS } from "../constants/appMessages";
+import { AVERAGE_COMMITS_SUCCESS, COMMIT_CREATED, COMMIT_DELETED, COMMIT_EXIST, COMMIT_UPDATED, COMMITS_FETCHED, COMMITS_NOT_FOUND, INVALID_DATES, INVALID_ID, STATS_NOT_FOUND, STATUS_FETCH_SUCCESS, VALIDATION_ERRORS } from "../constants/appMessages";
 import { CREATED, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { commits } from "../database/schemas/commits";
 import BadRequestException from "../exceptions/badRequestException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getRecordById, updateRecordById, } from "../service/baseDbServices";
-import { checkCommitExist, getAllCommits } from "../service/commitService";
+import { averageCommits, checkCommitExist, getAllCommits, statusCount } from "../service/commitService";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateCommit } from "../validations/commitValidations";
 // create commit
@@ -105,6 +105,40 @@ export const deleteCommitByIdHandlers = factory.createHandlers(async (c) => {
         }
         const deletedCommit = await deleteRecordById(commits, commitId);
         return sendResponse(c, OK, COMMIT_DELETED, deletedCommit);
+    }
+    catch (error) {
+        throw error;
+    }
+});
+//ststus count
+export const statusCountHanders = factory.createHandlers(async (c) => {
+    try {
+        const countResult = await statusCount();
+        if (!countResult) {
+            throw new NotFoundException(STATS_NOT_FOUND);
+        }
+        const { total_commits, total_users, total_projects, total_active_repos } = countResult;
+        return sendResponse(c, OK, STATUS_FETCH_SUCCESS, { total_commits, total_users, total_projects, total_active_repos });
+    }
+    catch (error) {
+        throw error;
+    }
+});
+//Average commits per day,perMonth,perWeek....
+export const avergaeCommitsHandlers = factory.createHandlers(async (c) => {
+    try {
+        const startDate = await c.req.query("startDate");
+        const endDate = await c.req.query("endDate");
+        if (!startDate || !endDate) {
+            throw new BadRequestException(INVALID_DATES);
+        }
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            throw new BadRequestException(INVALID_DATES);
+        }
+        const commits = await averageCommits(start, end);
+        return sendResponse(c, OK, AVERAGE_COMMITS_SUCCESS, commits);
     }
     catch (error) {
         throw error;

@@ -4,13 +4,14 @@ import { INVALID_ID, USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER
 import { CREATED, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY } from "../constants/httpStatusCodes";
 import { users } from "../database/schemas/users";
 import BadRequestException from "../exceptions/badRequestException";
+import conflictException from "../exceptions/conflictException";
 import NotFoundException from "../exceptions/notFoundException";
 import factory from "../factory";
 import { createRecord, deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "../service/baseDbServices";
 import { isUserExist } from "../service/userServices";
 import { sendResponse } from "../utils/sendResponse";
 import { vCreateUser } from "../validations/userValidations";
-import conflictException from "../exceptions/conflictException";
+import UnprocessableEntityException from "../exceptions/unprocessableEntityException";
 // save record
 export const createUserHandlers = factory.createHandlers(async (c) => {
     try {
@@ -23,7 +24,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
         };
         const existingUser = await isUserExist(validUserReq.email);
         if (existingUser) {
-            throw new conflictException(USER_EXIST); //Todo:
+            throw new conflictException(USER_EXIST);
         }
         const user = await createRecord(users, userData);
         return sendResponse(c, CREATED, USER_CREATED, user);
@@ -31,7 +32,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     catch (error) {
         if (error instanceof z.ZodError) {
             const formattedErrors = Object.fromEntries(error.errors.map(({ path, message }) => [path[0], message]));
-            return sendResponse(c, UNPROCESSABLE_ENTITY, VALIDATION_ERRORS, formattedErrors);
+            throw new UnprocessableEntityException(VALIDATION_ERRORS);
         }
         throw error;
     }
