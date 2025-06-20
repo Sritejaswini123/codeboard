@@ -24,6 +24,7 @@ pool.query("select 2+4").then((res) => {
   console.log("Db connection failed");
 });
 
-const db = drizzle({ client: pool });
+ const db = drizzle({ client: pool });
 
 export default db;
+// export { db, pool };

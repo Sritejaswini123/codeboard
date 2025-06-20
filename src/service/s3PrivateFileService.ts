@@ -19,22 +19,35 @@ export async function generateSignedUploadUrl({ filename, contentType, size}: Up
 }
 
 
-//download signed URL
+// //download signed URL
+// export const generateDownloadSignedUrl = async (key: string): Promise<string> => {
+//   await s3Client.send(
+//     new HeadObjectCommand({// headobject checks the file is exsist or not 
+//       Bucket: s3Config.bucket,
+//       Key: key,
+//     })
+//   );
+//   const command = new GetObjectCommand({
+//     Bucket: s3Config.bucket,
+//     Key: key,
+//   });
+//   const url = await getSignedUrl(s3Client, command, {
+//     expiresIn: s3Config.expires,
+//   });
+
+//   return url;
+// };
+
+
 export const generateDownloadSignedUrl = async (key: string): Promise<string> => {
-//checking the key exsists or not
-    try {
-    await s3Client.send(
-      new HeadObjectCommand({//HeadObjectCommand checks if a file exists
-        Bucket: s3Config.bucket,
-        Key: key,
-      })
-    );
-  } catch (err: any) {
-    if (err.name === 'NotFound') {
-      throw new Error('KeyDoesNotExist');
-    }
-    throw err;
-  }
+  //First, check if the key exists
+  await s3Client.send(
+    new HeadObjectCommand({
+      Bucket: s3Config.bucket,
+      Key: key,
+    })
+  );
+  // If key exists, generate the download signed URL
   const command = new GetObjectCommand({
     Bucket: s3Config.bucket,
     Key: key,

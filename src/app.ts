@@ -16,7 +16,7 @@ import { piLogger } from "./utils/pinoLogger.js";
 import { sendResponse } from "./utils/sendResponse.js";
 import s3Routes from "./routes/s3PrivateFileRoutes.js";
 import s3PublicRoutes from "./routes/s3PublicFileRoutes.js";
-
+import authRoutes from "./routes/signuproutes.js";
 const app = factory.createApp().basePath(env.API_VERSION);
 
 app.use(piLogger());
@@ -39,6 +39,7 @@ app.route("/seed", seed);
 app.route("/", s3Routes);
 // app.route('/api', uploadRoute);
 app.route("/", s3PublicRoutes)
+app.route("/", authRoutes);
 app.get("/error", (c) => {
   c.status(422);
   c.var.logger.debug("Test error only visible in development");

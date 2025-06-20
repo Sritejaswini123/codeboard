@@ -26,6 +26,10 @@ AWS_S3_PUBLIC_ACCESS_KEY_ID: z.string().nonempty("AWS_S3_PUBLIC_ACCESS_KEY_ID is
 AWS_S3_PUBLIC_SECRET_ACCESS_KEY: z.string().nonempty("AWS_S3_PUBLIC_SECRET_ACCESS_KEY is required"),
 AWS_S3_PUBLIC_BUCKET_REGION: z.string().nonempty("AWS_S3_PUBLIC_BUCKET_REGION is required"),
  
+ BETTER_AUTH_SECRET:z.string(),
+ BETTER_AUTH_URL:z.string(),
+  EMAIL_USER:z.string(),
+  EMAIL_PASSWORD:z.string(),
 });
 export type Env = z.infer<typeof VEnvSchema>;
 
