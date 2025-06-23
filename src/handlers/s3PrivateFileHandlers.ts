@@ -41,6 +41,7 @@ export const uploadHandler = async (c: Context) => {
 //    console.error(FAILED_TO_GENERATE_URL);
 //     return c.json({ success: false, error: GENERATE_FAILED }, INTERNAL_SERVER_ERROR);
 //   }
+
 export const getSignedDownloadUrlHandler = async (c: Context) => {
   const key = c.req.query('key');
 

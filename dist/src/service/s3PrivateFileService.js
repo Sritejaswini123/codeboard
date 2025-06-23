@@ -1,4 +1,4 @@
-import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client, s3Config } from '../config/s3Config';
 import { validateUploadData } from '../validations/fileValidations';
@@ -15,8 +15,30 @@ export async function generateSignedUploadUrl({ filename, contentType, size }) {
     });
     return { url, key };
 }
-//download signed URL
+// //download signed URL
+// export const generateDownloadSignedUrl = async (key: string): Promise<string> => {
+//   await s3Client.send(
+//     new HeadObjectCommand({// headobject checks the file is exsist or not 
+//       Bucket: s3Config.bucket,
+//       Key: key,
+//     })
+//   );
+//   const command = new GetObjectCommand({
+//     Bucket: s3Config.bucket,
+//     Key: key,
+//   });
+//   const url = await getSignedUrl(s3Client, command, {
+//     expiresIn: s3Config.expires,
+//   });
+//   return url;
+// };
 export const generateDownloadSignedUrl = async (key) => {
+    //First, check if the key exists
+    await s3Client.send(new HeadObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+    }));
+    // If key exists, generate the download signed URL
     const command = new GetObjectCommand({
         Bucket: s3Config.bucket,
         Key: key,

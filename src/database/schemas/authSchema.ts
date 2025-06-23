@@ -1,19 +1,15 @@
-import { pgTable, serial, varchar, timestamp, boolean, text, integer } from 'drizzle-orm/pg-core';
-export const registerUsers = pgTable('registerUsers', {
-  id: serial('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  password: text('password').notNull(),
-  emailVerified: boolean('email_verified').default(false),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+import { boolean, date, pgTable, serial, text } from "drizzle-orm/pg-core";
+
+export const authUsers = pgTable("authUsers", {
+  internalId: serial("internal_id").primaryKey(),  
+ id: text("id").notNull().unique(),             
+  first_name: text().notNull(),
+  phone: text().unique(),
+  is_active: boolean().notNull().default(true),
+  dob: date({ mode: "date" }).notNull(),
+  doj: date({ mode: "date" }).notNull(),
+  designation: text().notNull(),
 });
 
-export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(),
-  authid: integer('user_id').references(() =>registerUsers.id),
-  expiresAt: timestamp('expires_at').notNull(),
-  token: text('token').notNull().unique(),
-  createdAt: timestamp('created_at').defaultNow(),
-});
 
 

@@ -40,6 +40,7 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
         const userId = Number(c.req.param("user_id"));
         if (!userId)
             return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+        // throw new NotFoundException(USER_NOT_FOUND);
         const user = await getRecordById(users, userId);
         if (!user)
             throw new NotFoundException(USER_NOT_FOUND);

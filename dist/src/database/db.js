@@ -21,3 +21,4 @@ pool.query("select 2+4").then((res) => {
 });
 const db = drizzle({ client: pool });
 export default db;
+// export { db, pool };
